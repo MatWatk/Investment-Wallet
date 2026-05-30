@@ -7,7 +7,7 @@ export function useFetchCryptoPrice(token: Asset, currency: string) {
 
         useEffect(() => {
         const getCryptoPrice = async () => {
-           const fetchOptions = { method: 'GET', headers: { 'x-cg-demo-api-key': 'CG-RKJVbz4E2wWj8fnnKU9VVLiP' } }
+           const fetchOptions = { method: 'GET', headers: { 'x-cg-demo-api-key': import.meta.env.VITE_COINGECKO_API_KEY } }
             const res = await fetchData(`https://api.coingecko.com/api/v3/simple/price?vs_currencies=${currency}&ids=${token.name.toLowerCase()}&names=${token.name.toLowerCase()}&symbols=${token.symbol.toLowerCase()}`, fetchOptions)
              setCurrentPrice(res[token.name.toLowerCase()][currency] ?? null);
         }
