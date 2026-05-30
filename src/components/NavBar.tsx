@@ -1,5 +1,3 @@
-import { Outlet } from "react-router-dom"
-
 import personImg from '../assets/personImg.png'
 import quitButton from '../assets/quitButton.png'
 import settingsIcon from '../assets/settingsIcon.png'
@@ -9,18 +7,27 @@ export default function NavBar() {
     const { isOpen: profileDropdownOpen, toggleDropdown: handleClickProfile, dropdownRef } = useDropdown();
 
     return (
-        <>
-            <div className="w-full h-20 bg-white shadow px-6">
-                <div className="h-full flex items-center">
-                    <div className="flex flex-col items-start gap-1 justify-start">
-                        <h1 className="text-2xl font-bold text-violet-800">
-                            Investment Wallet
-                        </h1>
-                        <p className="text-sm text-violet-200 flex">
-                            by Matusz Watkowski
-                        </p>
+        <div className="w-full h-20 bg-white shadow px-6">
+            <div className="h-full flex items-center">
+                <div className="flex flex-col items-start gap-1 justify-start">
+                    <h1 className="text-2xl font-bold text-violet-800">
+                        Investment Wallet
+                    </h1>
+                    <p className="text-sm text-violet-200 flex">
+                        by Matusz Watkowski
+                    </p>
+                </div>
+                <div className="flex items-center ml-auto gap-4">
+                    <div className="flex flex-col -translate-y-2">
+                        <label htmlFor="language-select" className="text-violet-800 text-xs px-4 py-1">
+                            Currency
+                        </label>
+                        <select id="currency-select" defaultValue="USD" className="text-violet-900 hover:text-violet-700 bg-white px-2 py-1 rounded-md text-sm border border-rounded-md">
+                            <option>USD</option>
+                            <option>PLN</option>
+                        </select>
                     </div>
-                    <div className="flex flex-col ml-auto -translate-y-2">
+                    <div className="flex flex-col -translate-y-2">
                         <label htmlFor="language-select" className="text-violet-800 text-xs px-4 py-1">
                             Language
                         </label>
@@ -52,8 +59,6 @@ export default function NavBar() {
                     </div>
                 </div>
             </div>
-
-            <Outlet />
-        </>
+        </div>
     )
 }
