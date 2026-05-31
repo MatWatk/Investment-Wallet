@@ -10,7 +10,7 @@ export default function NavBar() {
         <div className="w-full h-20 bg-white shadow px-6">
             <div className="h-full flex items-center">
                 <div className="flex flex-col items-start gap-1 justify-start">
-                    <h1 className="text-2xl font-bold text-violet-800">
+                    <h1 className="text-2xl font-bold text-violet-900">
                         Investment Wallet
                     </h1>
                     <p className="text-sm text-violet-200 flex">

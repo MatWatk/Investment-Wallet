@@ -34,3 +34,11 @@ export const assets: Asset[] = [
         image: silverBarIcon,
     },
 ];
+
+
+export const walletDummyData = [
+    { name: 'Bitcoin', amount: 0.5 },
+    { name: 'Ethereum', amount: 2 },
+    { name: 'Gold', amount: 10 },
+    { name: 'Silver', amount: 100 },
+];
