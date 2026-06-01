@@ -19,17 +19,17 @@ export default function AssetTablePosition({ asset, dataFromCoingecko }: { asset
     return (
         <div key={asset.name} className={tableStyles.tableRow}>
             <AssetPositionName name={asset.name} image={asset.image} />
-            <div className="w-25 text-xs text-center flex items-center justify-center gap-2 shrink-0 whitespace-nowrap">
+            <div className="w-26 text-xs text-center flex items-center justify-center gap-2 shrink-0">
                 {(change24h ?? 0) > 0 && <img src={greenUpArrow} alt="Up arrow" className="h-4 w-4" />}
                 {(change24h ?? 0) < 0 && <img src={redDownArrow} alt="Down arrow" className="h-4 w-4" />}
                 <span>{formatPercent(change24h)}</span>
             </div>
-            <div className="w-25 text-xs text-center flex items-center justify-center gap-2 shrink-0 whitespace-nowrap">
+            <div className="w-26 text-xs text-center flex items-center justify-center gap-2 shrink-0">
                 {(change30d ?? 0) > 0 && <img src={greenUpArrow} alt="Up arrow" className="h-4 w-4" />}
                 {(change30d ?? 0) < 0 && <img src={redDownArrow} alt="Down arrow" className="h-4 w-4" />}
                 <span>{formatPercent(change30d)}</span>
             </div>
-            <p className="w-25 shrink-0 text-right whitespace-nowrap">{coinData?.current_price}</p>
+            <p className="min-w-25 shrink-0 text-right">{coinData?.current_price}</p>
             <p className="w-25 text-right shrink-0">USD</p>
         </div>
     )

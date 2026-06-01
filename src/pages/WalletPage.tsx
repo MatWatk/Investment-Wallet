@@ -11,7 +11,7 @@ export default function WalletPage() {
     return (
         <>
             <h1 className="text-2xl font-bold ">Your wallet</h1>
-            <div className="w-full overflow-x-auto">
+            <div className="w-full overflow-x-auto my-4">
                 <AssetTableHeader
                     name
                     amount
