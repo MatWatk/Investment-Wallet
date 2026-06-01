@@ -1,6 +1,6 @@
-const tablestyles = {
-    tableHeader: "flex items-center justify-between rounded p-4 border-b w-full bg-violet-200 h-3 text-s text-violet-900 font-bold",
-    tableRow: "flex items-center justify-between rounded bg-violet-100 p-4 shadow-xl border-b border-violet-300 w-full",
+const tableStyles = {
+    tableHeader: "flex items-center rounded p-4 border-b w-full min-w-[300px] bg-violet-200 h-12 text-xs text-violet-900 font-bold shrink-0 gap-4",
+    tableRow: "flex items-center rounded bg-violet-100 p-4 shadow-xl border-b border-violet-300 w-full min-w-[300px] gap-4 shrink-0",
 }
 
-export default tablestyles;
+export default tableStyles;

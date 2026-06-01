@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import DashboardPage from "../pages/DashboardPage";
+import WalletPage from "../pages/WalletPage";
 import LoginPage from "../pages/login/LoginPage";
 import SignupPage from "../pages/signup/SignupPage";
 import AssetPricePage from "../pages/AssetsPricePage";
@@ -13,7 +13,7 @@ export const router = createBrowserRouter([
         children: [
             {
                 index: true,
-                element: <DashboardPage />
+                element: <WalletPage />
             },
             {
                 path: 'assets-price-list',

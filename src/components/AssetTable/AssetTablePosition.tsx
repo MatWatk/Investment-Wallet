@@ -1,0 +1,36 @@
+import type { Asset } from "../../constants/assets";
+import { formatPercent } from "../../utils/utils";
+
+import tableStyles from "../../styles/tableStyles";
+
+import greenUpArrow from "../../assets/greenUpArrow.png";
+import redDownArrow from "../../assets/redDownArrow.png";
+import type { CoinMarketData } from "../../pages/AssetsPricePage";
+
+import AssetPositionName from "./AssetPositionName";
+
+
+export default function AssetTablePosition({ asset, dataFromCoingecko }: { asset: Asset, dataFromCoingecko: CoinMarketData[] }) {
+    const dataById = Object.fromEntries(dataFromCoingecko.map((coin) => [coin.id, coin]));
+    const coinData = dataById[asset.coingeckoId] as CoinMarketData | undefined;
+    const change24h = coinData?.price_change_percentage_24h_in_currency;
+    const change30d = coinData?.price_change_percentage_30d_in_currency;
+
+    return (
+        <div key={asset.name} className={tableStyles.tableRow}>
+            <AssetPositionName name={asset.name} image={asset.image} />
+            <div className="w-18 text-xs text-center flex items-center justify-center gap-2 shrink-0 whitespace-nowrap">
+                {(change24h ?? 0) > 0 && <img src={greenUpArrow} alt="Up arrow" className="h-4 w-4" />}
+                {(change24h ?? 0) < 0 && <img src={redDownArrow} alt="Down arrow" className="h-4 w-4" />}
+                <span>{formatPercent(change24h)}</span>
+            </div>
+            <div className="w-18 text-xs text-center flex items-center justify-center gap-2 shrink-0 whitespace-nowrap">
+                {(change30d ?? 0) > 0 && <img src={greenUpArrow} alt="Up arrow" className="h-4 w-4" />}
+                {(change30d ?? 0) < 0 && <img src={redDownArrow} alt="Down arrow" className="h-4 w-4" />}
+                <span>{formatPercent(change30d)}</span>
+            </div>
+            <p className="w-25 shrink-0 text-right whitespace-nowrap">{coinData?.current_price}</p>
+            <p className="w-25 text-right shrink-0">USD</p>
+        </div>
+    )
+}
