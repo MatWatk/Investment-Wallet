@@ -17,6 +17,9 @@ export default function NavBar() {
                         by Matusz Watkowski
                     </p>
                 </div>
+                <div className="flex items-center ml-auto text-2xl font-bold text-violet-900">
+                    <h1>Account Name +TODO</h1>
+                </div>
                 <div className="flex items-center ml-auto gap-4">
                     <div className="flex flex-col -translate-y-2">
                         <label htmlFor="language-select" className="text-violet-800 text-xs px-4 py-1">
