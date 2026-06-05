@@ -10,7 +10,7 @@ export default function ThemeSwitch() {
     }
     return (
         <div className="flex flex-col -translate-y-2 items-center">
-            <label htmlFor="theme-select" className="text-violet-800 text-xs px-4 py-1">
+            <label htmlFor="theme-select" className="text-violet-800 text-xs  py-1">
                 Theme
             </label>
             <button id="theme-select" onClick={handleThemeChange}>

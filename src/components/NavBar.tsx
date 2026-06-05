@@ -13,7 +13,7 @@ export default function NavBar() {
             <div className="flex items-center ml-auto text-2xl font-bold text-violet-900">
                 <h1>Account Name +TODO</h1>
             </div>
-            <div className="flex items-center ml-auto gap-4">
+            <div className="flex items-center ml-auto gap-5">
                 <SelectInput label="Currency" selectOptions={["USD", "PLN"]} />
                 <SelectInput label="Language" selectOptions={["English", "Polish"]} />
                 <ThemeSwitch />
