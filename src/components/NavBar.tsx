@@ -1,4 +1,4 @@
-import ThemeSwitch from './ThemeSwitch';
+import ThemeSwitch from './NavBar_components/ThemeSwitch';
 import SelectInput from './NavBar_components/SelectInput';
 import Header from './NavBar_components/Header';
 import ProfileButton from './NavBar_components/ProfileButton';

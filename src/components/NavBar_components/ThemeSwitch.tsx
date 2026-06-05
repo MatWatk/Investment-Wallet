@@ -1,6 +1,6 @@
 import { useState } from "react";
-import SunIcon from "../assets/sunIcon.png";
-import MoonIcon from "../assets/moonIcon.png";
+import SunIcon from "../../assets/sunIcon.png";
+import MoonIcon from "../../assets/moonIcon.png";
 
 export default function ThemeSwitch() {
     const [theme, setTheme] = useState("Light");
