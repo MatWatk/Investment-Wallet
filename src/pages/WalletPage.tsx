@@ -6,6 +6,8 @@ import tableStyles from "../styles/tableStyles";
 import AssetPositionName from "../components/AssetTable/AssetPositionName";
 import { assets } from "../constants/assets";
 import useSortData from "../hooks/useSortData";
+import SearchInput from "../components/AssetTable/SearchInput";
+import useFilter from "../hooks/useFilter";
 
 export default function WalletPage() {
     const { sortedData, requestSort, sortConfig } = useSortData(walletDummyData, {
@@ -13,10 +15,13 @@ export default function WalletPage() {
         amount: (asset) => asset.amount,
     });
 
+    const { visibleAssets, handleSearch } = useFilter({ sortedData });
+
     return (
         <>
-            <h1 className="text-2xl font-bold ">Your wallet</h1>
+            <h1 className="text-2xl font-bold mb-5">Your Wallet</h1>
             <div className="w-full overflow-x-auto my-4">
+                <SearchInput handleSearch={handleSearch} />
                 <AssetTableHeader
                     name
                     amount
@@ -26,7 +31,7 @@ export default function WalletPage() {
                     sortConfig={sortConfig}
                     sortableKeys={["name", "amount"]}
                 />
-                {sortedData.map((walletAsset) => (
+                {visibleAssets.map((walletAsset) => (
                     <div key={walletAsset.name} className={tableStyles.tableRow}>
                         {assets.find(a => a.name === walletAsset.name)?.image && (
                             <AssetPositionName name={walletAsset.name} image={assets.find(a => a.name === walletAsset.name)?.image || ""} />

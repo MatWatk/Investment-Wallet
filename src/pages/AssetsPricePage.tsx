@@ -5,6 +5,8 @@ import { assets } from "../constants/assets";
 import AssetTableHeader from "../components/AssetTable/AssetTableHeader";
 import AssetTablePosition from "../components/AssetTable/AssetTablePosition";
 import useSortData from "../hooks/useSortData";
+import SearchInput from "../components/AssetTable/SearchInput";
+import useFilter from "../hooks/useFilter";
 
 export interface CoinMarketData {
     id: string;
@@ -24,9 +26,13 @@ export default function AssetPricePage() {
         price_change_percentage_30d_in_currency: (coin) => coin.price_change_percentage_30d_in_currency,
     });
 
+    const { visibleAssets, handleSearch } = useFilter<CoinMarketData>({ sortedData });
+
 
     return (
         <div className="w-full">
+            <h1 className="text-2xl font-bold mb-5">Asset Price List</h1>
+            <SearchInput handleSearch={handleSearch} />
             <AssetTableHeader
                 name
                 last24hChange
@@ -42,11 +48,11 @@ export default function AssetPricePage() {
                     "price_change_percentage_30d_in_currency",
                 ]}
             />
-            {sortedData.map((coin) => {
+            {visibleAssets.map((coin) => {
                 const asset = assetByCoingeckoId[coin.id];
                 if (!asset) return null;
 
-                return <AssetTablePosition key={asset.name} asset={asset} dataFromCoingecko={sortedData} />;
+                return <AssetTablePosition key={asset.name} asset={asset} dataFromCoingecko={visibleAssets} />;
             })}
         </div>
 
