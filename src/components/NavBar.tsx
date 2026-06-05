@@ -2,6 +2,7 @@ import personImg from '../assets/personImg.png'
 import quitButton from '../assets/quitButton.png'
 import settingsIcon from '../assets/settingsIcon.png'
 import { useDropdown } from "../hooks/useDropdown";
+import ThemeSwitch from './ThemeSwitch';
 
 export default function NavBar() {
     const { isOpen: profileDropdownOpen, toggleDropdown: handleClickProfile, dropdownRef } = useDropdown();
@@ -39,6 +40,7 @@ export default function NavBar() {
                             <option>Polish</option>
                         </select>
                     </div>
+                    <ThemeSwitch />
                     <div className="relative flex flex-col items-center justify-center ml-6">
                         <button onClick={handleClickProfile}>
                             <img src={personImg} alt="Profile image" className="w-14 h-10 rounded-full ml-6" />
