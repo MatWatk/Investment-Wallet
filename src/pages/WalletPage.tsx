@@ -4,6 +4,7 @@ import SearchInput from "../components/AssetTable/SearchInput";
 import AssetAddSection from "../components/WalletForm";
 import PageHeader from "../components/PageHeader";
 import PageContentWrapper from "../components/PageContentWrapper";
+import MarketBar from "../components/Wallet_components/MarketBar";
 
 import { walletDummyData } from "../constants/assets";
 import { assets } from "../constants/assets";
@@ -26,6 +27,7 @@ export default function WalletPage() {
             <PageHeader title="Your Wallet" />
             <PageContentWrapper>
                 <SearchInput handleSearch={handleSearch} />
+                <MarketBar />
                 <AssetTableHeader
                     name
                     amount
