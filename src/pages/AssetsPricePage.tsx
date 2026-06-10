@@ -1,19 +1,19 @@
-import fetchData from "../services/api/fetchData";
-import { useLoaderData } from "react-router-dom";
-import { assets } from "../constants/assets";
-
 import AssetTableHeader from "../components/AssetTable/AssetTableHeader";
 import AssetTablePosition from "../components/AssetTable/AssetTablePosition";
-import useSortData from "../hooks/useSortData";
 import SearchInput from "../components/AssetTable/SearchInput";
+import PageHeader from "../components/PageHeader";
+
+import fetchData from "../services/api/fetchData";
+import { useLoaderData } from "react-router-dom";
+
+import { assets } from "../constants/assets";
+
+import useSortData from "../hooks/useSortData";
 import useFilter from "../hooks/useFilter";
 
-export interface CoinMarketData {
-    id: string;
-    current_price: number;
-    price_change_percentage_24h_in_currency: number;
-    price_change_percentage_30d_in_currency: number;
-}
+import type { CoinMarketData } from "../types/AssetTableTypes";
+import PageContentWrapper from "../components/PageContentWrapper";
+
 
 export default function AssetPricePage() {
     const data = useLoaderData<CoinMarketData[]>();
@@ -30,31 +30,33 @@ export default function AssetPricePage() {
 
 
     return (
-        <div className="w-full">
-            <h1 className="text-2xl font-bold mb-5">Asset Price List</h1>
-            <SearchInput handleSearch={handleSearch} />
-            <AssetTableHeader
-                name
-                last24hChange
-                last30dChange
-                price
-                currency
-                handleSort={requestSort}
-                sortConfig={sortConfig}
-                sortableKeys={[
-                    "name",
-                    "current_price",
-                    "price_change_percentage_24h_in_currency",
-                    "price_change_percentage_30d_in_currency",
-                ]}
-            />
-            {visibleAssets.map((coin) => {
-                const asset = assetByCoingeckoId[coin.id];
-                if (!asset) return null;
+        <>
+            <PageHeader title="Asset Price List" />
+            <PageContentWrapper>
+                <SearchInput handleSearch={handleSearch} />
+                <AssetTableHeader
+                    name
+                    last24hChange
+                    last30dChange
+                    price
+                    currency
+                    handleSort={requestSort}
+                    sortConfig={sortConfig}
+                    sortableKeys={[
+                        "name",
+                        "current_price",
+                        "price_change_percentage_24h_in_currency",
+                        "price_change_percentage_30d_in_currency",
+                    ]}
+                />
+                {visibleAssets.map((coin) => {
+                    const asset = assetByCoingeckoId[coin.id];
+                    if (!asset) return null;
 
-                return <AssetTablePosition key={asset.name} asset={asset} dataFromCoingecko={visibleAssets} />;
-            })}
-        </div>
+                    return <AssetTablePosition key={asset.name} asset={asset} dataFromCoingecko={visibleAssets} />;
+                })}
+            </PageContentWrapper>
+        </>
 
     )
 }

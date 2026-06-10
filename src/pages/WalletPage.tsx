@@ -1,12 +1,16 @@
 import AssetTableHeader from "../components/AssetTable/AssetTableHeader";
+import AssetPositionName from "../components/AssetTable/AssetPositionName";
+import SearchInput from "../components/AssetTable/SearchInput";
 import AssetAddSection from "../components/WalletForm";
+import PageHeader from "../components/PageHeader";
+import PageContentWrapper from "../components/PageContentWrapper";
+
 import { walletDummyData } from "../constants/assets";
+import { assets } from "../constants/assets";
 
 import tableStyles from "../styles/tableStyles";
-import AssetPositionName from "../components/AssetTable/AssetPositionName";
-import { assets } from "../constants/assets";
+
 import useSortData from "../hooks/useSortData";
-import SearchInput from "../components/AssetTable/SearchInput";
 import useFilter from "../hooks/useFilter";
 
 export default function WalletPage() {
@@ -19,8 +23,8 @@ export default function WalletPage() {
 
     return (
         <>
-            <h1 className="text-2xl font-bold mb-5">Your Wallet</h1>
-            <div className="w-full overflow-x-auto my-4">
+            <PageHeader title="Your Wallet" />
+            <PageContentWrapper>
                 <SearchInput handleSearch={handleSearch} />
                 <AssetTableHeader
                     name
@@ -43,7 +47,7 @@ export default function WalletPage() {
                         </div>
                     </div>
                 ))}
-            </div>
+            </PageContentWrapper>
             <AssetAddSection />
         </>
     );
