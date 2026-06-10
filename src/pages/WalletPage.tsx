@@ -4,7 +4,7 @@ import SearchInput from "../components/AssetTable/SearchInput";
 import AssetAddSection from "../components/WalletForm";
 import PageHeader from "../components/PageHeader";
 import PageContentWrapper from "../components/PageContentWrapper";
-import MarketBar from "../components/Wallet_components/MarketBar";
+import TabsBar from "../components/TabsBar";
 
 import { walletDummyData } from "../constants/assets";
 import { assets } from "../constants/assets";
@@ -13,6 +13,9 @@ import tableStyles from "../styles/tableStyles";
 
 import useSortData from "../hooks/useSortData";
 import useFilter from "../hooks/useFilter";
+
+import { marketTabs } from "../constants/tabs";
+import type { TabsObject, WalletTabs } from "../types/AssetTableTypes";
 
 export default function WalletPage() {
     const { sortedData, requestSort, sortConfig } = useSortData(walletDummyData, {
@@ -27,7 +30,7 @@ export default function WalletPage() {
             <PageHeader title="Your Wallet" />
             <PageContentWrapper>
                 <SearchInput handleSearch={handleSearch} />
-                <MarketBar />
+                <TabsBar<TabsObject<WalletTabs>> initialBar={"Summary"} tabs={marketTabs} />
                 <AssetTableHeader
                     name
                     amount

@@ -7,12 +7,14 @@ import fetchData from "../services/api/fetchData";
 import { useLoaderData } from "react-router-dom";
 
 import { assets } from "../constants/assets";
+import { priceListTabs } from "../constants/tabs";
 
 import useSortData from "../hooks/useSortData";
 import useFilter from "../hooks/useFilter";
 
-import type { CoinMarketData } from "../types/AssetTableTypes";
+import type { CoinMarketData, TabsObject, AssetPriceListTabs } from "../types/AssetTableTypes";
 import PageContentWrapper from "../components/PageContentWrapper";
+import TabsBar from "../components/TabsBar";
 
 
 export default function AssetPricePage() {
@@ -34,6 +36,7 @@ export default function AssetPricePage() {
             <PageHeader title="Asset Price List" />
             <PageContentWrapper>
                 <SearchInput handleSearch={handleSearch} />
+                <TabsBar<TabsObject<AssetPriceListTabs>> initialBar={ "All" } tabs={priceListTabs} />
                 <AssetTableHeader
                     name
                     last24hChange
