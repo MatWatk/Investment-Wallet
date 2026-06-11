@@ -1,4 +1,7 @@
-export const marketTabs = [
+import type { AssetPriceTab } from "../types/AssetTableTypes"
+import type { WalletTab } from "../types/WalletTypes"
+
+export const marketTabs: WalletTab[] = [
     {
         name: 'Summary',
     },
@@ -14,9 +17,9 @@ export const marketTabs = [
     {
         name: 'Physical',
     },
-] as const;
+]
 
-export const priceListTabs = [
+export const priceListTabs: AssetPriceTab[] = [
     {
         name: 'All',
     },
@@ -29,4 +32,4 @@ export const priceListTabs = [
     {
         name: 'Stocks',
     },
-] as const;
+]

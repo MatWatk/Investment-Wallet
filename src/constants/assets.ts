@@ -1,5 +1,6 @@
 import goldBarIcon from '../assets/goldBarIcon.png'
 import silverBarIcon from '../assets/silverBarIcon.png'
+import type { WalletAsset } from '../types/WalletTypes';
 
 export interface Asset {
     name: string;
@@ -36,9 +37,10 @@ export const assets: Asset[] = [
 ];
 
 
-export const walletDummyData = [
-    { name: 'Bitcoin', amount: 0.5 },
-    { name: 'Ethereum', amount: 2 },
-    { name: 'Gold', amount: 10 },
-    { name: 'Silver', amount: 100 },
+export const walletDummyData: WalletAsset[] = [
+    { name: 'Bitcoin', amount: 0.5, market: "Binance" },
+    { name: 'Bitcoin', amount: 0.1, market: "Kanga" },
+    { name: 'Ethereum', amount: 2, market: "Kanga" },
+    { name: 'Gold', amount: 10, market: "Physical" },
+    { name: 'Silver', amount: 100, market: "Physical" },
 ];
