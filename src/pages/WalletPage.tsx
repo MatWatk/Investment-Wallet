@@ -45,7 +45,7 @@ export default function WalletPage() {
                     sortableKeys={["name", "amount"]}
                 />
                 {actualVisibleAssets.map((walletAsset) => (
-                    <div key={walletAsset.name} className={tableStyles.tableRow}>
+                    <div key={`${walletAsset.name}-${walletAsset.market}-${walletAsset.amount}`} className={tableStyles.tableRow}>
                         {assets.find(a => a.name === walletAsset.name)?.image && (
                             <AssetPositionName name={walletAsset.name} image={assets.find(a => a.name === walletAsset.name)?.image || ""} />
                         )}
