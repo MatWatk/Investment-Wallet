@@ -12,7 +12,7 @@ import { priceListTabs } from "../constants/tabs";
 import useSortData from "../hooks/useSortData";
 import useFilter from "../hooks/useFilter";
 
-import type { CoinMarketData, AssetPriceTab } from "../types/AssetTableTypes";
+import type { CoinMarketData, AssetPriceTab, AssetTypes } from "../types/AssetTableTypes";
 import PageContentWrapper from "../components/PageContentWrapper";
 import TabsBar from "../components/TabsBar";
 import useTabSwitch from "../hooks/useTabSwitch";
@@ -20,7 +20,6 @@ import useTabSwitch from "../hooks/useTabSwitch";
 
 export default function AssetPricePage() {
     const data = useLoaderData<CoinMarketData[]>();
-    console.log(data)
     const assetByCoingeckoId = Object.fromEntries(assets.map((asset) => [asset.coingeckoId, asset]));
 
     const { sortedData, requestSort, sortConfig } = useSortData(data, {
@@ -31,7 +30,7 @@ export default function AssetPricePage() {
     });
 
     const { visibleAssets, handleSearch } = useFilter<CoinMarketData>({ sortedData });
-    const { activeTab, handleTabSwitch } = useTabSwitch<AssetPriceTab, CoinMarketData>("All", visibleAssets);
+    const { activeTab, handleTabSwitch } = useTabSwitch<AssetTypes, CoinMarketData>("All", visibleAssets, asset => asset.someFilteringTabsData);
 
 
     return (

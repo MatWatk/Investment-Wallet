@@ -15,10 +15,11 @@ import useSortData from "../hooks/useSortData";
 import useFilter from "../hooks/useFilter";
 
 import { marketTabs } from "../constants/tabs";
-import type { WalletTab } from "../types/WalletTypes";
+import type { MarketsType, WalletTab } from "../types/WalletTypes";
 import useTabSwitch from "../hooks/useTabSwitch";
 
 import type { WalletAsset } from "../types/WalletTypes";
+import { summaryTransformation } from "../utils/utils";
 
 export default function WalletPage() {
     const { sortedData, requestSort, sortConfig } = useSortData(walletDummyData, {
@@ -27,7 +28,7 @@ export default function WalletPage() {
     });
 
     const { visibleAssets, handleSearch } = useFilter({ sortedData });
-    const { activeTab, handleTabSwitch, actualVisibleAssets } = useTabSwitch<WalletTab, WalletAsset>("Summary", visibleAssets);
+    const { activeTab, handleTabSwitch, actualVisibleAssets } = useTabSwitch<MarketsType, WalletAsset>("Summary", visibleAssets, asset => asset.market, summaryTransformation);
 
     return (
         <>
@@ -45,7 +46,7 @@ export default function WalletPage() {
                     sortableKeys={["name", "amount"]}
                 />
                 {actualVisibleAssets.map((walletAsset) => (
-                    <div key={`${walletAsset.name}-${walletAsset.market}-${walletAsset.amount}`} className={tableStyles.tableRow}>
+                    <div key={`${walletAsset.name}-${walletAsset.amount}`} className={tableStyles.tableRow}>
                         {assets.find(a => a.name === walletAsset.name)?.image && (
                             <AssetPositionName name={walletAsset.name} image={assets.find(a => a.name === walletAsset.name)?.image || ""} />
                         )}
