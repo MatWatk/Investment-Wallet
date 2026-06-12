@@ -1,12 +1,15 @@
-import { useState } from "react";
 import SunIcon from "../../assets/sunIcon.png";
 import MoonIcon from "../../assets/moonIcon.png";
 
+import { useDispatch, useSelector } from "react-redux";
+import { themeActions } from "../../store/themeSlice";
+
 export default function ThemeSwitch() {
-    const [theme, setTheme] = useState("Light");
+    const dispatch = useDispatch();
+    const themeState = useSelector((state: { theme: { lightTheme: boolean } }) => state.theme.lightTheme);
 
     const handleThemeChange = () => {
-        setTheme((current) => (current === "Light" ? "Dark" : "Light"));
+        dispatch(themeActions.toggleTheme());
     }
     return (
         <div className="flex flex-col -translate-y-2 items-center">
@@ -14,7 +17,7 @@ export default function ThemeSwitch() {
                 Theme
             </label>
             <button id="theme-select" onClick={handleThemeChange}>
-                <img src={theme === "Light" ? SunIcon : MoonIcon} alt="Theme switch icon" className="w-6 h-6" />
+                <img src={themeState ? SunIcon : MoonIcon} alt="Theme switch icon" className="w-6 h-6" />
             </button>
         </div>
     )

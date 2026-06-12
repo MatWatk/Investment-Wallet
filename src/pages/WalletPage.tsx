@@ -30,6 +30,7 @@ export default function WalletPage() {
     const { visibleAssets, handleSearch } = useFilter({ sortedData });
     const { activeTab, handleTabSwitch, actualVisibleAssets } = useTabSwitch<MarketsType, WalletAsset>("Summary", visibleAssets, asset => asset.market, summaryTransformation);
 
+
     return (
         <>
             <PageHeader title="Your Wallet" />

@@ -16,9 +16,7 @@ import type { SummaryAssets, WalletAsset } from "../types/WalletTypes";
             } else {
                 acc[asset.name].amount += asset.amount;
             }
-            console.log(acc);
             return acc;
         }, {}));
-
         return summary;
     };

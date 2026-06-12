@@ -7,15 +7,16 @@ import fetchData from "../services/api/fetchData";
 import { useLoaderData } from "react-router-dom";
 
 import { assets } from "../constants/assets";
-import { priceListTabs } from "../constants/tabs";
+// import { priceListTabs } from "../constants/tabs";
 
 import useSortData from "../hooks/useSortData";
 import useFilter from "../hooks/useFilter";
 
-import type { CoinMarketData, AssetPriceTab, AssetTypes } from "../types/AssetTableTypes";
+import type { CoinMarketData } from "../types/AssetTableTypes";
+// import type { AssetPriceTab, AssetTypes } from "../types/AssetTableTypes";
 import PageContentWrapper from "../components/PageContentWrapper";
-import TabsBar from "../components/TabsBar";
-import useTabSwitch from "../hooks/useTabSwitch";
+// import TabsBar from "../components/TabsBar";
+// import useTabSwitch from "../hooks/useTabSwitch";
 
 
 export default function AssetPricePage() {
@@ -30,7 +31,7 @@ export default function AssetPricePage() {
     });
 
     const { visibleAssets, handleSearch } = useFilter<CoinMarketData>({ sortedData });
-    const { activeTab, handleTabSwitch } = useTabSwitch<AssetTypes, CoinMarketData>("All", visibleAssets, asset => asset.someFilteringTabsData);
+    // const { activeTab, handleTabSwitch } = useTabSwitch<AssetTypes, CoinMarketData>("All", visibleAssets, asset => asset.someFilteringTabsData);
 
 
     return (
@@ -38,7 +39,7 @@ export default function AssetPricePage() {
             <PageHeader title="Asset Price List" />
             <PageContentWrapper>
                 <SearchInput handleSearch={handleSearch} />
-                <TabsBar<AssetPriceTab> tabs={priceListTabs} activeTab={activeTab} handleTabSwitch={handleTabSwitch} />
+                {/* <TabsBar<AssetPriceTab> tabs={priceListTabs} activeTab={activeTab} handleTabSwitch={handleTabSwitch} /> */}
                 <AssetTableHeader
                     name
                     last24hChange
