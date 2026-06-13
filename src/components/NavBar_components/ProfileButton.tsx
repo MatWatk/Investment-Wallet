@@ -6,7 +6,7 @@ import settingsIcon from '../../assets/settingsIcon.png'
 export default function ProfileButton() {
     const { isOpen: profileDropdownOpen, toggleDropdown: handleClickProfile, dropdownRef } = useDropdown();
     return (
-        <div className="relative flex flex-col justify-center ml-3">
+        <div className="relative flex flex-col justify-center ml-3 shrink-0">
             <button onClick={handleClickProfile}>
                 <img src={personImg} alt="Profile image" className="w-14 h-10 rounded-full" />
             </button>

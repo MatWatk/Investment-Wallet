@@ -8,7 +8,7 @@ export default function NavBar() {
     return (
         <HeaderWrapper>
             <Header />
-            <div className={`flex items-center ml-auto text-2xl font-bold "}`}>
+            <div className={`flex items-center ml-auto text-2xl font-bold min-w-70 shrink-0`}>
                 <h1>Account Name +TODO</h1>
             </div>
             <div className={`flex items-center ml-auto gap-5 "}`}>
