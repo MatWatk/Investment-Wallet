@@ -1,0 +1,1 @@
+export type currencyType = "USD" | "PLN";

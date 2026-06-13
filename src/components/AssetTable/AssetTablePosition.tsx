@@ -10,10 +10,13 @@ import type { CoinMarketData } from "../../types/AssetTableTypes";
 import AssetPositionName from "./AssetPositionName";
 
 import { useSelector } from "react-redux";
+import type { currencyType } from "../../types/types";
 
 
 export default function AssetTablePosition({ asset, dataFromCoingecko }: { asset: Asset, dataFromCoingecko: CoinMarketData[] }) {
     const themeState = useSelector((state: { theme: { lightTheme: boolean } }) => state.theme.lightTheme);
+    const currency = useSelector((state: {currency: {currency: currencyType}}) => state.currency.currency);
+
     const dataById = Object.fromEntries(dataFromCoingecko.map((coin) => [coin.id, coin]));
     const coinData = dataById[asset.coingeckoId] as CoinMarketData | undefined;
     const change24h = coinData?.price_change_percentage_24h_in_currency;
@@ -33,7 +36,7 @@ export default function AssetTablePosition({ asset, dataFromCoingecko }: { asset
                 <span>{formatPercent(change30d)}</span>
             </div>
             <p className="min-w-25 shrink-0 text-right">{coinData?.current_price}</p>
-            <p className="w-25 text-right shrink-0">USD</p>
+            <p className="w-25 text-right shrink-0">{currency}</p>
         </div>
     )
 }

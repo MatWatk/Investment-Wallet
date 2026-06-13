@@ -21,6 +21,7 @@ import useTabSwitch from "../hooks/useTabSwitch";
 import type { WalletAsset } from "../types/WalletTypes";
 import { summaryTransformation } from "../utils/utils";
 import { useSelector } from "react-redux";
+import type { currencyType } from "../types/types";
 
 export default function WalletPage() {
     const themeState = useSelector((state: { theme: { lightTheme: boolean } }) => state.theme.lightTheme);
@@ -33,7 +34,7 @@ export default function WalletPage() {
     const { visibleAssets, handleSearch } = useFilter({ sortedData });
     const { activeTab, handleTabSwitch, actualVisibleAssets } = useTabSwitch<MarketsType, WalletAsset>("Summary", visibleAssets, asset => asset.market, summaryTransformation);
 
-
+    const currency = useSelector((state: { currency: { currency: currencyType } }) => state.currency.currency);
     return (
         <>
             <PageHeader title="Your Wallet" />
@@ -57,7 +58,7 @@ export default function WalletPage() {
                         <div className="ml-auto flex flex-row gap-2 shrink-0 items-center whitespace-nowrap">
                             <p className="w-25 text-center flex items-center justify-center gap-2 shrink-0">{walletAsset.amount}</p>
                             <p className="w-25 text-center flex items-center justify-center gap-2 shrink-0">Price</p>
-                            <p className="w-25 text-right shrink-0">Currency</p>
+                            <p className="w-25 text-right shrink-0">{currency}</p>
                         </div>
                     </div>
                 ))}

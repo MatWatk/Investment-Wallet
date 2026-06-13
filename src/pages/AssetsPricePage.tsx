@@ -4,7 +4,8 @@ import SearchInput from "../components/AssetTable/SearchInput";
 import PageHeader from "../components/PageHeader";
 
 import fetchData from "../services/api/fetchData";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useRevalidator } from "react-router-dom";
+import { useEffect } from "react";
 
 import { assets } from "../constants/assets";
 // import { priceListTabs } from "../constants/tabs";
@@ -18,9 +19,21 @@ import PageContentWrapper from "../components/PageContentWrapper";
 // import TabsBar from "../components/TabsBar";
 // import useTabSwitch from "../hooks/useTabSwitch";
 
+import { store } from "../store/index";
+import { useSelector } from "react-redux";
+
 
 export default function AssetPricePage() {
+    const { revalidate } = useRevalidator();
+
+    const currency = useSelector((state: { currency: { currency: string } }) => state.currency.currency);
+
+    useEffect(() => {
+        revalidate();
+    }, [currency, revalidate])
+
     const data = useLoaderData<CoinMarketData[]>();
+    console.log(data);
     const assetByCoingeckoId = Object.fromEntries(assets.map((asset) => [asset.coingeckoId, asset]));
 
     const { sortedData, requestSort, sortConfig } = useSortData(data, {
@@ -32,7 +45,6 @@ export default function AssetPricePage() {
 
     const { visibleAssets, handleSearch } = useFilter<CoinMarketData>({ sortedData });
     // const { activeTab, handleTabSwitch } = useTabSwitch<AssetTypes, CoinMarketData>("All", visibleAssets, asset => asset.someFilteringTabsData);
-
 
     return (
         <>
@@ -68,6 +80,11 @@ export default function AssetPricePage() {
 }
 
 export function loader() {
+
     const assetIds = assets.map(asset => asset.coingeckoId).join(',');
-    return fetchData(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${assetIds}&price_change_percentage=24h,30d&blockchain_site`, { method: 'GET', headers: { 'x-cg-demo-api-key': import.meta.env.VITE_COINGECKO_API_KEY } })
+    const currency = store.getState().currency.currency;
+
+
+
+    return fetchData(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&ids=${assetIds}&price_change_percentage=24h,30d&blockchain_site`, { method: 'GET', headers: { 'x-cg-demo-api-key': import.meta.env.VITE_COINGECKO_API_KEY } })
 }
