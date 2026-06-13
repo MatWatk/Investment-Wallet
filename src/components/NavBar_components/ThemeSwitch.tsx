@@ -12,13 +12,15 @@ export default function ThemeSwitch() {
         dispatch(themeActions.toggleTheme());
     }
     return (
-        <div className="flex flex-col -translate-y-2 items-center">
-            <label htmlFor="theme-select" className="text-violet-800 text-xs  py-1">
+        <div className="flex flex-col -translate-y-1 items-center">
+            <label htmlFor="theme-select" className="text-xs  ">
                 Theme
             </label>
-            <button id="theme-select" onClick={handleThemeChange}>
-                <img src={themeState ? SunIcon : MoonIcon} alt="Theme switch icon" className="w-6 h-6" />
-            </button>
+            <div className={`${themeState ? "bg-white" : "bg-gray-400"} rounded-full p-1`}>
+                <button id="theme-select" onClick={handleThemeChange}>
+                    <img src={themeState ? SunIcon : MoonIcon} alt="Theme switch icon" className="w-6 h-6" />
+                </button>
+            </div>
         </div>
     )
 }

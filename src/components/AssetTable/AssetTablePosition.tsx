@@ -5,19 +5,22 @@ import tableStyles from "../../styles/tableStyles";
 
 import greenUpArrow from "../../assets/greenUpArrow.png";
 import redDownArrow from "../../assets/redDownArrow.png";
-import type { CoinMarketData } from "../../pages/AssetsPricePage";
+import type { CoinMarketData } from "../../types/AssetTableTypes";
 
 import AssetPositionName from "./AssetPositionName";
 
+import { useSelector } from "react-redux";
+
 
 export default function AssetTablePosition({ asset, dataFromCoingecko }: { asset: Asset, dataFromCoingecko: CoinMarketData[] }) {
+    const themeState = useSelector((state: { theme: { lightTheme: boolean } }) => state.theme.lightTheme);
     const dataById = Object.fromEntries(dataFromCoingecko.map((coin) => [coin.id, coin]));
     const coinData = dataById[asset.coingeckoId] as CoinMarketData | undefined;
     const change24h = coinData?.price_change_percentage_24h_in_currency;
     const change30d = coinData?.price_change_percentage_30d_in_currency;
 
     return (
-        <div key={asset.name} className={tableStyles.tableRow}>
+        <div key={asset.name} className={themeState ? tableStyles.light.tableRow : tableStyles.dark.tableRow}>
             <AssetPositionName name={asset.name} image={asset.image} />
             <div className="w-26 text-xs text-center flex items-center justify-center gap-2 shrink-0">
                 {(change24h ?? 0) > 0 && <img src={greenUpArrow} alt="Up arrow" className="h-4 w-4" />}

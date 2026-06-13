@@ -20,8 +20,11 @@ import useTabSwitch from "../hooks/useTabSwitch";
 
 import type { WalletAsset } from "../types/WalletTypes";
 import { summaryTransformation } from "../utils/utils";
+import { useSelector } from "react-redux";
 
 export default function WalletPage() {
+    const themeState = useSelector((state: { theme: { lightTheme: boolean } }) => state.theme.lightTheme);
+
     const { sortedData, requestSort, sortConfig } = useSortData(walletDummyData, {
         name: (asset) => asset.name,
         amount: (asset) => asset.amount,
@@ -47,7 +50,7 @@ export default function WalletPage() {
                     sortableKeys={["name", "amount"]}
                 />
                 {actualVisibleAssets.map((walletAsset) => (
-                    <div key={`${walletAsset.name}-${walletAsset.amount}`} className={tableStyles.tableRow}>
+                    <div key={`${walletAsset.name}-${walletAsset.amount}`} className={themeState ? tableStyles.light.tableRow : tableStyles.dark.tableRow}>
                         {assets.find(a => a.name === walletAsset.name)?.image && (
                             <AssetPositionName name={walletAsset.name} image={assets.find(a => a.name === walletAsset.name)?.image || ""} />
                         )}

@@ -8,7 +8,7 @@ export default function Layout() {
     const themeState = useSelector((state: { theme: { lightTheme: boolean } }) => state.theme.lightTheme);
 
     return (
-        <div className={`flex h-screen w-full flex-col ${themeState ? "bg-linear-to-t from-violet-200 to-white" : "bg-linear-to-t from-gray-800 to-black"}`}>
+        <div className={`flex h-screen w-full flex-col ${themeState ? "bg-linear-to-t from-violet-200 to-white" : "bg-linear-to-t from-gray-700 to-gray-900 text-yellow-500"}`}>
             <NavBar />
 
             <div className="flex flex-1 overflow-hidden">
