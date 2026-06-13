@@ -1,7 +1,7 @@
 import AssetTableHeader from "../components/AssetTable/AssetTableHeader";
 import AssetPositionName from "../components/AssetTable/AssetPositionName";
 import SearchInput from "../components/AssetTable/SearchInput";
-import AssetAddSection from "../components/WalletForm";
+import AssetAddSection from "../components/Wallet_components/WalletForm";
 import PageHeader from "../components/PageHeader";
 import PageContentWrapper from "../components/PageContentWrapper";
 import TabsBar from "../components/TabsBar";
@@ -54,10 +54,10 @@ export default function WalletPage() {
                         {assets.find(a => a.name === walletAsset.name)?.image && (
                             <AssetPositionName name={walletAsset.name} image={assets.find(a => a.name === walletAsset.name)?.image || ""} />
                         )}
-                        <div className="min-w-25 flex items-center gap-2">
-                            <p className="mr-20">{walletAsset.amount}</p>
-                            <p className="mr-11 shrink-0">Price</p>
-                            <p className="">Currency</p>
+                        <div className="ml-auto flex flex-row gap-2 shrink-0 items-center whitespace-nowrap">
+                            <p className="w-25 text-center flex items-center justify-center gap-2 shrink-0">{walletAsset.amount}</p>
+                            <p className="w-25 text-center flex items-center justify-center gap-2 shrink-0">Price</p>
+                            <p className="w-25 text-right shrink-0">Currency</p>
                         </div>
                     </div>
                 ))}

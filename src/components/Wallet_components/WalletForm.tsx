@@ -1,5 +1,5 @@
 import { Form } from "react-router-dom";
-import buttonStyles from "../styles/buttonStyles";
+import buttonStyles from "../../styles/buttonStyles";
 
 export default function AssetAddSection() {
     return (
