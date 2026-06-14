@@ -22,10 +22,12 @@ import PageContentWrapper from "../components/PageContentWrapper";
 
 import { store } from "../store/index";
 import { useSelector } from "react-redux";
+import { translations } from "../constants/translations";
 
 
 export default function AssetPricePage() {
     const currency = useSelector((state: { currency: { currency: string } }) => state.currency.currency);
+    const language = useSelector((state: { language: { language: keyof typeof translations } }) => state.language.language);
 
     useRevalidatePage({ dependency: currency });
 
@@ -46,7 +48,10 @@ export default function AssetPricePage() {
         <>
             <PageHeader title="Asset Price List" />
             <PageContentWrapper>
-                <SearchInput handleSearch={handleSearch} />
+                <SearchInput
+                    handleSearch={handleSearch}
+                    label={translations[language].walletPage.searchbarLabel}
+                    placeholder={translations[language].walletPage.searchbarPlaceholder} />
                 {/* <TabsBar<AssetPriceTab> tabs={priceListTabs} activeTab={activeTab} handleTabSwitch={handleTabSwitch} /> */}
                 <AssetTableHeader
                     name

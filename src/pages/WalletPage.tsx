@@ -27,9 +27,11 @@ import { store } from "../store";
 import loadAssetPrices from "../services/api/loadAssetPrices";
 import { useLoaderData } from "react-router-dom";
 import type { CoinMarketData } from "../types/AssetTableTypes";
+import { translations } from "../constants/translations";
 
 export default function WalletPage() {
     const currency = useSelector((state: { currency: { currency: currencyType } }) => state.currency.currency);
+    const language = useSelector((state: { language: { language: keyof typeof translations } }) => state.language.language);
     useRevalidatePage({ dependency: currency });
 
     const themeState = useSelector((state: { theme: { lightTheme: boolean } }) => state.theme.lightTheme);
@@ -46,9 +48,13 @@ export default function WalletPage() {
 
     return (
         <>
-            <PageHeader title="Your Wallet" />
+            <PageHeader title={translations[language].walletPage.walletHeader} />
             <PageContentWrapper>
-                <SearchInput handleSearch={handleSearch} />
+                <SearchInput
+                    handleSearch={handleSearch}
+                    label={translations[language].walletPage.searchbarLabel}
+                    placeholder={translations[language].walletPage.searchbarPlaceholder}
+                />
                 <TabsBar<WalletTab> tabs={marketTabs} activeTab={activeTab} handleTabSwitch={handleTabSwitch} />
                 <AssetTableHeader
                     name
