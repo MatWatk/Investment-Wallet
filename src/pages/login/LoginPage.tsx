@@ -7,17 +7,21 @@ import AuthSwitch from '../../components/Auth_components/AuthSwitch';
 import AuthHeader from '../../components/Auth_components/AuthHeader';
 import InputFieldsWrapper from '../../components/Auth_components/InputFieldsWrapper';
 
+import { useSelector } from 'react-redux';
+import { translations } from '../../constants/translations';
+
 export default function LoginPage() {
+    const language = useSelector((state: { language: { language: keyof typeof translations } }) => state.language.language);
     return (
         <Card>
-            <AuthHeader title="Login" />
+            <AuthHeader title={translations[language].login.title} />
 
             <Form className="flex flex-col gap-4">
                 <InputFieldsWrapper>
-                    <InputField id="email" type="email" placeholder="Email address" />
-                    <InputField id="password" type="password" placeholder="Password" />
+                    <InputField id="email" type="email" placeholder={translations[language].login.emailPlaceholder} />
+                    <InputField id="password" type="password" placeholder={translations[language].login.passwordPlaceholder} />
                 </InputFieldsWrapper>
-                <SubmitButton text="Login" />
+                <SubmitButton text={translations[language].login.submitButton} />
                 <AuthSwitch link="/signup" />
             </Form>
         </Card>

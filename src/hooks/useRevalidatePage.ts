@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useRevalidator } from "react-router-dom";
 
-export default function useRevalidatePage<T>({dependency}: { dependency: T }) {
+export default function useRevalidatePage<T>(dependency : T) {
     const { revalidate } = useRevalidator();
 
     useEffect(() => {

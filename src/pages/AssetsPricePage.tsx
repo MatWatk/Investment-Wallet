@@ -29,7 +29,7 @@ export default function AssetPricePage() {
     const currency = useSelector((state: { currency: { currency: string } }) => state.currency.currency);
     const language = useSelector((state: { language: { language: keyof typeof translations } }) => state.language.language);
 
-    useRevalidatePage({ dependency: currency });
+    useRevalidatePage(currency);
 
     const data = useLoaderData<CoinMarketData[]>();
     const assetByCoingeckoId = Object.fromEntries(assets.map((asset) => [asset.coingeckoId, asset]));

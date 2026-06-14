@@ -2,6 +2,24 @@ export type currencyType = "USD" | "PLN";
 
 export type translationsType = {
     english: {
+        login: {
+            title: string;
+            emailPlaceholder: string;
+            passwordPlaceholder: string;
+            submitButton: string;
+            dontHaveAccount: string;
+            register: string;
+        },
+        signup: {
+            title: string;
+            emailPlaceholder: string;
+            confirmEmailPlaceholder: string;
+            passwordPlaceholder: string;
+            confirmPasswordPlaceholder: string;
+            submitButton: string;
+            alreadyHaveAccount: string;
+            login: string;
+        },
         assetPricePage: {
             title: string;
         },
@@ -32,6 +50,24 @@ export type translationsType = {
         }
     },
     polish: {
+        login: {
+            title: string;
+            emailPlaceholder: string;
+            passwordPlaceholder: string;
+            submitButton: string;
+            dontHaveAccount: string;
+            register: string;
+        },
+        signup: {
+            title: string;
+            emailPlaceholder: string;
+            confirmEmailPlaceholder: string;
+            passwordPlaceholder: string;
+            confirmPasswordPlaceholder: string;
+            submitButton: string;
+            alreadyHaveAccount: string;
+            login: string;
+        },
         assetPricePage: {
             title: string;
         },

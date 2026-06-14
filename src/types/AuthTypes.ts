@@ -3,7 +3,7 @@ export type InputType = "email" | "password" | "text";
 export interface InputFieldProps {
     id: string;
     type: InputType;
-    placeholder: string;
+    placeholder?: string;
     label?: string;
 }
 

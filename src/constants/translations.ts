@@ -2,6 +2,24 @@ import type { translationsType } from "../types/types";
 
 export const translations: translationsType = {
     english: {
+        login: {
+            title: "Login",
+            emailPlaceholder: "Email address",
+            passwordPlaceholder: "Password",
+            submitButton: "Login",
+            dontHaveAccount: "Don't have an account?",
+            register: "Register"
+        },
+        signup: {
+            title: "Sign Up",
+            emailPlaceholder: "Email address",
+            confirmEmailPlaceholder: "Confirm Email",
+            passwordPlaceholder: "Password",
+            confirmPasswordPlaceholder: "Confirm Password",
+            submitButton: "Sign Up",
+            alreadyHaveAccount: "Already have an account?",
+            login: "Login"
+        },
         assetPricePage: {
             title: "Asset Price List"
         },
@@ -32,6 +50,24 @@ export const translations: translationsType = {
         }
     },
     polish: {
+        login: {
+            title: "Zaloguj się",
+            emailPlaceholder: "Adres e-mail",
+            passwordPlaceholder: "Hasło",
+            submitButton: "Zaloguj się",
+            dontHaveAccount: "Nie masz konta?",
+            register: "Zarejestruj się"
+        },
+        signup: {
+            title: "Zarejestruj się",
+            emailPlaceholder: "Adres e-mail",
+            confirmEmailPlaceholder: "Potwierdź adres e-mail",
+            passwordPlaceholder: "Hasło",
+            confirmPasswordPlaceholder: "Potwierdź hasło",
+            submitButton: "Zarejestruj się",
+            alreadyHaveAccount: "Masz już konto?",
+            login: "Zaloguj się"
+        },
         assetPricePage: {
             title: "Lista cen aktywów"
         },

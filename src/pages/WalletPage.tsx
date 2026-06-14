@@ -32,7 +32,7 @@ import { translations } from "../constants/translations";
 export default function WalletPage() {
     const currency = useSelector((state: { currency: { currency: currencyType } }) => state.currency.currency);
     const language = useSelector((state: { language: { language: keyof typeof translations } }) => state.language.language);
-    useRevalidatePage({ dependency: currency });
+    useRevalidatePage(currency );
 
     const themeState = useSelector((state: { theme: { lightTheme: boolean } }) => state.theme.lightTheme);
     const data = useLoaderData<CoinMarketData[]>();

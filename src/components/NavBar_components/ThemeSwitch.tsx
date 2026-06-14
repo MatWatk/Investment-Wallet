@@ -19,7 +19,7 @@ export default function ThemeSwitch() {
             <label htmlFor="theme-select" className="text-xs  ">
                 {language.toLowerCase() === "english" ? translations.english.navBar.themeLabel : translations.polish.navBar.themeLabel}
             </label>
-            <div className={`${themeState ? "bg-white" : "bg-gray-400"} rounded-full p-1`}>
+            <div className={`${themeState ? "" : "bg-gray-400"} rounded-full p-1`}>
                 <button id="theme-select" onClick={handleThemeChange}>
                     <img src={themeState ? SunIcon : MoonIcon} alt="Theme switch icon" className="w-6 h-6" />
                 </button>
