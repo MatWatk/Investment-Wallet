@@ -3,9 +3,10 @@ import AssetTablePosition from "../components/AssetTable/AssetTablePosition";
 import SearchInput from "../components/AssetTable/SearchInput";
 import PageHeader from "../components/PageHeader";
 
-import fetchData from "../services/api/fetchData";
-import { useLoaderData, useRevalidator } from "react-router-dom";
-import { useEffect } from "react";
+import loadAssetPrices from "../services/api/loadAssetPrices";
+
+import { useLoaderData } from "react-router-dom";
+import useRevalidatePage from "../hooks/useRevalidatePage";
 
 import { assets } from "../constants/assets";
 // import { priceListTabs } from "../constants/tabs";
@@ -24,16 +25,11 @@ import { useSelector } from "react-redux";
 
 
 export default function AssetPricePage() {
-    const { revalidate } = useRevalidator();
-
     const currency = useSelector((state: { currency: { currency: string } }) => state.currency.currency);
 
-    useEffect(() => {
-        revalidate();
-    }, [currency, revalidate])
+    useRevalidatePage({ dependency: currency });
 
     const data = useLoaderData<CoinMarketData[]>();
-    console.log(data);
     const assetByCoingeckoId = Object.fromEntries(assets.map((asset) => [asset.coingeckoId, asset]));
 
     const { sortedData, requestSort, sortConfig } = useSortData(data, {
@@ -80,11 +76,7 @@ export default function AssetPricePage() {
 }
 
 export function loader() {
-
-    const assetIds = assets.map(asset => asset.coingeckoId).join(',');
     const currency = store.getState().currency.currency;
 
-
-
-    return fetchData(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&ids=${assetIds}&price_change_percentage=24h,30d&blockchain_site`, { method: 'GET', headers: { 'x-cg-demo-api-key': import.meta.env.VITE_COINGECKO_API_KEY } })
+    return loadAssetPrices<{ coingeckoId: string }[]>({ assets, currency });
 }

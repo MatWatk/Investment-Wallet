@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import WalletPage from "../pages/WalletPage";
+import { loader as walletLoader } from "../pages/WalletPage";
 import LoginPage from "../pages/login/LoginPage";
 import SignupPage from "../pages/signup/SignupPage";
 import AssetPricePage from "../pages/AssetsPricePage";
@@ -13,7 +14,8 @@ export const router = createBrowserRouter([
         children: [
             {
                 index: true,
-                element: <WalletPage />
+                element: <WalletPage />,
+                loader: walletLoader,
             },
             {
                 path: 'assets-price-list',

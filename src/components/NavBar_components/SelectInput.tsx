@@ -14,11 +14,6 @@ export default function SelectInput({ label, selectOptions }: { label: string, s
         }
     }
 
-    const languageRedux = useSelector((state: { language: { language: string } }) => state.language.language);
-    const currencyRedux = useSelector((state: { currency: { currency: string } }) => state.currency.currency);
-
-    console.log('redux values: ', { language: languageRedux, currency: currencyRedux });
-
     return (
         <div className="flex flex-col -translate-y-2">
             <label htmlFor={`${label.toLowerCase()}-select`} className=" text-xs px-4 py-1">
