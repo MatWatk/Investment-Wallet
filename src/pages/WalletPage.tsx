@@ -36,11 +36,16 @@ export default function WalletPage() {
 
     const themeState = useSelector((state: { theme: { lightTheme: boolean } }) => state.theme.lightTheme);
     const data = useLoaderData<CoinMarketData[]>();
-    console.log(data);
 
-    const { sortedData, requestSort, sortConfig } = useSortData(walletDummyData, {
+    const preparedWalletData = walletDummyData.map(asset => {
+        const assetPrice = data.find(d => d.id === assets.find(a => a.name === asset.name)?.coingeckoId)?.current_price || 0;
+        return { ...asset, value: asset.amount * assetPrice };
+    });
+
+    const { sortedData, requestSort, sortConfig } = useSortData(preparedWalletData, {
         name: (asset) => asset.name,
         amount: (asset) => asset.amount,
+        value: (asset) => asset.value,
     });
 
     const { visibleAssets, handleSearch } = useFilter({ sortedData });
@@ -59,11 +64,11 @@ export default function WalletPage() {
                 <AssetTableHeader
                     name
                     amount
-                    price
+                    value
                     currency
                     handleSort={requestSort}
                     sortConfig={sortConfig}
-                    sortableKeys={["name", "amount"]}
+                    sortableKeys={["name", "amount", "value"]}
                 />
                 {actualVisibleAssets.map((walletAsset) => {
                     const assetPrice = data.find(asset => asset.id === assets.find(a => a.name === walletAsset.name)?.coingeckoId)?.current_price || 0;

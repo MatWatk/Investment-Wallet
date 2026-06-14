@@ -2,12 +2,15 @@ import type { translationsType } from "../types/types";
 
 export const translations: translationsType = {
     english: {
+        assetPricePage: {
+            title: "Asset Price List"
+        },
         assetTable: {
             assetName: "Asset Name",
             last24hChange: "Last 24h change",
             last30dChange: "Last 30d change",
             amount: "Amount",
-            price: "Price",
+            value: "Value",
             currency: "Currency",
         },
         navBar: {
@@ -29,12 +32,15 @@ export const translations: translationsType = {
         }
     },
     polish: {
+        assetPricePage: {
+            title: "Lista cen aktywów"
+        },
         assetTable: {
             assetName: "Nazwa aktywa",
             last24hChange: "Zmiana 24h",
             last30dChange: "Zmiana 30d",
             amount: "Ilość",
-            price: "Cena",
+            value: "Wartość",
             currency: "Waluta",
         },
         navBar: {

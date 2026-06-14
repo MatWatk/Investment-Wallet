@@ -46,7 +46,7 @@ export default function AssetPricePage() {
 
     return (
         <>
-            <PageHeader title="Asset Price List" />
+            <PageHeader title={translations[language].assetPricePage.title} />
             <PageContentWrapper>
                 <SearchInput
                     handleSearch={handleSearch}
@@ -57,7 +57,7 @@ export default function AssetPricePage() {
                     name
                     last24hChange
                     last30dChange
-                    price
+                    value
                     currency
                     handleSort={requestSort}
                     sortConfig={sortConfig}

@@ -2,12 +2,15 @@ export type currencyType = "USD" | "PLN";
 
 export type translationsType = {
     english: {
+        assetPricePage: {
+            title: string;
+        },
         assetTable: {
             assetName: string;
             last24hChange: string;
             last30dChange: string;
             amount: string;
-            price: string;
+            value: string;
             currency: string;
         },
         navBar: {
@@ -29,12 +32,15 @@ export type translationsType = {
         }
     },
     polish: {
+        assetPricePage: {
+            title: string;
+        },
         assetTable: {
             assetName: string;
             last24hChange: string;
             last30dChange: string;
             amount: string;
-            price: string;
+            value: string;
             currency: string;
         },
         navBar: {

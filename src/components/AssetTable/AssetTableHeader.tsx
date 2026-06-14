@@ -11,7 +11,7 @@ interface AssetTableHeaderProps<SortKey extends string = string> {
     name: boolean;
     last24hChange?: boolean;
     last30dChange?: boolean;
-    price?: boolean;
+    value?: boolean;
     currency?: boolean;
     amount?: boolean;
     handleSort?: (key: SortKey) => void;
@@ -61,12 +61,12 @@ export default function AssetTableHeader<SortKey extends string = string>({ ...p
                     </button>
                 <p className="text-right whitespace-nowrap">{translations[language].assetTable.amount}</p>
                 </div>}
-                {props.price && 
+                {props.value && 
                 <div className="ml-8 w-25 flex flex-row items-center justify-center gap-1 shrink-0">
-                    <button onClick={() => handleSortClick("current_price" as SortKey)} disabled={!canSort("current_price" as SortKey)}>
+                    <button onClick={() => handleSortClick("value" as SortKey)} disabled={!canSort("value" as SortKey)}>
                         <SortingArrows />
                     </button>
-                <p className="text-right whitespace-nowrap">{translations[language].assetTable.price}</p>
+                <p className="text-right whitespace-nowrap">{translations[language].assetTable.value}</p>
                 </div>}
                 {props.currency && <p className="w-25 text-right shrink-0 whitespace-nowrap">{translations[language].assetTable.currency}</p>}
             </div>
