@@ -19,8 +19,8 @@ export default function SignupPage() {
             <Form className="flex flex-col gap-4">
 
                 <InputFieldsWrapper>
-                    <InputField id="name" type="text" label={translations[language].signup.emailPlaceholder} />
-                    <InputField id="email" type="email" label={translations[language].signup.confirmEmailPlaceholder} />
+                    <InputField id="email" type="email" label={translations[language].signup.emailPlaceholder} />
+                    <InputField id="email-confirm" type="email" label={translations[language].signup.confirmEmailPlaceholder} />
                     <InputField id="password" type="password" label={translations[language].signup.passwordPlaceholder} />
                     <InputField id="confirm-password" type="password" label={translations[language].signup.confirmPasswordPlaceholder} />
                 </InputFieldsWrapper>
