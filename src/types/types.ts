@@ -47,6 +47,7 @@ export type translationsType = {
             searchbarLabel: string;
             searchbarPlaceholder: string;
             tableHeaders: string[];
+            summaryBar: string;
         }
     },
     polish: {
@@ -95,6 +96,7 @@ export type translationsType = {
             searchbarLabel: string;
             searchbarPlaceholder: string;
             tableHeaders: string[];
+            summaryBar: string;
         }
     }
 };

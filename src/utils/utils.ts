@@ -1,3 +1,5 @@
+import type { Asset } from "../constants/assets";
+import type { CoinMarketData } from "../types/AssetTableTypes";
 import type { SummaryAssets, WalletAsset } from "../types/WalletTypes";
 
     export const formatPercent = (value: number | null | undefined) => {
@@ -20,3 +22,8 @@ import type { SummaryAssets, WalletAsset } from "../types/WalletTypes";
         }, {}));
         return summary;
     };
+
+    export const findAssetPrice = (assetList: Asset[], data: CoinMarketData[], currentAsset: WalletAsset | SummaryAssets) => {
+        const assetData = (data.find(d => d.id === assetList.find(a => a.name === currentAsset.name)?.coingeckoId)?.current_price || 0);
+        return assetData;
+    }

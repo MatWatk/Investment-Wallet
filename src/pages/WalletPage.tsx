@@ -20,7 +20,7 @@ import type { MarketsType, WalletTab } from "../types/WalletTypes";
 import useTabSwitch from "../hooks/useTabSwitch";
 
 import type { WalletAsset } from "../types/WalletTypes";
-import { summaryTransformation } from "../utils/utils";
+import { summaryTransformation, findAssetPrice } from "../utils/utils";
 import { useSelector } from "react-redux";
 import type { currencyType } from "../types/types";
 import { store } from "../store";
@@ -28,17 +28,18 @@ import loadAssetPrices from "../services/api/loadAssetPrices";
 import { useLoaderData } from "react-router-dom";
 import type { CoinMarketData } from "../types/AssetTableTypes";
 import { translations } from "../constants/translations";
+import SummaryBar from "../components/Wallet_components/SummaryBar";
 
 export default function WalletPage() {
     const currency = useSelector((state: { currency: { currency: currencyType } }) => state.currency.currency);
     const language = useSelector((state: { language: { language: keyof typeof translations } }) => state.language.language);
-    useRevalidatePage(currency );
+    useRevalidatePage(currency);
 
     const themeState = useSelector((state: { theme: { lightTheme: boolean } }) => state.theme.lightTheme);
     const data = useLoaderData<CoinMarketData[]>();
 
     const preparedWalletData = walletDummyData.map(asset => {
-        const assetPrice = data.find(d => d.id === assets.find(a => a.name === asset.name)?.coingeckoId)?.current_price || 0;
+        const assetPrice = findAssetPrice(assets, data, asset);
         return { ...asset, value: asset.amount * assetPrice };
     });
 
@@ -50,7 +51,11 @@ export default function WalletPage() {
 
     const { visibleAssets, handleSearch } = useFilter({ sortedData });
     const { activeTab, handleTabSwitch, actualVisibleAssets } = useTabSwitch<MarketsType, WalletAsset>("Summary", visibleAssets, asset => asset.market, summaryTransformation);
-
+    
+    
+    const totalValue = actualVisibleAssets.reduce((acc, asset) => {
+        return acc + asset.amount * findAssetPrice(assets, data, asset)}, 0);
+    console.log(totalValue);
     return (
         <>
             <PageHeader title={translations[language].walletPage.walletHeader} />
@@ -71,23 +76,26 @@ export default function WalletPage() {
                     sortableKeys={["name", "amount", "value"]}
                 />
                 {actualVisibleAssets.map((walletAsset) => {
-                    const assetPrice = data.find(asset => asset.id === assets.find(a => a.name === walletAsset.name)?.coingeckoId)?.current_price || 0;
+                    const assetPrice = findAssetPrice(assets, data, walletAsset);
                     const countedPrice = assetPrice * walletAsset.amount;
                     return (
-                        <div key={`${walletAsset.name}-${walletAsset.amount}`} className={themeState ? tableStyles.light.tableRow : tableStyles.dark.tableRow}>
-                            {assets.find(a => a.name === walletAsset.name)?.image && (
-                                <AssetPositionName name={walletAsset.name} image={assets.find(a => a.name === walletAsset.name)?.image || ""} />
-                            )}
-                            <div className="ml-auto flex flex-row gap-2 shrink-0 items-center whitespace-nowrap">
-                                <p className="w-33 text-center flex items-center justify-center gap-2 shrink-0">{walletAsset.amount}</p>
-                                <p className="w-25 text-center flex items-center justify-center gap-2 shrink-0">{countedPrice.toFixed(2)}</p>
-                                <p className="w-22 text-right shrink-0">{currency}</p>
+                        <>
+                            <div key={`${walletAsset.name}-${walletAsset.amount}`} className={themeState ? tableStyles.light.tableRow : tableStyles.dark.tableRow}>
+                                {assets.find(a => a.name === walletAsset.name)?.image && (
+                                    <AssetPositionName name={walletAsset.name} image={assets.find(a => a.name === walletAsset.name)?.image || ""} />
+                                )}
+                                <div className="ml-auto flex flex-row gap-2 shrink-0 items-center whitespace-nowrap">
+                                    <p className="w-33 text-center flex items-center justify-center gap-2 shrink-0">{walletAsset.amount}</p>
+                                    <p className="w-25 text-center flex items-center justify-center gap-2 shrink-0">{countedPrice.toFixed(2)}</p>
+                                    <p className="w-22 text-right shrink-0">{currency}</p>
+                                </div>
                             </div>
-                        </div>
+                        </>
                     )
                 })}
+                <SummaryBar totalValue={totalValue}/>
+                <AssetAddSection />
             </PageContentWrapper>
-            <AssetAddSection />
         </>
     );
 }
