@@ -1,4 +1,4 @@
-import NavBar from "./NavBar";
+import NavBar from "../components/NavBar_components/NavBar";
 import SideBar from "./SideBar";
 import { Outlet } from "react-router-dom";
 
@@ -14,7 +14,7 @@ export default function Layout() {
             <div className="flex flex-1 overflow-hidden">
                 <SideBar />
 
-                <main className="flex-1 overflow-auto p-6">
+                <main className="flex-1 min-w-0 overflow-y-auto overflow-x-hidden p-6">
                     <Outlet />
                 </main>
             </div>
