@@ -1,7 +1,6 @@
 import AssetTableHeader from "../components/AssetTable/AssetTableHeader";
 import AssetPositionName from "../components/AssetTable/AssetPositionName";
 import SearchInput from "../components/AssetTable/SearchInput";
-import AssetAddSection from "../components/Wallet_components/WalletForm";
 import PageHeader from "../components/PageHeader";
 import PageContentWrapper from "../components/PageContentWrapper";
 import TabsBar from "../components/TabsBar";
@@ -29,6 +28,9 @@ import { useLoaderData } from "react-router-dom";
 import type { CoinMarketData } from "../types/AssetTableTypes";
 import { translations } from "../constants/translations";
 import SummaryBar from "../components/Wallet_components/SummaryBar";
+import AssetAddButton from "../components/Wallet_components/WalletForm";
+import { useState } from "react";
+import AddAssetModal from "../components/AddAssetModal";
 
 export default function WalletPage() {
     const currency = useSelector((state: { currency: { currency: currencyType } }) => state.currency.currency);
@@ -51,15 +53,29 @@ export default function WalletPage() {
 
     const { visibleAssets, handleSearch } = useFilter({ sortedData });
     const { activeTab, handleTabSwitch, actualVisibleAssets } = useTabSwitch<MarketsType, WalletAsset>("Summary", visibleAssets, asset => asset.market, summaryTransformation);
-    
-    
+
+
     const totalValue = actualVisibleAssets.reduce((acc, asset) => {
-        return acc + asset.amount * findAssetPrice(assets, data, asset)}, 0);
-    console.log(totalValue);
+        return acc + asset.amount * findAssetPrice(assets, data, asset)
+    }, 0);
+
+    const [showAssetModal, setShowAssetModal] = useState(false);
+
+    const handleAddAssetClick = () => {
+        setShowAssetModal(true);
+    }
+
     return (
         <>
-            <PageHeader title={translations[language].walletPage.walletHeader} />
+            <div className="mb-6 flex flex-row items-center gap-4">
+                <PageHeader title={translations[language].walletPage.walletHeader} />
+                <div className="flex flex-row gap-5 ml-auto">
+                    <AssetAddButton onClick={handleAddAssetClick}>{translations[language].walletPage.addAssetButton}</AssetAddButton>
+                    {/* <AssetAddButton>{translations[language].walletPage.addPlatform}</AssetAddButton> */}
+                </div>
+            </div>
             <PageContentWrapper>
+                {showAssetModal && <AddAssetModal isOpen={showAssetModal} onClose={() => setShowAssetModal(false)} />}
                 <SearchInput
                     handleSearch={handleSearch}
                     label={translations[language].walletPage.searchbarLabel}
@@ -93,8 +109,7 @@ export default function WalletPage() {
                         </>
                     )
                 })}
-                <SummaryBar totalValue={totalValue}/>
-                <AssetAddSection />
+                <SummaryBar totalValue={totalValue} />
             </PageContentWrapper>
         </>
     );

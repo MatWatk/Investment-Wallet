@@ -47,7 +47,9 @@ export const translations: translationsType = {
             searchbarLabel: "Search",
             searchbarPlaceholder: "Search for an asset...",
             tableHeaders: ["Asset Name", "Amount", "Value", "Currency"],
-            summaryBar: "Total value: "
+            summaryBar: "Total value: ",
+            addAssetButton: "Add Asset",
+            addPlatform: "Add Platform",
         }
     },
     polish: {
@@ -96,7 +98,9 @@ export const translations: translationsType = {
             searchbarLabel: "Szukaj",
             searchbarPlaceholder: "Szukaj aktywa...",
             tableHeaders: ["Nazwa aktywa", "Ilość", "Wartość", "Waluta"],
-            summaryBar: "Łączna wartość: "
+            summaryBar: "Łączna wartość: ",
+            addAssetButton: "Dodaj aktywo",
+            addPlatform: "Dodaj platformę",
         }
     }
 }

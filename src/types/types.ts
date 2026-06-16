@@ -48,6 +48,8 @@ export type translationsType = {
             searchbarPlaceholder: string;
             tableHeaders: string[];
             summaryBar: string;
+            addAssetButton: string;
+            addPlatform: string;
         }
     },
     polish: {
@@ -97,6 +99,8 @@ export type translationsType = {
             searchbarPlaceholder: string;
             tableHeaders: string[];
             summaryBar: string;
+            addAssetButton: string;
+            addPlatform: string;
         }
     }
 };
