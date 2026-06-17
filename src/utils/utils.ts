@@ -27,3 +27,10 @@ import type { SummaryAssets, WalletAsset } from "../types/WalletTypes";
         const assetData = (data.find(d => d.id === assetList.find(a => a.name === currentAsset.name)?.coingeckoId)?.current_price || 0);
         return assetData;
     }
+
+    export const countTotalValue = (assets: WalletAsset[] | SummaryAssets[], assetList: Asset[], data: CoinMarketData[]) => {
+        return assets.reduce((total, asset) => {
+            const price = findAssetPrice(assetList, data, asset);
+            return total + (asset.amount * price);
+        }, 0);
+    }

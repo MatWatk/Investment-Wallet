@@ -19,7 +19,7 @@ import type { MarketsType, WalletTab } from "../types/WalletTypes";
 import useTabSwitch from "../hooks/useTabSwitch";
 
 import type { WalletAsset } from "../types/WalletTypes";
-import { summaryTransformation, findAssetPrice } from "../utils/utils";
+import { summaryTransformation, findAssetPrice, countTotalValue } from "../utils/utils";
 import { useSelector } from "react-redux";
 import type { currencyType } from "../types/types";
 import { store } from "../store";
@@ -30,14 +30,15 @@ import { translations } from "../constants/translations";
 import SummaryBar from "../components/Wallet_components/SummaryBar";
 import AssetAddButton from "../components/Wallet_components/WalletForm";
 import { useState } from "react";
-import AddAssetModal from "../components/AddAssetModal";
+import AddAssetModal from "../components/Modals/AddAssetModal";
+import AddPlatformModal from "../components/Modals/AddPlatformModal";
 
 export default function WalletPage() {
     const currency = useSelector((state: { currency: { currency: currencyType } }) => state.currency.currency);
     const language = useSelector((state: { language: { language: keyof typeof translations } }) => state.language.language);
+    const themeState = useSelector((state: { theme: { lightTheme: boolean } }) => state.theme.lightTheme);
     useRevalidatePage(currency);
 
-    const themeState = useSelector((state: { theme: { lightTheme: boolean } }) => state.theme.lightTheme);
     const data = useLoaderData<CoinMarketData[]>();
 
     const preparedWalletData = walletDummyData.map(asset => {
@@ -55,11 +56,10 @@ export default function WalletPage() {
     const { activeTab, handleTabSwitch, actualVisibleAssets } = useTabSwitch<MarketsType, WalletAsset>("Summary", visibleAssets, asset => asset.market, summaryTransformation);
 
 
-    const totalValue = actualVisibleAssets.reduce((acc, asset) => {
-        return acc + asset.amount * findAssetPrice(assets, data, asset)
-    }, 0);
+    const totalValue = countTotalValue(actualVisibleAssets, assets, data);
 
     const [showAssetModal, setShowAssetModal] = useState(false);
+    const [showPlatformModal, setShowPlatformModal] = useState(false);
 
     const handleAddAssetClick = () => {
         setShowAssetModal(true);
@@ -71,11 +71,12 @@ export default function WalletPage() {
                 <PageHeader title={translations[language].walletPage.walletHeader} />
                 <div className="flex flex-row gap-5 ml-auto">
                     <AssetAddButton onClick={handleAddAssetClick}>{translations[language].walletPage.addAssetButton}</AssetAddButton>
-                    {/* <AssetAddButton>{translations[language].walletPage.addPlatform}</AssetAddButton> */}
+                    <AssetAddButton onClick={() => setShowPlatformModal(true)}>{translations[language].walletPage.addPlatform}</AssetAddButton>
                 </div>
             </div>
             <PageContentWrapper>
-                {showAssetModal && <AddAssetModal isOpen={showAssetModal} onClose={() => setShowAssetModal(false)} />}
+                {showAssetModal && <AddAssetModal isOpen={showAssetModal} onClose={() => setShowAssetModal(false)} openPlatformModal={() => setShowPlatformModal(true)} />}
+                {showPlatformModal && <AddPlatformModal isOpen={showPlatformModal} onClose={() => setShowPlatformModal(false)} />}
                 <SearchInput
                     handleSearch={handleSearch}
                     label={translations[language].walletPage.searchbarLabel}
