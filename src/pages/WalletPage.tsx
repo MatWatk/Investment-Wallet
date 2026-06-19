@@ -32,7 +32,7 @@ import { useState } from "react";
 import AddAssetModal from "../components/Modals/AddAssetModal";
 import AddPlatformModal from "../components/Modals/AddPlatformModal";
 
-import { db } from "../services/firebase/config";
+
 import loadFirebaseData from "../services/api/loadFirebaseData";
 
 export default function WalletPage() {
@@ -118,7 +118,7 @@ export async function loader() {
     const currency = store.getState().currency.currency;
     const [coingeckoData, assetsFirestore] = await Promise.all([
         loadAssetPrices<{ coingeckoId: string }[]>({ assets, currency }),
-        loadFirebaseData(db, "wallet-assets"),
+        loadFirebaseData("wallet-assets"),
     ]);
 
     return { coingeckoData, assetsFirestore };
