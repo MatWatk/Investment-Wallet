@@ -5,7 +5,6 @@ import PageHeader from "../components/PageHeader";
 import PageContentWrapper from "../components/PageContentWrapper";
 import TabsBar from "../components/TabsBar";
 
-import { walletDummyData } from "../constants/assets";
 import { assets } from "../constants/assets";
 
 import tableStyles from "../styles/tableStyles";
@@ -25,7 +24,7 @@ import type { currencyType } from "../types/types";
 import { store } from "../store";
 import loadAssetPrices from "../services/api/loadAssetPrices";
 import { useLoaderData } from "react-router-dom";
-import type { CoinMarketData } from "../types/AssetTableTypes";
+import type { WalletLoaderData } from "../types/WalletTypes";
 import { translations } from "../constants/translations";
 import SummaryBar from "../components/Wallet_components/SummaryBar";
 import AssetAddButton from "../components/Wallet_components/WalletForm";
@@ -33,30 +32,28 @@ import { useState } from "react";
 import AddAssetModal from "../components/Modals/AddAssetModal";
 import AddPlatformModal from "../components/Modals/AddPlatformModal";
 
+import { db } from "../services/firebase/config";
+import loadFirebaseData from "../services/api/loadFirebaseData";
+
 export default function WalletPage() {
     const currency = useSelector((state: { currency: { currency: currencyType } }) => state.currency.currency);
     const language = useSelector((state: { language: { language: keyof typeof translations } }) => state.language.language);
     const themeState = useSelector((state: { theme: { lightTheme: boolean } }) => state.theme.lightTheme);
     useRevalidatePage(currency);
 
-    const data = useLoaderData<CoinMarketData[]>();
+    const { coingeckoData, assetsFirestore } = useLoaderData<WalletLoaderData>();
 
-    const preparedWalletData = walletDummyData.map(asset => {
-        const assetPrice = findAssetPrice(assets, data, asset);
-        return { ...asset, value: asset.amount * assetPrice };
-    });
-
-    const { sortedData, requestSort, sortConfig } = useSortData(preparedWalletData, {
+    const { sortedData, requestSort, sortConfig } = useSortData(assetsFirestore, {
         name: (asset) => asset.name,
         amount: (asset) => asset.amount,
-        value: (asset) => asset.value,
+        value: (asset) => findAssetPrice(assets, coingeckoData, asset) * asset.amount,
     });
 
     const { visibleAssets, handleSearch } = useFilter({ sortedData });
     const { activeTab, handleTabSwitch, actualVisibleAssets } = useTabSwitch<MarketsType, WalletAsset>("Summary", visibleAssets, asset => asset.market, summaryTransformation);
 
 
-    const totalValue = countTotalValue(actualVisibleAssets, assets, data);
+    const totalValue = countTotalValue(actualVisibleAssets, assets, coingeckoData);
 
     const [showAssetModal, setShowAssetModal] = useState(false);
     const [showPlatformModal, setShowPlatformModal] = useState(false);
@@ -64,6 +61,7 @@ export default function WalletPage() {
     const handleAddAssetClick = () => {
         setShowAssetModal(true);
     }
+
 
     return (
         <>
@@ -93,7 +91,7 @@ export default function WalletPage() {
                     sortableKeys={["name", "amount", "value"]}
                 />
                 {actualVisibleAssets.map((walletAsset) => {
-                    const assetPrice = findAssetPrice(assets, data, walletAsset);
+                    const assetPrice = findAssetPrice(assets, coingeckoData, walletAsset);
                     const countedPrice = assetPrice * walletAsset.amount;
                     return (
                         <>
@@ -116,7 +114,12 @@ export default function WalletPage() {
     );
 }
 
-export function loader() {
+export async function loader() {
     const currency = store.getState().currency.currency;
-    return loadAssetPrices<{ coingeckoId: string }[]>({ assets, currency });
+    const [coingeckoData, assetsFirestore] = await Promise.all([
+        loadAssetPrices<{ coingeckoId: string }[]>({ assets, currency }),
+        loadFirebaseData(db, "wallet-assets"),
+    ]);
+
+    return { coingeckoData, assetsFirestore };
 }
