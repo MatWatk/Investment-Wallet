@@ -9,7 +9,7 @@ export default function ProfileButton() {
     const { isOpen: profileDropdownOpen, toggleDropdown: handleClickProfile, dropdownRef } = useDropdown();
     const themeState = useSelector((state: { theme: { lightTheme: boolean } }) => state.theme.lightTheme);
     return (
-        <div className="relative flex flex-col justify-center ml-3 shrink-0">
+        <div className="relative flex flex-col justify-center ml-3 shrink-0 overflow-visible">
             <button onClick={handleClickProfile}>
                 <img src={personImg} alt="Profile image" className="w-14 h-10 rounded-full" />
             </button>
