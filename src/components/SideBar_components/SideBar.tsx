@@ -3,11 +3,11 @@ import SideButtonsWrapper from "./SideButtonsWrapper";
 import SideBarButton from "./SideBarButton";
 import LogoutButton from "./LogoutButton";
 
-import { useSelector } from "react-redux";
+import { useLanguage } from "../../hooks/useLanguage";
 import { translations } from "../../constants/translations";
 
 export default function SideBar() {
-    const language = useSelector((state: { language: { language: string } }) => state.language.language);
+    const language = useLanguage();
     return (
         <SideBarWrapper>
             <SideButtonsWrapper>

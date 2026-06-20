@@ -1,7 +1,7 @@
-import { useSelector } from "react-redux";
+import { useTheme } from "../../hooks/useTheme";
 
 export default function ModalWrapper({ children, onClose }: { children: React.ReactNode, onClose: () => void }) {
-    const themeState = useSelector((state: { theme: { lightTheme: boolean } }) => state.theme.lightTheme);
+    const themeState = useTheme();
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-gray-900/80 p-4" onClick={onClose}>
             <div

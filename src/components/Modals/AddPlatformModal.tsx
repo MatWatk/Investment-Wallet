@@ -2,10 +2,10 @@ import ModalButton from "./ModalButton";
 import ModalWrapper from "./ModalWrapper";
 import ModalInput from "./ModalInput";
 
-import { useSelector } from "react-redux";
+import { useTheme } from "../../hooks/useTheme";
 
 export default function AddPlatformModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
-    const themeState = useSelector((state: { theme: { lightTheme: boolean } }) => state.theme.lightTheme);
+    const themeState = useTheme();
     if (!isOpen) return null;
 
     return (

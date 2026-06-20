@@ -7,11 +7,11 @@ import InputField from '../../components/Auth_components/InputField';
 import SubmitButton from '../../components/Auth_components/SubmitButton';
 import AuthSwitch from '../../components/Auth_components/AuthSwitch';
 
-import { useSelector } from 'react-redux';
-import { translations } from '../../constants/translations';
+import { useLanguage } from "../../hooks/useLanguage";
+import { translations } from "../../constants/translations";
 
 export default function SignupPage() {
-    const language = useSelector((state: { language: { language: keyof typeof translations } }) => state.language.language);
+    const language = useLanguage();
     return (
         <Card>
             <AuthHeader title={translations[language].signup.title} />

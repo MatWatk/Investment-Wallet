@@ -1,11 +1,12 @@
-import { useSelector } from "react-redux";
+import { useLanguage } from "../hooks/useLanguage";
+import { useTheme } from "../hooks/useTheme";
 import { translations } from "../constants/translations";
 import SelectInput from "../components/NavBar_components/SelectInput";
 import ThemeSwitch from "./NavBar_components/ThemeSwitch";
 
 export default function Card({ children }: { children: React.ReactNode }) {
-    const language = useSelector((state: { language: { language: keyof typeof translations } }) => state.language.language);
-    const themeState = useSelector((state: { theme: { lightTheme: boolean } }) => state.theme.lightTheme);
+    const language = useLanguage();
+    const themeState = useTheme();
     return (
         <>
             <div className={`relative min-h-screen w-full ${themeState ? "text-violet-900 border-violet-900 bg-linear-to-l from-violet-300 to-white" : "bg-linear-to-t from-gray-700 to-gray-900 text-yellow-500"} flex flex-col items-center justify-center`}>

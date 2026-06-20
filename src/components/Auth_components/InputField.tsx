@@ -1,8 +1,8 @@
 import type { InputFieldProps } from "../../types/AuthTypes";
-import { useSelector } from "react-redux";
+import { useTheme } from "../../hooks/useTheme";
 
 export default function InputField({ id, type, placeholder, label }: InputFieldProps) {
-    const themeState = useSelector((state: { theme: { lightTheme: boolean } }) => state.theme.lightTheme);
+    const themeState = useTheme();
 
     return (
         <div className="flex flex-col items-start gap-1 w-full">

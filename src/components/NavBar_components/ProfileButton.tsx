@@ -3,11 +3,11 @@ import personImg from '../../assets/personImg.png'
 import quitButton from '../../assets/quitButton.png'
 import settingsIcon from '../../assets/settingsIcon.png'
 
-import { useSelector } from "react-redux";
+import { useTheme } from "../../hooks/useTheme";
 
 export default function ProfileButton() {
     const { isOpen: profileDropdownOpen, toggleDropdown: handleClickProfile, dropdownRef } = useDropdown();
-    const themeState = useSelector((state: { theme: { lightTheme: boolean } }) => state.theme.lightTheme);
+    const themeState = useTheme();
     return (
         <div className="relative flex flex-col justify-center ml-3 shrink-0 overflow-visible">
             <button onClick={handleClickProfile}>

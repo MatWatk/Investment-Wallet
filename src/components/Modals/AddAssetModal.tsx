@@ -1,13 +1,13 @@
-import { useSelector } from "react-redux";
 import ModalWrapper from "./ModalWrapper";
 import ModalInput from "./ModalInput";
 import ModalSelect from "./ModalSelect";
 import ModalRowWrapper from "./ModalRowWrapper";
 import ModalHeader from "./ModalHeader";
 import ModalButton from "./ModalButton";
+import { useTheme } from "../../hooks/useTheme";
 
 export default function AddAssetModal({ isOpen, onClose, openPlatformModal }: { isOpen: boolean, onClose: () => void, openPlatformModal: () => void }) {
-    const themeState = useSelector((state: { theme: { lightTheme: boolean } }) => state.theme.lightTheme);
+    const themeState = useTheme();
 
     const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();

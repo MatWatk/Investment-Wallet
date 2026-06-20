@@ -7,11 +7,11 @@ import AuthSwitch from '../../components/Auth_components/AuthSwitch';
 import AuthHeader from '../../components/Auth_components/AuthHeader';
 import InputFieldsWrapper from '../../components/Auth_components/InputFieldsWrapper';
 
-import { useSelector } from 'react-redux';
-import { translations } from '../../constants/translations';
+import { useLanguage } from "../../hooks/useLanguage";
+import { translations } from "../../constants/translations";
 
 export default function LoginPage() {
-    const language = useSelector((state: { language: { language: keyof typeof translations } }) => state.language.language);
+    const language = useLanguage();
     return (
         <Card>
             <AuthHeader title={translations[language].login.title} />

@@ -19,8 +19,6 @@ import useTabSwitch from "../hooks/useTabSwitch";
 
 import type { WalletAsset } from "../types/WalletTypes";
 import { summaryTransformation, findAssetPrice, countTotalValue } from "../utils/utils";
-import { useSelector } from "react-redux";
-import type { currencyType } from "../types/types";
 import { store } from "../store";
 import loadAssetPrices from "../services/api/loadAssetPrices";
 import { useLoaderData } from "react-router-dom";
@@ -33,11 +31,14 @@ import AddAssetModal from "../components/Modals/AddAssetModal";
 import AddPlatformModal from "../components/Modals/AddPlatformModal";
 
 import loadWalletAssets from "../services/api/loadFirebaseData";
+import { useTheme } from "../hooks/useTheme";
+import { useLanguage } from "../hooks/useLanguage";
+import { useCurrency } from "../hooks/useCurrency";
 
 export default function WalletPage() {
-    const currency = useSelector((state: { currency: { currency: currencyType } }) => state.currency.currency);
-    const language = useSelector((state: { language: { language: keyof typeof translations } }) => state.language.language);
-    const themeState = useSelector((state: { theme: { lightTheme: boolean } }) => state.theme.lightTheme);
+    const currency = useCurrency();
+    const language = useLanguage();
+    const themeState = useTheme();
     useRevalidatePage(currency);
 
     const { coingeckoData, assetsFirestore } = useLoaderData<WalletLoaderData>();

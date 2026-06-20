@@ -21,13 +21,14 @@ import PageContentWrapper from "../components/PageContentWrapper";
 // import useTabSwitch from "../hooks/useTabSwitch";
 
 import { store } from "../store/index";
-import { useSelector } from "react-redux";
+import { useCurrency } from "../hooks/useCurrency";
+import { useLanguage } from "../hooks/useLanguage";
 import { translations } from "../constants/translations";
 
 
 export default function AssetPricePage() {
-    const currency = useSelector((state: { currency: { currency: string } }) => state.currency.currency);
-    const language = useSelector((state: { language: { language: keyof typeof translations } }) => state.language.language);
+    const currency = useCurrency();
+    const language = useLanguage();
 
     useRevalidatePage(currency);
 

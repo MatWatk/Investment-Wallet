@@ -4,12 +4,12 @@ import Header from './Header';
 import ProfileButton from './ProfileButton';
 import HeaderWrapper from './HeaderWrapper';
 
-import { useSelector } from 'react-redux';
+import { useLanguage } from '../../hooks/useLanguage';
 
 import { translations } from '../../constants/translations';
 
 export default function NavBar() {
-    const language = useSelector((state: { language: { language: string } }) => state.language.language);
+    const language = useLanguage();
 
     return (
         <HeaderWrapper>

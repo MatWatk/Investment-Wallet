@@ -2,10 +2,10 @@ import NavBar from "../components/NavBar_components/NavBar";
 import SideBar from "./SideBar_components/SideBar";
 import { Outlet } from "react-router-dom";
 
-import {  useSelector } from "react-redux";
+import { useTheme } from "../hooks/useTheme";
 
 export default function Layout() {
-    const themeState = useSelector((state: { theme: { lightTheme: boolean } }) => state.theme.lightTheme);
+    const themeState = useTheme();
 
     return (
         <div className={`flex h-screen w-full flex-col ${themeState ? "bg-linear-to-t from-violet-200 to-white" : "bg-linear-to-t from-gray-700 to-gray-900 text-yellow-500"}`}>
