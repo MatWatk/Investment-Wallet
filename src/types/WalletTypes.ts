@@ -3,6 +3,7 @@ import type { CoinMarketData } from "./AssetTableTypes";
 export interface WalletLoaderData {
     coingeckoData: CoinMarketData[];
     assetsFirestore: WalletAsset[];
+    walletTabs: WalletTab[];
 }
 
 export interface WalletAsset {

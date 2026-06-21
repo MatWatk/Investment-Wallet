@@ -13,7 +13,6 @@ import useSortData from "../hooks/useSortData";
 import useFilter from "../hooks/useFilter";
 import useRevalidatePage from "../hooks/useRevalidatePage";
 
-import { marketTabs } from "../constants/tabs";
 import type { MarketsType, WalletTab } from "../types/WalletTypes";
 import useTabSwitch from "../hooks/useTabSwitch";
 
@@ -41,7 +40,7 @@ export default function WalletPage() {
     const themeState = useTheme();
     useRevalidatePage(currency);
 
-    const { coingeckoData, assetsFirestore } = useLoaderData<WalletLoaderData>();
+    const { coingeckoData, assetsFirestore, walletTabs } = useLoaderData<WalletLoaderData>();
 
     const { sortedData, requestSort, sortConfig } = useSortData(assetsFirestore, {
         name: (asset) => asset.name,
@@ -80,7 +79,7 @@ export default function WalletPage() {
                     label={translations[language].walletPage.searchbarLabel}
                     placeholder={translations[language].walletPage.searchbarPlaceholder}
                 />
-                <TabsBar<WalletTab> tabs={marketTabs} activeTab={activeTab} handleTabSwitch={handleTabSwitch} />
+                <TabsBar<WalletTab> tabs={walletTabs} activeTab={activeTab} handleTabSwitch={handleTabSwitch} />
                 <AssetTableHeader
                     name
                     amount
@@ -116,10 +115,11 @@ export default function WalletPage() {
 
 export async function loader() {
     const currency = store.getState().currency.currency;
-    const [coingeckoData, assetsFirestore] = await Promise.all([
+    const [coingeckoData, assetsFirestore, walletTabs] = await Promise.all([
         loadAssetPrices<{ coingeckoId: string }[]>({ assets, currency }),
         loadWalletAssets<WalletAsset[]>("wallet-assets", ["name", "amount", "market"]),
+        loadWalletAssets<WalletTab[]>("wallet-tabs", ["name"]),
     ]);
 
-    return { coingeckoData, assetsFirestore };
+    return { coingeckoData, assetsFirestore, walletTabs };
 }
