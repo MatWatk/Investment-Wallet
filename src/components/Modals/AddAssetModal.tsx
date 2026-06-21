@@ -6,7 +6,10 @@ import ModalHeader from "./ModalHeader";
 import ModalButton from "./ModalButton";
 import { useTheme } from "../../hooks/useTheme";
 
-export default function AddAssetModal({ isOpen, onClose, openPlatformModal }: { isOpen: boolean, onClose: () => void, openPlatformModal: () => void }) {
+import { assets } from "../../constants/assets";
+import type { WalletTab } from "../../types/WalletTypes";
+
+export default function AddAssetModal({ isOpen, onClose, openPlatformModal, platforms }: { isOpen: boolean, onClose: () => void, openPlatformModal: () => void, platforms: WalletTab[] }) {
     const themeState = useTheme();
 
     const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -23,10 +26,7 @@ export default function AddAssetModal({ isOpen, onClose, openPlatformModal }: { 
                 <ModalSelect
                     themeState={themeState}
                     labelText="Asset Name"
-                    options={[
-                        { value: "asset1", label: "Asset 1" },
-                        { value: "asset2", label: "Asset 2" }
-                    ]}
+                    options={assets.map((asset) => ({ value: asset.name, label: asset.name }))}
                 />
                 <ModalInput themeState={themeState} labelText="Amount" inputType="number" />
                 <ModalRowWrapper>
@@ -44,10 +44,7 @@ export default function AddAssetModal({ isOpen, onClose, openPlatformModal }: { 
                     <ModalSelect
                         themeState={themeState}
                         labelText="Platform"
-                        options={[
-                            { value: "platform1", label: "Platform 1" },
-                            { value: "platform2", label: "Platform 2" }
-                        ]}
+                        options={platforms.map((platform) => ({value:platform.name, label: platform.name}))}
                     />
                     <ModalButton onClick={openPlatformModal} themeState={themeState}>Add Platform</ModalButton>
                 </ModalRowWrapper>

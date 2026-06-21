@@ -3,7 +3,7 @@ import AssetPositionName from "../components/AssetTable/AssetPositionName";
 import SearchInput from "../components/AssetTable/SearchInput";
 import PageHeader from "../components/PageHeader";
 import PageContentWrapper from "../components/PageContentWrapper";
-import TabsBar from "../components/TabsBar";
+import TabsBar from "../components/Tabs_components/TabsBar";
 
 import { assets } from "../constants/assets";
 
@@ -72,7 +72,7 @@ export default function WalletPage() {
                 </div>
             </div>
             <PageContentWrapper>
-                {showAssetModal && <AddAssetModal isOpen={showAssetModal} onClose={() => setShowAssetModal(false)} openPlatformModal={() => setShowPlatformModal(true)} />}
+                {showAssetModal && <AddAssetModal isOpen={showAssetModal} onClose={() => setShowAssetModal(false)} openPlatformModal={() => setShowPlatformModal(true)} platforms={walletTabs}/>}
                 {showPlatformModal && <AddPlatformModal isOpen={showPlatformModal} onClose={() => setShowPlatformModal(false)} />}
                 <SearchInput
                     handleSearch={handleSearch}
