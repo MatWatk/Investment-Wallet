@@ -6,7 +6,7 @@ import ModalHeader from "./ModalHeader";
 import ModalButton from "./ModalButton";
 import { useTheme } from "../../hooks/useTheme";
 
-import { assets } from "../../constants/assets";
+import { assets, currencies } from "../../constants/assets";
 import type { WalletTab } from "../../types/WalletTypes";
 
 export default function AddAssetModal({ isOpen, onClose, openPlatformModal, platforms }: { isOpen: boolean, onClose: () => void, openPlatformModal: () => void, platforms: WalletTab[] }) {
@@ -20,7 +20,7 @@ export default function AddAssetModal({ isOpen, onClose, openPlatformModal, plat
     if (!isOpen) return null;
 
     return (
-        <ModalWrapper onClose={onClose}>
+        <ModalWrapper>
             <ModalHeader title="Add Asset" themeState={themeState} />
             <form onSubmit={handleFormSubmit} className="mt-4 flex flex-col gap-4">
                 <ModalSelect
@@ -34,10 +34,7 @@ export default function AddAssetModal({ isOpen, onClose, openPlatformModal, plat
                     <ModalSelect
                         themeState={themeState}
                         labelText="Currency"
-                        options={[
-                            { value: "usd", label: "USD" },
-                            { value: "eur", label: "EUR" }
-                        ]}
+                        options={currencies.map((currency) => ({ value: currency, label: currency }))}
                     />
                 </ModalRowWrapper>
                 <ModalRowWrapper>

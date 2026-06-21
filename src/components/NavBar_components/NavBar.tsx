@@ -7,6 +7,7 @@ import HeaderWrapper from './HeaderWrapper';
 import { useLanguage } from '../../hooks/useLanguage';
 
 import { translations } from '../../constants/translations';
+import { currencies } from '../../constants/assets';
 
 export default function NavBar() {
     const language = useLanguage();
@@ -18,7 +19,7 @@ export default function NavBar() {
                 <h1 className="truncate">Account Name +TODO</h1>
             </div>
             <div className="ml-auto flex min-w-0 flex-wrap items-center justify-end gap-3 sm:gap-5">
-                <SelectInput label="Currency" selectOptions={["USD", "PLN"]} selectValues={["USD", "PLN"]} />
+                <SelectInput label="Currency" selectOptions={currencies} selectValues={currencies} />
                 <SelectInput label="Language" selectOptions={language.toLowerCase() === "english" ? translations.english.navBar.languages : translations.polish.navBar.languages} selectValues={["english", "polish"]} />
                 <ThemeSwitch />
                 <ProfileButton />

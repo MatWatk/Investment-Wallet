@@ -35,3 +35,6 @@ export const assets: Asset[] = [
     },
 ];
 
+export type currencyType = "USD" | "PLN";
+export const currencies: currencyType[] = ["USD", "PLN"];
+
