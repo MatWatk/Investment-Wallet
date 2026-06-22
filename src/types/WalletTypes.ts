@@ -1,5 +1,14 @@
 import type { CoinMarketData } from "./AssetTableTypes";
 
+export interface WalletAssetRequest {
+    name: string;
+    amount: number;
+    market: string;
+    price: number;
+    currency: "USD" | "PLN";
+    date: string;
+}
+
 export interface WalletLoaderData {
     coingeckoData: CoinMarketData[];
     assetsFirestore: WalletAsset[];

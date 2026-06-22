@@ -15,12 +15,12 @@ export default function useTabSwitch<T, D extends { market: MarketsType } | { so
     }
 
     const actualVisibleAssets = useMemo(() => {
-        if (activeTab === "Summary") {
-            return summaryTransformation ? summaryTransformation(visibleAssets) : visibleAssets;
+        if (activeTab === "Summary" && summaryTransformation) {
+            return summaryTransformation(visibleAssets);
         }
 
-        return visibleAssets.filter(asset => getTabValue(asset) === activeTab);
-    }, [activeTab, visibleAssets]);
+        return summaryTransformation ? summaryTransformation(visibleAssets.filter(asset => getTabValue(asset) === activeTab)) : visibleAssets.filter(asset => getTabValue(asset) === activeTab);
+    }, [activeTab, visibleAssets, summaryTransformation]);
 
 
     return { activeTab, setActiveTab, handleTabSwitch, actualVisibleAssets };

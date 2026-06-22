@@ -27,9 +27,10 @@ function compareValues(a: SortValue, b: SortValue): number {
 
 export default function useSortData<Data, Key extends string>(
     data: Data[],
-    accessors: SortAccessors<Data, Key>
+    accessors: SortAccessors<Data, Key>,
+    initialSortConfig: SortConfig<Key> | null = null
 ) {
-    const [sortConfig, setSortConfig] = useState<SortConfig<Key> | null>(null);
+    const [sortConfig, setSortConfig] = useState<SortConfig<Key> | null>(initialSortConfig);
 
     const sortedData = useMemo(() => {
         if (!sortConfig) return data;
