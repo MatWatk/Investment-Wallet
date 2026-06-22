@@ -16,6 +16,7 @@ export interface WalletLoaderData {
 }
 
 export interface WalletAsset {
+    id: string;
     name: string;
     amount: number;
     market: MarketsType;
@@ -24,10 +25,12 @@ export interface WalletAsset {
 export type MarketsType = "Summary" | "Binance" | "Kanga" | "ByBit" | "Physical";
 
 export interface WalletTab {
+    id: string;
     name: MarketsType;
 }
 
 export interface SummaryAssets {
+    id: string;
     name: string;
     amount: number;
 }

@@ -43,8 +43,8 @@ export default function WalletPage() {
     useRevalidatePage(currency);
 
     const { coingeckoData, assetsFirestore, walletTabs } = useLoaderData<WalletLoaderData>();
-    useRevalidatePage(walletTabs);
-    useRevalidatePage(assetsFirestore);
+    useRevalidatePage(walletTabs.length);
+    useRevalidatePage(assetsFirestore.length);
 
     const { sortedData, requestSort, sortConfig } = useSortData<WalletAsset, "name" | "amount" | "value">(assetsFirestore, {
         name: (asset) => asset.name,
@@ -57,14 +57,14 @@ export default function WalletPage() {
 
 
     const totalValue = countTotalValue(actualVisibleAssets, assets, coingeckoData);
-    
+
     const [showAssetModal, setShowAssetModal] = useState(false);
     const [showPlatformModal, setShowPlatformModal] = useState(false);
-    
+
     const handleAddAssetClick = () => {
         setShowAssetModal(true);
     }
-    
+
     const navigation = useNavigation();
 
     useEffect(() => {
@@ -104,18 +104,16 @@ export default function WalletPage() {
                     const assetPrice = findAssetPrice(assets, coingeckoData, walletAsset);
                     const countedPrice = assetPrice * walletAsset.amount;
                     return (
-                        <>
-                            <div key={`${walletAsset.name}-${walletAsset.amount}`} className={themeState ? tableStyles.light.tableRow : tableStyles.dark.tableRow}>
-                                {assets.find(a => a.name === walletAsset.name)?.image && (
-                                    <AssetPositionName name={walletAsset.name} image={assets.find(a => a.name === walletAsset.name)?.image || ""} />
-                                )}
-                                <div className="ml-auto flex flex-row gap-2 shrink-0 items-center whitespace-nowrap">
-                                    <p className="w-33 text-center flex items-center justify-center gap-2 shrink-0">{walletAsset.amount}</p>
-                                    <p className="w-25 text-center flex items-center justify-center gap-2 shrink-0">{countedPrice.toFixed(2)}</p>
-                                    <p className="w-22 text-right shrink-0">{currency}</p>
-                                </div>
+                        <div key={walletAsset.id} className={themeState ? tableStyles.light.tableRow : tableStyles.dark.tableRow}>
+                            {assets.find(a => a.name === walletAsset.name)?.image && (
+                                <AssetPositionName name={walletAsset.name} image={assets.find(a => a.name === walletAsset.name)?.image || ""} />
+                            )}
+                            <div className="ml-auto flex flex-row gap-2 shrink-0 items-center whitespace-nowrap">
+                                <p className="w-33 text-center flex items-center justify-center gap-2 shrink-0">{walletAsset.amount}</p>
+                                <p className="w-25 text-center flex items-center justify-center gap-2 shrink-0">{countedPrice.toFixed(2)}</p>
+                                <p className="w-22 text-right shrink-0">{currency}</p>
                             </div>
-                        </>
+                        </div>
                     )
                 })}
                 <SummaryBar totalValue={totalValue} />
@@ -135,7 +133,7 @@ export async function loader() {
     return { coingeckoData, assetsFirestore, walletTabs };
 }
 
-export async function action({request}: { request: Request }) {
+export async function action({ request }: { request: Request }) {
     const formData = await request.formData();
     const data = parseWalletAssetRequest(formData);
     await addData(data)

@@ -14,7 +14,7 @@ import type { SummaryAssets, WalletAsset } from "../types/WalletTypes";
         const summary = Object.values(
             assets.reduce<Record<string, SummaryAssets>>((acc, asset) => {
             if (!acc[asset.name]) {
-                acc[asset.name] = { name: asset.name, amount: asset.amount };
+                acc[asset.name] = { ...asset };
             } else {
                 acc[asset.name].amount += asset.amount;
             }

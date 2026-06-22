@@ -2,7 +2,6 @@ import type { WalletAssetRequest } from "../types/WalletTypes";
 
 export function parseWalletAssetRequest(formData: FormData): WalletAssetRequest {
     const raw = Object.fromEntries(formData.entries());
-    console.log("Raw form data:", raw);
 
     const name = typeof raw.name === "string" ? raw.name.trim() : "";
     const market = typeof raw.market === "string" ? raw.market : "";
