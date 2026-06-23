@@ -1,6 +1,6 @@
 import type { Asset } from "../constants/assets";
 import type { CoinMarketData } from "../types/AssetTableTypes";
-import type { SummaryAssets, WalletAsset } from "../types/WalletTypes";
+import type { WalletAsset } from "../types/WalletTypes";
 
     export const formatPercent = (value: number | null | undefined) => {
         if (value == null) {
@@ -10,9 +10,9 @@ import type { SummaryAssets, WalletAsset } from "../types/WalletTypes";
         return `${value.toFixed(1)}%`;
     };
 
-    export const summaryTransformation = (assets: WalletAsset[]) : SummaryAssets[] => {
+    export const summaryTransformation = (assets: WalletAsset[]) : WalletAsset[] => {
         const summary = Object.values(
-            assets.reduce<Record<string, SummaryAssets>>((acc, asset) => {
+            assets.reduce<Record<string, WalletAsset>>((acc, asset) => {
             if (!acc[asset.name]) {
                 acc[asset.name] = { ...asset };
             } else {
@@ -23,12 +23,12 @@ import type { SummaryAssets, WalletAsset } from "../types/WalletTypes";
         return summary;
     };
 
-    export const findAssetPrice = (assetList: Asset[], coingeckoData: CoinMarketData[], currentAsset: WalletAsset | SummaryAssets) => {
+    export const findAssetPrice = (assetList: Asset[], coingeckoData: CoinMarketData[], currentAsset: WalletAsset) => {
         const assetData = (coingeckoData.find(d => d.id === assetList.find(a => a.name === currentAsset.name)?.coingeckoId)?.current_price || 0);
         return assetData;
     }
 
-    export const countTotalValue = (assets: WalletAsset[] | SummaryAssets[], assetList: Asset[], coingeckoData: CoinMarketData[]) => {
+    export const countTotalValue = (assets: WalletAsset[], assetList: Asset[], coingeckoData: CoinMarketData[]) => {
         return assets.reduce((total, asset) => {
             const price = findAssetPrice(assetList, coingeckoData, asset);
             return total + (asset.amount * price);
