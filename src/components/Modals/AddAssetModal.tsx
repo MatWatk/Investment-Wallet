@@ -93,7 +93,9 @@ export default function AddAssetModal({
                 labelText="Date" 
                 inputType="date" 
                 name="date" 
-                defaultValue={defaultData?.date || currentDate} />
+                defaultValue={defaultData?.date || currentDate} 
+                disabled={disableField}
+                />
                 <div className="mt-2 flex flex-row gap-4 justify-evenly">
                     <ModalButton type="button" onClick={onClose} themeState={themeState}>Close</ModalButton>
                     <ModalButton type="submit" themeState={themeState}>{currentEditStatus === "edit" ? "Edit Asset" : "Add Asset"}</ModalButton>
