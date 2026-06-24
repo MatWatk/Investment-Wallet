@@ -12,7 +12,6 @@ export function parseWalletAssetRequest(formData: FormData): WalletAssetEditRequ
     const price = Number(raw.price);
     const editStatus = raw.editStatus === "edit" ? "edit" : "add";
     const assetId = typeof raw.assetId === "string" && raw.assetId.length > 0 ? raw.assetId : undefined;
-    // const prevAmount = Number(raw.prevAmount);
 
     let defaultData: WalletAssetEditRequest | undefined;
     if (typeof raw.defaultData === "string" && raw.defaultData.length > 0) {
@@ -27,9 +26,6 @@ export function parseWalletAssetRequest(formData: FormData): WalletAssetEditRequ
         throw new Response("Invalid currency", { status: 400 });
     }
 
-    // if (!name || !date || !Number.isFinite(amount) || amount <= 0 || !Number.isFinite(price) || price <= 0) {
-    //     throw new Response("Invalid form payload", { status: 400 });
-    // }
 
     return {
         name,
@@ -40,7 +36,6 @@ export function parseWalletAssetRequest(formData: FormData): WalletAssetEditRequ
         date,
         editStatus,
         assetId,
-        // prevAmount: Number.isFinite(prevAmount) ? prevAmount : undefined,
         defaultData,
     };
 }

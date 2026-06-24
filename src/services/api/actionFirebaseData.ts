@@ -4,11 +4,6 @@ import { collection, addDoc } from "firebase/firestore";
 
 export default async function addData(data: WalletAssetEditRequest) {
     const { assetId, editStatus, prevAmount, defaultData, ...payload } = data;
-    console.log("prevAmount", prevAmount);
-    console.log("defaultData", defaultData);
-    console.log("editStatus", editStatus);
-    console.log("assetId", assetId);
-    console.log("payload", payload);
     const ref = collection(db, "wallet-edit-history");
 
     if (editStatus === "edit") {
@@ -30,7 +25,7 @@ export default async function addData(data: WalletAssetEditRequest) {
                 editStatus: editStatus,
                 market: defaultData.market,
             };
-            if (defaultData.amount >= payload.amount) {
+            if (defaultData.amount > payload.amount) {
                 await addDoc(ref, editPayload);
             } else {
                 throw new Response("Amount in the new market must be less than the amount in the previous market", { status: 400 });
