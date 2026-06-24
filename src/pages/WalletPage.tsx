@@ -13,7 +13,7 @@ import useSortData from "../hooks/useSortData";
 import useFilter from "../hooks/useFilter";
 import useRevalidatePage from "../hooks/useRevalidatePage";
 
-import type { MarketsType, WalletAssetRequest, WalletTab } from "../types/WalletTypes";
+import type { EditDataStatus, MarketsType, WalletAssetEditRequest, WalletTab } from "../types/WalletTypes";
 import useTabSwitch from "../hooks/useTabSwitch";
 
 import type { WalletAsset } from "../types/WalletTypes";
@@ -35,7 +35,7 @@ import { useLanguage } from "../hooks/useLanguage";
 import { useCurrency } from "../hooks/useCurrency";
 import { parseWalletAssetRequest } from "../utils/parsers";
 import RubbishBinButton from "../components/Wallet_components/RubbishBinButton";
-import handleData from "../services/api/handleData";
+import actionFirebaseData from "../services/api/actionFirebaseData";
 
 export default function WalletPage() {
     const currency = useCurrency();
@@ -69,24 +69,23 @@ export default function WalletPage() {
     const [showPlatformModal, setShowPlatformModal] = useState(false);
 
     const handleAddAssetClick = () => {
-        setIsEditing(false);
-        setAssetFormData(undefined);
+        setEditStatus("add");
+        setAssetFormData(null);
         setShowAssetModal(true);
     }
 
-    const handleDelete = async (_assetId: string) => {
-        // const assetToDelete = assetsFirestore.find(asset => asset.id === assetId);
+    const handleDelete = async (assetId: string) => {
+        setEditStatus("delete");
+        actualVisibleAssets.find(asset => asset.id === assetId)
+        // logic to be added
     }
 
-
-    /////////////////////////////////////////////////////////////////
-    const [assetFormData, setAssetFormData] = useState<WalletAssetRequest | undefined>(undefined);
-    const [isEditing, setIsEditing] = useState(false);
-    console.log(actualVisibleAssets)
+    const [assetFormData, setAssetFormData] = useState<WalletAssetEditRequest | null>(null);
+    const [editStatus, setEditStatus] = useState<EditDataStatus>("add");
 
     const handleEdit = async (assetId: string) => {
         setShowAssetModal(true);
-        setIsEditing(true);
+        setEditStatus("edit");
         actualVisibleAssets.find(asset => asset.id === assetId) && setAssetFormData({
             assetId,
             name: actualVisibleAssets.find(asset => asset.id === assetId)!.name,
@@ -95,15 +94,9 @@ export default function WalletPage() {
             price: findAssetPrice(assets, coingeckoData, actualVisibleAssets.find(asset => asset.id === assetId)!),
             currency: currency,
             date: new Date().toISOString().split("T")[0],
-            edit: true,
+            editStatus: "edit",
         });
-        // { showAssetModal && <AddAssetModal isOpen={showAssetModal} onClose={() => setShowAssetModal(false)} openPlatformModal={() => setShowPlatformModal(true)} platforms={walletTabs} /> }
-        // const assetToEdit = assetsFirestore.find(asset => asset.id === assetId);
     }
-
-
-
-    ////////////////////////////////////////////////////////////
 
     const navigation = useNavigation();
 
@@ -136,8 +129,7 @@ export default function WalletPage() {
                         openPlatformModal={() => setShowPlatformModal(true)}
                         platforms={walletTabs}
                         defaultData={assetFormData}
-                        isEditing={isEditing}
-                        setEditing={setIsEditing} />}
+                        editStatus={editStatus} />}
                 {showPlatformModal &&
                     <AddPlatformModal
                         isOpen={showPlatformModal}
@@ -160,6 +152,9 @@ export default function WalletPage() {
                 {actualVisibleAssets.map((walletAsset) => {
                     const assetPrice = findAssetPrice(assets, coingeckoData, walletAsset);
                     const countedPrice = assetPrice * walletAsset.amount;
+                    if (walletAsset.amount === 0) {
+                        return null;
+                    }
                     return (
                         <div
                             key={walletAsset.id}
@@ -198,7 +193,7 @@ export async function loader() {
     const currency = store.getState().currency.currency;
     const [coingeckoData, assetsFirestore, walletTabs] = await Promise.all([
         loadAssetPrices<{ coingeckoId: string }[]>({ assets, currency }),
-        loadWalletAssets<WalletAsset[]>("wallet-assets", ["name", "amount", "market"]),
+        loadWalletAssets<WalletAsset[]>("wallet-edit-history", ["name", "amount", "market"]),
         loadWalletAssets<WalletTab[]>("wallet-tabs", ["name"]),
     ]);
 
@@ -206,9 +201,8 @@ export async function loader() {
 }
 
 export async function action({ request }: { request: Request }) {
-    console.log(request);
     const formData = await request.formData();
     const data = parseWalletAssetRequest(formData);
-    await handleData(data);
+    await actionFirebaseData(data);
     return redirect("/");
 }

@@ -1,12 +1,16 @@
 import type { CoinMarketData } from "./AssetTableTypes";
 
-export interface WalletAssetRequest {
+export interface WalletAssetEditRequest {
     name: string;
     amount: number;
     market: string;
     price: number;
     currency: "USD" | "PLN";
     date: string;
+    editStatus?: EditDataStatus;
+    assetId?: string;
+    prevAmount?: number;
+    defaultData?: WalletAssetEditRequest;
 }
 
 export interface WalletLoaderData {
@@ -34,3 +38,5 @@ export interface SummaryAssets {
     name: string;
     amount: number;
 }
+
+export type EditDataStatus = "edit" | "add" | "delete";

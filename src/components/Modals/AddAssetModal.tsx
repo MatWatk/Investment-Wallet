@@ -8,34 +8,69 @@ import { useTheme } from "../../hooks/useTheme";
 import { Form } from "react-router-dom";
 
 import { assets, currencies } from "../../constants/assets";
-import type { WalletTab } from "../../types/WalletTypes";
+import type { EditDataStatus, WalletAssetEditRequest, WalletTab } from "../../types/WalletTypes";
 
-export default function AddAssetModal({ isOpen, onClose, openPlatformModal, platforms }: { isOpen: boolean, onClose: () => void, openPlatformModal: () => void, platforms: WalletTab[] }) {
+export default function AddAssetModal({
+    isOpen,
+    onClose,
+    openPlatformModal,
+    platforms,
+    defaultData,
+    editStatus,
+}: {
+    isOpen: boolean,
+    onClose: () => void,
+    openPlatformModal: () => void,
+    platforms: WalletTab[],
+    defaultData?: WalletAssetEditRequest | null,
+    editStatus?: EditDataStatus,
+}) {
+
     const themeState = useTheme();
 
-
     const currentDate = new Date().toISOString().split("T")[0];
+    const currentEditStatus = editStatus ?? "add";
+
+    const disableField = currentEditStatus === "edit";
 
     if (!isOpen) return null;
 
     return (
         <ModalWrapper>
-            <ModalHeader title="Add Asset" themeState={themeState} />
+            <ModalHeader title={currentEditStatus === "edit" ? "Edit Asset" : "Add Asset"} themeState={themeState} />
             <Form method="post" className="mt-4 flex flex-col gap-4">
+                <input type="hidden" name="editStatus" value={currentEditStatus} />
+                <input type="hidden" name="assetId" value={defaultData?.assetId || ""} />
+                <input type="hidden" name="defaultData" value={defaultData ? JSON.stringify(defaultData) : ""} />
                 <ModalSelect
                     themeState={themeState}
                     labelText="Asset Name"
                     name="name"
                     options={assets.map((asset) => ({ value: asset.name, label: asset.name }))}
+                    defaultValue={defaultData?.name}
+                    disabled={disableField}
                 />
-                <ModalInput themeState={themeState} labelText="Amount" inputType="number" name="amount" />
+                <ModalInput
+                    themeState={themeState}
+                    labelText="Amount"
+                    inputType="number"
+                    name="amount"
+                    defaultValue={defaultData?.amount} />
                 <ModalRowWrapper>
-                    <ModalInput themeState={themeState} labelText="Price" inputType="number" name="price" />
+                    <ModalInput
+                        themeState={themeState}
+                        labelText="Price"
+                        inputType="number"
+                        name="price" defaultValue={defaultData?.price}
+                        disabled={disableField}
+                    />
                     <ModalSelect
                         themeState={themeState}
                         labelText="Currency"
                         name="currency"
                         options={currencies.map((currency) => ({ value: currency, label: currency }))}
+                        defaultValue={defaultData?.currency}
+                        disabled={disableField}
                     />
                 </ModalRowWrapper>
                 <ModalRowWrapper>
@@ -43,14 +78,25 @@ export default function AddAssetModal({ isOpen, onClose, openPlatformModal, plat
                         themeState={themeState}
                         labelText="Platform"
                         name="market"
-                        options={platforms.map((platform) => ({value:platform.name, label: platform.name}))}
+                        options={platforms.map((platform) => ({ value: platform.name, label: platform.name }))}
+                        defaultValue={defaultData?.market}
                     />
-                    <ModalButton type="button" onClick={openPlatformModal} themeState={themeState}>Add Platform</ModalButton>
+                    <ModalButton 
+                    type="button" 
+                    onClick={openPlatformModal} 
+                    themeState={themeState}>
+                        Add Platform
+                    </ModalButton>
                 </ModalRowWrapper>
-                <ModalInput themeState={themeState} labelText="Date" inputType="date" name="date" defaultValue={currentDate} />
+                <ModalInput 
+                themeState={themeState} 
+                labelText="Date" 
+                inputType="date" 
+                name="date" 
+                defaultValue={defaultData?.date || currentDate} />
                 <div className="mt-2 flex flex-row gap-4 justify-evenly">
                     <ModalButton type="button" onClick={onClose} themeState={themeState}>Close</ModalButton>
-                    <ModalButton type="submit" themeState={themeState}>Add Asset</ModalButton>
+                    <ModalButton type="submit" themeState={themeState}>{currentEditStatus === "edit" ? "Edit Asset" : "Add Asset"}</ModalButton>
                 </div>
             </Form>
         </ModalWrapper >
