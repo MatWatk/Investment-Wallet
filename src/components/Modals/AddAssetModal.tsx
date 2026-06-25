@@ -9,6 +9,7 @@ import { Form } from "react-router-dom";
 
 import { assets, currencies } from "../../constants/assets";
 import type { EditDataStatus, WalletAssetEditRequest, WalletTab } from "../../types/WalletTypes";
+import { useState } from "react";
 
 export default function AddAssetModal({
     isOpen,
@@ -25,6 +26,10 @@ export default function AddAssetModal({
     defaultData?: WalletAssetEditRequest | null,
     editStatus?: EditDataStatus,
 }) {
+
+    const [isInputInvalid, setIsInputInvalid] = useState<Record<string, boolean>>({});
+
+
 
     const themeState = useTheme();
 
@@ -55,7 +60,10 @@ export default function AddAssetModal({
                     labelText="Amount"
                     inputType="number"
                     name="amount"
-                    defaultValue={defaultData?.amount} />
+                    defaultValue={defaultData?.amount}
+                    invalidInput={isInputInvalid}
+                    setInvalidInput={setIsInputInvalid}
+                />
                 <ModalRowWrapper>
                     <ModalInput
                         themeState={themeState}
@@ -63,6 +71,8 @@ export default function AddAssetModal({
                         inputType="number"
                         name="price" defaultValue={defaultData?.price}
                         disabled={disableField}
+                        invalidInput={isInputInvalid}
+                        setInvalidInput={setIsInputInvalid}
                     />
                     <ModalSelect
                         themeState={themeState}
@@ -81,24 +91,29 @@ export default function AddAssetModal({
                         options={platforms.map((platform) => ({ value: platform.name, label: platform.name }))}
                         defaultValue={defaultData?.market}
                     />
-                    <ModalButton 
-                    type="button" 
-                    onClick={openPlatformModal} 
-                    themeState={themeState}>
+                    <ModalButton
+                        type="button"
+                        onClick={openPlatformModal}
+                        themeState={themeState}>
                         Add Platform
                     </ModalButton>
                 </ModalRowWrapper>
-                <ModalInput 
-                themeState={themeState} 
-                labelText="Date" 
-                inputType="date" 
-                name="date" 
-                defaultValue={defaultData?.date || currentDate} 
-                disabled={disableField}
+                <ModalInput
+                    themeState={themeState}
+                    labelText="Date"
+                    inputType="date"
+                    name="date"
+                    defaultValue={defaultData?.date || currentDate}
+                    disabled={disableField}
                 />
                 <div className="mt-2 flex flex-row gap-4 justify-evenly">
                     <ModalButton type="button" onClick={onClose} themeState={themeState}>Close</ModalButton>
-                    <ModalButton type="submit" themeState={themeState}>{currentEditStatus === "edit" ? "Edit Asset" : "Add Asset"}</ModalButton>
+                    <ModalButton
+                        type="submit"
+                        themeState={themeState}
+                        disabled={Object.values(isInputInvalid).some(Boolean)}>
+                        {currentEditStatus === "edit" ? "Edit Asset" : "Add Asset"}
+                    </ModalButton>
                 </div>
             </Form>
         </ModalWrapper >
