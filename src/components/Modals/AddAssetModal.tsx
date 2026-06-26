@@ -88,7 +88,7 @@ export default function AddAssetModal({
                         themeState={themeState}
                         labelText="Platform"
                         name="market"
-                        options={platforms.map((platform) => ({ value: platform.name, label: platform.name }))}
+                        options={platforms.map((platform) => ({ value: platform.platformName, label: platform.platformName }))}
                         defaultValue={defaultData?.market}
                     />
                     <ModalButton

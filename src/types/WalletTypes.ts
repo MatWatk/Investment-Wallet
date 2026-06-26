@@ -30,7 +30,7 @@ export type MarketsType = "Summary" | "Binance" | "Kanga" | "ByBit" | "Physical"
 
 export interface WalletTab {
     id: string;
-    name: MarketsType;
+    platformName: MarketsType;
 }
 
 export interface SummaryAssets {

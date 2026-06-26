@@ -133,7 +133,8 @@ export default function WalletPage() {
                 {showPlatformModal &&
                     <AddPlatformModal
                         isOpen={showPlatformModal}
-                        onClose={() => setShowPlatformModal(false)} />}
+                        onClose={() => setShowPlatformModal(false)}
+                        walletTabs={walletTabs} />}
                 <SearchInput
                     handleSearch={handleSearch}
                     label={translations[language].walletPage.searchbarLabel}
@@ -194,7 +195,7 @@ export async function loader() {
     const [coingeckoData, assetsFirestore, walletTabs] = await Promise.all([
         loadAssetPrices<{ coingeckoId: string }[]>({ assets, currency }),
         loadWalletAssets<WalletAsset[]>("wallet-edit-history", ["name", "amount", "market"]),
-        loadWalletAssets<WalletTab[]>("wallet-tabs", ["name"]),
+        loadWalletAssets<WalletTab[]>("wallet-tabs", ["platformName"]),
     ]);
 
     return { coingeckoData, assetsFirestore, walletTabs };

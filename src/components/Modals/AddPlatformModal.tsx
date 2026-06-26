@@ -3,8 +3,13 @@ import ModalWrapper from "./ModalWrapper";
 import ModalInput from "./ModalInput";
 
 import { useTheme } from "../../hooks/useTheme";
+import { Form } from "react-router-dom";
+import type { WalletTab } from "../../types/WalletTypes";
 
-export default function AddPlatformModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+import rubbishBin from "../../assets/rubbish_bin.png";
+import AssetButton from "../Wallet_components/AssetButton";
+
+export default function AddPlatformModal({ isOpen, onClose, walletTabs }: { isOpen: boolean; onClose: () => void; walletTabs: WalletTab[] }) {
     const themeState = useTheme();
     if (!isOpen) return null;
 
@@ -12,13 +17,25 @@ export default function AddPlatformModal({ isOpen, onClose }: { isOpen: boolean;
         <ModalWrapper>
             <h2 className={`text-start font-bold ${themeState ? "text-violet-900" : "text-yellow-500"}`}>Add Platform</h2>
             <div>
-                <form onSubmit={(e) => e.preventDefault()} className="mt-4 flex flex-col gap-4">
-                    <ModalInput themeState={themeState} labelText="Platform Name" inputType="text" name="market"/>
+                <Form onSubmit={(e) => e.preventDefault()} className="mt-4 flex flex-col gap-4">
+                    <ModalInput themeState={themeState} labelText="Platform Name" inputType="text" name="platformName" />
+                    <div>
+                        <h2 className={`text-start font-bold ${themeState ? "text-violet-900" : "text-yellow-500"}`}>Platforms:</h2>
+                        <ol>
+                            {walletTabs.map((tab) => (
+                                <li key={tab.id} className={`flex flex-row gap-4 items-center text-xl justify-start mt-2 ${themeState ? "text-violet-900" : "text-yellow-500"}`}>
+                                    <p className="flex-1">{tab.platformName}</p>
+                                    <AssetButton onClick={() => {}} big={false}>Edit</AssetButton>
+                                    <button><img className="w-6 h-6" src={rubbishBin} alt="Delete" /></button>
+                                </li>
+                            ))}
+                        </ol>
+                    </div>
                     <div className="mt-2 flex flex-row gap-4 justify-evenly">
                         <ModalButton onClick={onClose} themeState={themeState}>Close</ModalButton>
                         <ModalButton onClick={onClose} themeState={themeState}>Add Platform</ModalButton>
                     </div>
-                </form>
+                </Form>
             </div >
         </ModalWrapper >
     )

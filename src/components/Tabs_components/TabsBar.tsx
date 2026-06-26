@@ -1,14 +1,14 @@
 import { useTheme } from "../../hooks/useTheme";
 import Tab from "./Tab";
 
-export default function TabsBar<T extends { name: string }>({ tabs, activeTab, handleTabSwitch }: { tabs: T[], activeTab: T["name"], handleTabSwitch: (tab: T["name"]) => void }) {
+export default function TabsBar<T extends { platformName: string }>({ tabs, activeTab, handleTabSwitch }: { tabs: T[], activeTab: T["platformName"], handleTabSwitch: (tab: T["platformName"]) => void }) {
     const themeState = useTheme();
 
     return (
         <div className={`flex items-center rounded border-b ${themeState ? "border-violet-400 bg-violet-200 text-violet-900" : "border-gray-400 bg-gray-700 text-yellow-500"} w-full h-8 text-xs font-bold shrink-0 gap-4 flex-row justify-evenly`}>
-            <Tab name={'Summary'} isActive={'Summary' === activeTab} onClick={() => handleTabSwitch('Summary')} themeState={themeState} />
+            <Tab platformName={'Summary'} isActive={'Summary' === activeTab} onClick={() => handleTabSwitch('Summary')} themeState={themeState} />
             {tabs.map((tab) => (
-                <Tab key={tab.name} name={tab.name} isActive={tab.name === activeTab} onClick={() => handleTabSwitch(tab.name)} themeState={themeState} />
+                <Tab key={tab.platformName} platformName={tab.platformName} isActive={tab.platformName === activeTab} onClick={() => handleTabSwitch(tab.platformName)} themeState={themeState} />
             ))}
         </div>
     )
