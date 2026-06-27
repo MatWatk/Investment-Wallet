@@ -11,6 +11,13 @@ export interface WalletAssetEditRequest {
     assetId?: string;
     prevAmount?: number;
     defaultData?: WalletAssetEditRequest;
+    actionRequestType?: "asset" | "platform";
+}
+
+export interface WalletPlatformEditRequest {
+    platformName: string;
+    editStatus?: EditDataStatus;
+    actionRequestType?: "asset" | "platform";
 }
 
 export interface WalletLoaderData {

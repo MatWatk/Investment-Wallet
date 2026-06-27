@@ -9,15 +9,27 @@ import type { WalletTab } from "../../types/WalletTypes";
 import rubbishBin from "../../assets/rubbish_bin.png";
 import AssetButton from "../Wallet_components/AssetButton";
 
-export default function AddPlatformModal({ isOpen, onClose, walletTabs }: { isOpen: boolean; onClose: () => void; walletTabs: WalletTab[] }) {
-    const themeState = useTheme();
-    if (!isOpen) return null;
+export default function AddPlatformModal({ 
+    isOpen, 
+    onClose, 
+    walletTabs,
+}: { 
+        isOpen: boolean; 
+        onClose: () => void; 
+        walletTabs: WalletTab[];
+    }) {
 
+    const themeState = useTheme();
+
+    if (!isOpen) return null;
+    
     return (
         <ModalWrapper>
             <h2 className={`text-start font-bold ${themeState ? "text-violet-900" : "text-yellow-500"}`}>Add Platform</h2>
             <div>
-                <Form onSubmit={(e) => e.preventDefault()} className="mt-4 flex flex-col gap-4">
+                <Form method="post" onSubmit={onClose} className="mt-4 flex flex-col gap-4">
+                    <input type="hidden" name="actionRequestType" value="platform" />
+                    <input type="hidden" name="editStatus" value="add" />
                     <ModalInput themeState={themeState} labelText="Platform Name" inputType="text" name="platformName" />
                     <div>
                         <h2 className={`text-start font-bold ${themeState ? "text-violet-900" : "text-yellow-500"}`}>Platforms:</h2>
@@ -33,7 +45,7 @@ export default function AddPlatformModal({ isOpen, onClose, walletTabs }: { isOp
                     </div>
                     <div className="mt-2 flex flex-row gap-4 justify-evenly">
                         <ModalButton onClick={onClose} themeState={themeState}>Close</ModalButton>
-                        <ModalButton onClick={onClose} themeState={themeState}>Add Platform</ModalButton>
+                        <ModalButton type="submit" themeState={themeState}>Add Platform</ModalButton>
                     </div>
                 </Form>
             </div >

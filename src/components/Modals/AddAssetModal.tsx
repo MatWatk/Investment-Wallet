@@ -29,8 +29,6 @@ export default function AddAssetModal({
 
     const [isInputInvalid, setIsInputInvalid] = useState<Record<string, boolean>>({});
 
-
-
     const themeState = useTheme();
 
     const currentDate = new Date().toISOString().split("T")[0];
@@ -43,10 +41,19 @@ export default function AddAssetModal({
     return (
         <ModalWrapper>
             <ModalHeader title={currentEditStatus === "edit" ? "Edit Asset" : "Add Asset"} themeState={themeState} />
-            <Form method="post" className="mt-4 flex flex-col gap-4">
+            <Form method="post" onSubmit={onClose} className="mt-4 flex flex-col gap-4">
                 <input type="hidden" name="editStatus" value={currentEditStatus} />
                 <input type="hidden" name="assetId" value={defaultData?.assetId || ""} />
                 <input type="hidden" name="defaultData" value={defaultData ? JSON.stringify(defaultData) : ""} />
+                <input type="hidden" name="actionRequestType" value="asset" />
+                {disableField && (
+                    <>
+                        <input type="hidden" name="name" value={defaultData?.name ?? ""} />
+                        <input type="hidden" name="price" value={defaultData?.price ?? ""} />
+                        <input type="hidden" name="currency" value={defaultData?.currency ?? ""} />
+                        <input type="hidden" name="date" value={defaultData?.date ?? currentDate} />
+                    </>
+                )}
                 <ModalSelect
                     themeState={themeState}
                     labelText="Asset Name"

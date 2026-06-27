@@ -20,12 +20,12 @@ import type { WalletAsset } from "../types/WalletTypes";
 import { summaryTransformation, findAssetPrice, countTotalValue } from "../utils/utils";
 import { store } from "../store";
 import loadAssetPrices from "../services/api/loadAssetPrices";
-import { redirect, useLoaderData, useNavigation } from "react-router-dom";
+import { redirect, useLoaderData } from "react-router-dom";
 import type { WalletLoaderData } from "../types/WalletTypes";
 import { translations } from "../constants/translations";
 import SummaryBar from "../components/Wallet_components/SummaryBar";
 import AssetButton from "../components/Wallet_components/AssetButton";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AddAssetModal from "../components/Modals/AddAssetModal";
 import AddPlatformModal from "../components/Modals/AddPlatformModal";
 
@@ -33,9 +33,10 @@ import loadWalletAssets from "../services/api/loadFirebaseData";
 import { useTheme } from "../hooks/useTheme";
 import { useLanguage } from "../hooks/useLanguage";
 import { useCurrency } from "../hooks/useCurrency";
-import { parseWalletAssetRequest } from "../utils/parsers";
+import { parseWalletAssetRequest, parseWalletPlatformRequest } from "../utils/parsers";
 import RubbishBinButton from "../components/Wallet_components/RubbishBinButton";
-import actionFirebaseData from "../services/api/actionFirebaseData";
+import actionAssetFirebase from "../services/api/actionAssetFirebase";
+import actionPlatformFirebase from "../services/api/actionPlatformFirebase";
 
 export default function WalletPage() {
     const currency = useCurrency();
@@ -97,14 +98,6 @@ export default function WalletPage() {
             editStatus: "edit",
         });
     }
-
-    const navigation = useNavigation();
-
-    useEffect(() => {
-        if (navigation.state === "idle") {
-            setShowAssetModal(false);
-        }
-    }, [navigation.state]);
 
     return (
         <>
@@ -203,7 +196,16 @@ export async function loader() {
 
 export async function action({ request }: { request: Request }) {
     const formData = await request.formData();
-    const data = parseWalletAssetRequest(formData);
-    await actionFirebaseData(data);
-    return redirect("/");
+    
+    if (formData.get("actionRequestType") === "asset") {
+        const data = parseWalletAssetRequest(formData);
+        console.log(data);
+        await actionAssetFirebase(data);
+        return redirect("/");
+    }
+    if (formData.get("actionRequestType") === "platform") {
+        const data = parseWalletPlatformRequest(formData);
+        await actionPlatformFirebase(data);
+        return redirect("/");
+    }
 }

@@ -1,4 +1,4 @@
-import type { WalletAssetEditRequest } from "../types/WalletTypes";
+import type { WalletAssetEditRequest, WalletPlatformEditRequest } from "../types/WalletTypes";
 
 export function parseWalletAssetRequest(formData: FormData): WalletAssetEditRequest {
     const raw = Object.fromEntries(formData.entries());
@@ -12,6 +12,7 @@ export function parseWalletAssetRequest(formData: FormData): WalletAssetEditRequ
     const price = Number(raw.price);
     const editStatus = raw.editStatus === "edit" ? "edit" : "add";
     const assetId = typeof raw.assetId === "string" && raw.assetId.length > 0 ? raw.assetId : undefined;
+    const actionRequestType = "asset";
 
     let defaultData: WalletAssetEditRequest | undefined;
     if (typeof raw.defaultData === "string" && raw.defaultData.length > 0) {
@@ -37,5 +38,20 @@ export function parseWalletAssetRequest(formData: FormData): WalletAssetEditRequ
         editStatus,
         assetId,
         defaultData,
+        actionRequestType,
+    };
+}
+
+export function parseWalletPlatformRequest(formData: FormData): WalletPlatformEditRequest {
+    const raw = Object.fromEntries(formData.entries());
+
+    const platformName = typeof raw.platformName === "string" ? raw.platformName.trim() : "";
+    const editStatus = raw.editStatus === "edit" ? "edit" : "add";
+    const actionRequestType = "platform";
+
+    return {
+        platformName,
+        editStatus,
+        actionRequestType,
     };
 }

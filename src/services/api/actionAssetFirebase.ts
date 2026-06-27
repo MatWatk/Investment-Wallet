@@ -2,7 +2,7 @@ import type { WalletAssetEditRequest } from "../../types/WalletTypes";
 import { db } from "../firebase/config";
 import { collection, addDoc } from "firebase/firestore";
 
-export default async function addData(data: WalletAssetEditRequest) {
+export default async function actionAssetFirebase(data: WalletAssetEditRequest) {
     const { assetId, editStatus, prevAmount, defaultData, ...payload } = data;
     const ref = collection(db, "wallet-edit-history");
 
