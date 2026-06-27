@@ -44,7 +44,19 @@ export default async function actionAssetFirebase(data: WalletAssetEditRequest) 
 
 
 
-        } else {
+        } else if (editStatus === "delete") {
+            const deletePayload = {
+                ...payload,
+                amount: -payload.amount,
+            };
+            await addDoc(ref, deletePayload);
+
+            if (!assetId) {
+                throw new Response("Missing asset id for delete action", { status: 400 });
+            }
+
+        }
+        else {
             await addDoc(ref, { ...payload, editStatus: editStatus });
         }
     }

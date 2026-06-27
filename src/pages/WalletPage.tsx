@@ -17,10 +17,10 @@ import type { EditDataStatus, MarketsType, WalletAssetEditRequest, WalletTab } f
 import useTabSwitch from "../hooks/useTabSwitch";
 
 import type { WalletAsset } from "../types/WalletTypes";
-import { summaryTransformation, findAssetPrice, countTotalValue } from "../utils/utils";
+import { summaryTransformation, findAssetPrice, countTotalValue, createWalletAssetEditRequest } from "../utils/utils";
 import { store } from "../store";
 import loadAssetPrices from "../services/api/loadAssetPrices";
-import { redirect, useLoaderData } from "react-router-dom";
+import { redirect, useLoaderData, useSubmit } from "react-router-dom";
 import type { WalletLoaderData } from "../types/WalletTypes";
 import { translations } from "../constants/translations";
 import SummaryBar from "../components/Wallet_components/SummaryBar";
@@ -69,34 +69,51 @@ export default function WalletPage() {
     const [showAssetModal, setShowAssetModal] = useState(false);
     const [showPlatformModal, setShowPlatformModal] = useState(false);
 
+    const [assetFormData, setAssetFormData] = useState<WalletAssetEditRequest | null>(null);
+    const [editStatus, setEditStatus] = useState<EditDataStatus>("add");
+
     const handleAddAssetClick = () => {
         setEditStatus("add");
         setAssetFormData(null);
         setShowAssetModal(true);
     }
 
+    const submit = useSubmit();
+
     const handleDelete = async (assetId: string) => {
         setEditStatus("delete");
-        actualVisibleAssets.find(asset => asset.id === assetId)
-        // logic to be added
+        const reqData = createWalletAssetEditRequest(
+            actualVisibleAssets,
+            assets,
+            coingeckoData,
+            currency,
+            assetId,
+            "delete"
+        );
+        const formData = new FormData();
+        Object.entries(reqData).forEach(([key, value]) => {
+            if (value !== undefined && value !== null) {
+                formData.append(key, value.toString());
+            }
+        });
+        submit(formData, {
+            method: "post",
+            encType: "multipart/form-data",
+        });
     }
-
-    const [assetFormData, setAssetFormData] = useState<WalletAssetEditRequest | null>(null);
-    const [editStatus, setEditStatus] = useState<EditDataStatus>("add");
 
     const handleEdit = async (assetId: string) => {
         setShowAssetModal(true);
         setEditStatus("edit");
-        actualVisibleAssets.find(asset => asset.id === assetId) && setAssetFormData({
+        const reqData = createWalletAssetEditRequest(
+            actualVisibleAssets,
+            assets,
+            coingeckoData,
+            currency,
             assetId,
-            name: actualVisibleAssets.find(asset => asset.id === assetId)!.name,
-            amount: actualVisibleAssets.find(asset => asset.id === assetId)!.amount,
-            market: actualVisibleAssets.find(asset => asset.id === assetId)!.market,
-            price: findAssetPrice(assets, coingeckoData, actualVisibleAssets.find(asset => asset.id === assetId)!),
-            currency: currency,
-            date: new Date().toISOString().split("T")[0],
-            editStatus: "edit",
-        });
+            "edit"
+        );
+        setAssetFormData(reqData);
     }
 
     return (
@@ -196,10 +213,9 @@ export async function loader() {
 
 export async function action({ request }: { request: Request }) {
     const formData = await request.formData();
-    
+
     if (formData.get("actionRequestType") === "asset") {
         const data = parseWalletAssetRequest(formData);
-        console.log(data);
         await actionAssetFirebase(data);
         return redirect("/");
     }
