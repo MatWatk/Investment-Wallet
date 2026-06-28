@@ -140,7 +140,8 @@ export default function WalletPage() {
                     <AddPlatformModal
                         isOpen={showPlatformModal}
                         onClose={() => setShowPlatformModal(false)}
-                        walletTabs={walletTabs} />}
+                        walletTabs={walletTabs}
+                        allAssets={assetsFirestore} />}
                 <SearchInput
                     handleSearch={handleSearch}
                     label={translations[language].walletPage.searchbarLabel}

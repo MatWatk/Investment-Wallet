@@ -9,11 +9,9 @@ export default async function actionPlatformFirebase(data: WalletPlatformEditReq
         await addDoc(ref, { platformName, editStatus, ...payload });
     }
     if (editStatus === "delete") {
-        console.log(`Delete platform with ID: ${platformId}`);
         if (!platformId) {
             throw new Error("Missing platformId");
         }
         await deleteDoc(doc(db, "wallet-tabs", platformId));
-        console.log('delete doc called')
     }
 }
