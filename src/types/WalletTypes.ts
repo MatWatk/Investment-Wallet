@@ -15,6 +15,7 @@ export interface WalletAssetEditRequest {
 }
 
 export interface WalletPlatformEditRequest {
+    platformId?: string;
     platformName: string;
     editStatus?: EditDataStatus;
     actionRequestType?: "asset" | "platform";

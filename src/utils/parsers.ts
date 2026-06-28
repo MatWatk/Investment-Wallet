@@ -21,7 +21,6 @@ export function parseWalletAssetRequest(formData: FormData): WalletAssetEditRequ
     }
 
     const editStatusRaw = get("editStatus");
-    // const editStatus = editStatusRaw === "edit" ? "edit" : "add";
 
     const assetIdRaw = get("assetId");
     const assetId = assetIdRaw ? assetIdRaw : undefined;
@@ -52,27 +51,24 @@ export function parseWalletAssetRequest(formData: FormData): WalletAssetEditRequ
 }
 
 export function parseWalletPlatformRequest(formData: FormData): WalletPlatformEditRequest {
-    const raw = Object.fromEntries(formData.entries());
+    const get = (key: string) => formData.get(key)?.toString();
 
-    const platformName = typeof raw.platformName === "string" ? raw.platformName.trim() : "";
-    const editStatus = raw.editStatus === "edit" ? "edit" : "add";
+    const platformName = get("platformName") ?? "";
+    if (!platformName) {
+        throw new Response("Missing platformName", { status: 400 });
+    }
+
+    const platformId = get("platformId");
+    if (!platformId && get("editStatus") === "delete") {
+        throw new Response("Missing platformId", { status: 400 });
+    }
+    const editStatus = get("editStatus");
     const actionRequestType = "platform";
 
     return {
+        platformId,
         platformName,
-        editStatus,
+        editStatus: editStatus as "edit" | "add" | "delete",
         actionRequestType,
     };
 }
-
-// export function parseDeleteRequest(formData: FormData): { id: string, collectionName: string } {
-//     const raw = Object.fromEntries(formData.entries());
-
-//     const id = typeof raw.assetId === "string" ? raw.assetId : "";
-//     const collectionName = typeof raw.collectionName === "string" ? raw.collectionName : "";
-
-//     return {
-//         id,
-//         collectionName,
-//     };
-// }

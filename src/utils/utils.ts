@@ -1,6 +1,6 @@
 import type { Asset } from "../constants/assets";
 import type { CoinMarketData } from "../types/AssetTableTypes";
-import type { EditDataStatus, WalletAsset, WalletAssetEditRequest } from "../types/WalletTypes";
+import type { WalletAsset } from "../types/WalletTypes";
 
 export const formatPercent = (value: number | null | undefined) => {
     if (value == null) {
@@ -34,30 +34,3 @@ export const countTotalValue = (assets: WalletAsset[], assetList: Asset[], coing
         return total + (asset.amount * price);
     }, 0);
 }
-
-export const createWalletAssetEditRequest =
-    (
-        // setAssetFormData: React.Dispatch<React.SetStateAction<WalletAssetEditRequest | null>>,
-        actualVisibleAssets: WalletAsset[],
-        assets: Asset[],
-        coingeckoData: CoinMarketData[],
-        currency: "USD" | "PLN",
-        assetId: string,
-        editStatus: EditDataStatus
-    ): WalletAssetEditRequest => {
-        const asset = actualVisibleAssets.find(asset => asset.id === assetId);
-        if (!asset) {
-            throw new Error(`Asset ${assetId} not found`);
-        }
-        return ({
-            assetId,
-            name: asset.name,
-            amount: asset.amount,
-            market: asset.market,
-            price: findAssetPrice(assets, coingeckoData, asset ?? { id: "", name: "", amount: 0, market: "" }),
-            currency: currency,
-            date: new Date().toISOString().split("T")[0],
-            editStatus: editStatus,
-            actionRequestType: "asset",
-        });
-    }

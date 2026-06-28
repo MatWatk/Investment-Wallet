@@ -17,7 +17,8 @@ import type { EditDataStatus, MarketsType, WalletAssetEditRequest, WalletTab } f
 import useTabSwitch from "../hooks/useTabSwitch";
 
 import type { WalletAsset } from "../types/WalletTypes";
-import { summaryTransformation, findAssetPrice, countTotalValue, createWalletAssetEditRequest } from "../utils/utils";
+import { summaryTransformation, findAssetPrice, countTotalValue } from "../utils/utils";
+import { convertDataForRequest, createWalletAssetEditRequest } from "../utils/requests";
 import { store } from "../store";
 import loadAssetPrices from "../services/api/loadAssetPrices";
 import { redirect, useLoaderData, useSubmit } from "react-router-dom";
@@ -90,12 +91,7 @@ export default function WalletPage() {
             assetId,
             "delete"
         );
-        const formData = new FormData();
-        Object.entries(reqData).forEach(([key, value]) => {
-            if (value !== undefined && value !== null) {
-                formData.append(key, value.toString());
-            }
-        });
+        const formData = convertDataForRequest(reqData);
         submit(formData, {
             method: "post",
             encType: "multipart/form-data",
