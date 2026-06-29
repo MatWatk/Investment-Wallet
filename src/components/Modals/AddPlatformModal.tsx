@@ -3,31 +3,51 @@ import ModalWrapper from "./ModalWrapper";
 import ModalInput from "./ModalInput";
 
 import { useTheme } from "../../hooks/useTheme";
-import { Form } from "react-router-dom";
-import type { WalletAsset, WalletTab } from "../../types/WalletTypes";
+import { Form, useSubmit } from "react-router-dom";
+import type { MarketsType, WalletAsset, WalletTab } from "../../types/WalletTypes";
 
 import rubbishBin from "../../assets/rubbish_bin.png";
 import { useState } from "react";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import { convertDataForRequest, createPlatformEditRequest } from "../../utils/requests";
 
 export default function AddPlatformModal({
     isOpen,
     onClose,
     walletTabs,
     allAssets,
+    setActiveTab,
+    activeTab,
 }: {
     isOpen: boolean;
     onClose: () => void;
     walletTabs: WalletTab[];
     allAssets: WalletAsset[];
+    setActiveTab: React.Dispatch<React.SetStateAction<MarketsType>>;
+    activeTab: MarketsType;
 }) {
     const [platformToDelete, setPlatformToDelete] = useState<WalletTab | null>(null);
     const [isInputInvalid, setIsInputInvalid] = useState<Record<string, boolean>>({});
+    const submit = useSubmit();
 
     const themeState = useTheme();
 
     const handleDeletePlatform = (platform: WalletTab) => {
         setPlatformToDelete(platform);
+    }
+
+    
+    const handleConfirmDelete = () => {
+        const reqData = createPlatformEditRequest(platformToDelete?.id ?? "", walletTabs, "delete");
+        const formData = convertDataForRequest(reqData);
+        submit(formData, {
+            method: "post",
+            encType: "multipart/form-data",
+        });
+        setPlatformToDelete(null);
+        if (activeTab === platformToDelete?.platformName) {
+            setActiveTab("Summary");
+        }
     }
 
     if (!isOpen) return null;
@@ -64,9 +84,10 @@ export default function AddPlatformModal({
                         <ModalButton type="submit" themeState={themeState} disabled={Object.values(isInputInvalid).some(Boolean)}>Add Platform</ModalButton>
                     </div>
                     {platformToDelete &&
-                        <DeleteConfirmationModal walletTabs={walletTabs} platformToDelete={platformToDelete} closeModal={() => setPlatformToDelete(null)} allAssets={allAssets} />}
+                        <DeleteConfirmationModal handleConfirmDelete={handleConfirmDelete} objectToDelete={platformToDelete} closeModal={() => setPlatformToDelete(null)} allAssets={allAssets} />}
                 </Form>
             </div >
         </ModalWrapper >
     )
 }
+

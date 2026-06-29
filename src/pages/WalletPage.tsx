@@ -38,6 +38,7 @@ import { parseWalletAssetRequest, parseWalletPlatformRequest } from "../utils/pa
 import RubbishBinButton from "../components/Wallet_components/RubbishBinButton";
 import actionAssetFirebase from "../services/api/actionAssetFirebase";
 import actionPlatformFirebase from "../services/api/actionPlatformFirebase";
+import DeleteConfirmationModal from "../components/Modals/DeleteConfirmationModal";
 
 export default function WalletPage() {
     const currency = useCurrency();
@@ -56,7 +57,7 @@ export default function WalletPage() {
     }, { key: "name", direction: "ascending" });
 
     const { visibleAssets, handleSearch } = useFilter({ sortedData });
-    const { activeTab, handleTabSwitch, actualVisibleAssets } = useTabSwitch<MarketsType, WalletAsset>
+    const { activeTab, handleTabSwitch, actualVisibleAssets, setActiveTab } = useTabSwitch<MarketsType, WalletAsset>
         (
             "Summary",
             visibleAssets,
@@ -69,6 +70,7 @@ export default function WalletPage() {
 
     const [showAssetModal, setShowAssetModal] = useState(false);
     const [showPlatformModal, setShowPlatformModal] = useState(false);
+    const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState<string | null>(null);
 
     const [assetFormData, setAssetFormData] = useState<WalletAssetEditRequest | null>(null);
     const [editStatus, setEditStatus] = useState<EditDataStatus>("add");
@@ -81,7 +83,11 @@ export default function WalletPage() {
 
     const submit = useSubmit();
 
-    const handleDelete = async (assetId: string) => {
+    const handleDelete = (assetId: string) => {
+        setShowDeleteConfirmModal(assetId);
+    }
+
+    const deleteAsset = async (assetId: string) => {
         setEditStatus("delete");
         const reqData = createWalletAssetEditRequest(
             actualVisibleAssets,
@@ -96,6 +102,7 @@ export default function WalletPage() {
             method: "post",
             encType: "multipart/form-data",
         });
+        setShowDeleteConfirmModal(null);
     }
 
     const handleEdit = async (assetId: string) => {
@@ -141,7 +148,9 @@ export default function WalletPage() {
                         isOpen={showPlatformModal}
                         onClose={() => setShowPlatformModal(false)}
                         walletTabs={walletTabs}
-                        allAssets={assetsFirestore} />}
+                        allAssets={assetsFirestore} 
+                        setActiveTab={setActiveTab}
+                        activeTab={activeTab} />}
                 <SearchInput
                     handleSearch={handleSearch}
                     label={translations[language].walletPage.searchbarLabel}
@@ -188,6 +197,14 @@ export default function WalletPage() {
                                 </p>
                                 <p className="w-22 text-right shrink-0">{currency}</p>
                             </div>
+                            {showDeleteConfirmModal === walletAsset.id &&
+                                <DeleteConfirmationModal
+                                    objectToDelete={walletAsset}
+                                    closeModal={() => setShowDeleteConfirmModal(null)}
+                                    allAssets={actualVisibleAssets}
+                                    handleConfirmDelete={() => deleteAsset(walletAsset.id)}
+                                />
+                            }
                         </div>
                     )
                 })}
