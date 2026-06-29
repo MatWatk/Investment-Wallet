@@ -52,7 +52,7 @@ export default function DeleteConfirmationModal({
         else if ("amount" in objectToDelete) {
             return (
                 <div>
-                    <p className={`mt-2 text-start text-l ${themeState ? "text-violet-900" : "text-yellow-500"}`}>Are you sure you want to delete {objectToDelete.name} with amount {objectToDelete.amount}?</p>
+                    <p className={`mt-2 text-start text-l ${themeState ? "text-violet-900" : "text-yellow-500"}`}>Are you sure you want to delete <strong>{objectToDelete.name}</strong> with amount <strong>{objectToDelete.amount}</strong>?</p>
                 </div>
             )
         }
