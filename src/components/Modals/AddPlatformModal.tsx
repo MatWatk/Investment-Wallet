@@ -22,9 +22,10 @@ export default function AddPlatformModal({
     allAssets: WalletAsset[];
 }) {
     const [platformToDelete, setPlatformToDelete] = useState<WalletTab | null>(null);
+    const [isInputInvalid, setIsInputInvalid] = useState<Record<string, boolean>>({});
 
     const themeState = useTheme();
-    
+
     const handleDeletePlatform = (platform: WalletTab) => {
         setPlatformToDelete(platform);
     }
@@ -39,7 +40,14 @@ export default function AddPlatformModal({
                     <input type="hidden" name="actionRequestType" value="platform" />
                     <input type="hidden" name="editStatus" value="add" />
                     <input type="hidden" name="platformId" value="" />
-                    <ModalInput themeState={themeState} labelText="Platform Name" inputType="text" name="platformName" />
+                    <ModalInput
+                        themeState={themeState}
+                        labelText="Platform Name"
+                        inputType="text"
+                        name="platformName"
+                        existingPlatforms={walletTabs}
+                        invalidInput={isInputInvalid}
+                        setInvalidInput={setIsInputInvalid} />
                     <div>
                         <h2 className={`text-start font-bold ${themeState ? "text-violet-900" : "text-yellow-500"}`}>Platforms:</h2>
                         <ol>
@@ -53,10 +61,10 @@ export default function AddPlatformModal({
                     </div>
                     <div className="mt-2 flex flex-row gap-4 justify-evenly">
                         <ModalButton onClick={onClose} themeState={themeState}>Close</ModalButton>
-                        <ModalButton type="submit" themeState={themeState}>Add Platform</ModalButton>
+                        <ModalButton type="submit" themeState={themeState} disabled={Object.values(isInputInvalid).some(Boolean)}>Add Platform</ModalButton>
                     </div>
-                    {platformToDelete && 
-                    <DeleteConfirmationModal walletTabs={walletTabs} platformToDelete={platformToDelete} closeModal={() => setPlatformToDelete(null)} allAssets={allAssets} />}
+                    {platformToDelete &&
+                        <DeleteConfirmationModal walletTabs={walletTabs} platformToDelete={platformToDelete} closeModal={() => setPlatformToDelete(null)} allAssets={allAssets} />}
                 </Form>
             </div >
         </ModalWrapper >

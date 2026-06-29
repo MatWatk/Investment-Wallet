@@ -1,13 +1,16 @@
-import type { Dispatch, SetStateAction } from "react";
+import { useMemo, type Dispatch, type SetStateAction } from "react";
+import type { WalletTab } from "../../types/WalletTypes";
 
 export default function ModalInput({
     themeState,
     labelText,
     inputType = "text",
     defaultValue,
-    name, disabled,
+    name, 
+    disabled,
     invalidInput,
     setInvalidInput,
+    existingPlatforms,
     }: {
         themeState: boolean,
         labelText: string,
@@ -17,17 +20,29 @@ export default function ModalInput({
         disabled?: boolean,
         invalidInput?: Record<string, boolean>,
         setInvalidInput?: Dispatch<SetStateAction<Record<string, boolean>>>,
+        existingPlatforms?: WalletTab[],
     }) {
+        const existingPlatformNames = useMemo(() => {
+            return existingPlatforms?.map(platform => platform.platformName.toLowerCase()) ?? [];
+        }, [existingPlatforms]);
+
 
         const handleChange = (value: string, hasBadInput: boolean) => {
             if (!setInvalidInput) {
                 return;
             }
-
-            setInvalidInput((currentState) => ({
-                ...currentState,
-                [name]: inputType === "number" && (hasBadInput || value === "" || Number(value) <= 0),
-            }));
+            if (inputType === "number" && (hasBadInput || value === "" || Number(value) <= 0)) {
+                setInvalidInput((currentState) => ({
+                    ...currentState,
+                    [name]: true,
+                }));
+            }
+            if (inputType === "text" && name === "platformName"){
+                setInvalidInput((currentState) => ({
+                    ...currentState,
+                    [name]: existingPlatformNames.includes(value.toLowerCase()),
+                }));
+            }
         };
 
     return (
@@ -43,7 +58,8 @@ export default function ModalInput({
                 onInput={(event) => handleChange(event.currentTarget.value, event.currentTarget.validity.badInput)}
                 className={`w-full rounded-md border ${themeState ? "border-gray-300 bg-white text-gray-900 focus:ring-violet-500" : "border-gray-600 bg-gray-800 text-gray-100 focus:ring-yellow-500"} px-3 py-2 focus:outline-none focus:ring-2 ${disabled ? "opacity-30 cursor-not-allowed" : ""} ${invalidInput?.[name] ? "border-red-500" : ""}`}
             />
-            {invalidInput?.[name] && <span className="text-red-500 text-sm">Amount must be greater than 0</span>}
+            {invalidInput?.[name] && inputType === "number" && <span className="text-red-500 text-sm">Amount must be greater than 0</span>}
+            {invalidInput?.[name] && name === "platformName" && <span className="text-red-500 text-sm">This platform name already exists</span>}
         </div>
     )
 }
