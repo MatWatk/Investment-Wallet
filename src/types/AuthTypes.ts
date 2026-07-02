@@ -5,6 +5,7 @@ export interface InputFieldProps {
     type: InputType;
     placeholder?: string;
     label?: string;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export interface AuthSwitchProps {

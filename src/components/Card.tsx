@@ -17,7 +17,7 @@ export default function Card({ children }: { children: React.ReactNode }) {
                         selectValues={["english", "polish"]} />
                     <ThemeSwitch />
                 </div>
-                <div className={`p-8 rounded-md shadow-md flex flex-col items-center gap-6 min-w-[25%] ${themeState ? "bg-violet-100 border-violet-900" : "bg-gray-700 text-yellow-600"}`}>
+                <div className={`min-w-1/4 p-8 rounded-md shadow-md flex flex-col items-center gap-6 ${themeState ? "bg-violet-100 border-violet-900" : "bg-gray-700 text-yellow-600"}`}>
                     {children}
                 </div>
             </div >
