@@ -20,7 +20,7 @@ export default function LoginPage() {
 
     useEffect(() => {
         setHideError(false);
-    },[actionData])
+    }, [actionData])
 
     const isSubmitting = navigation.state === 'submitting';
     return (
@@ -33,7 +33,7 @@ export default function LoginPage() {
                     <InputField id="password" type="password" placeholder={translations[language].login.passwordPlaceholder} />
                 </InputFieldsWrapper>
                 {actionData?.error && !hideError && (
-                    <div className="text-red-500">{actionData.error}</div>
+                    <div className="flex justify-center text-red-500">{actionData.error}</div>
                 )}
                 <SubmitButton disabled={isSubmitting} text={isSubmitting ? translations[language].login.loginProcessing : translations[language].login.submitButton} />
                 <AuthSwitch link="/signup" />
@@ -46,19 +46,13 @@ export async function action({ request }: { request: Request }) {
     const formData = await request.formData();
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
-    try{
+    try {
         await login(email, password);
         return redirect('/');
     } catch (error) {
         if (error instanceof Error) {
-            if (error.message.includes('auth/user-not-found')) {
-                return { error: 'User not found.' };
-            }
-            else if (error.message.includes('auth/wrong-password')) {
-                return { error: 'Incorrect password.' };
-            }
-            else if (error.message.includes('auth/invalid-email')) {
-                return { error: 'Invalid email address.' };
+            if (error.message.includes('auth/invalid-credential')) {
+                return { error: 'Incorrect password or email.' };
             }
             else if (error.message.includes('auth/network-request-failed')) {
                 return { error: 'Network error. Please check your internet connection and try again.' };
