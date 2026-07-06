@@ -9,17 +9,32 @@ import AuthSwitch from '../../components/Auth_components/AuthSwitch';
 
 import { useLanguage } from "../../hooks/useLanguage";
 import { translations } from "../../constants/translations";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import authSingup from '../../services/api/authSingup';
 
 export default function SignupPage() {
     const language = useLanguage();
-    const [providedValue, setProvidedValue] = useState<string | null>(null);
-    const [confirmedValue, setConfirmedValue] = useState<string | null>(null);
-    const actionData = useActionData() as { error?: string } | null;
+    const [providedValue, setProvidedValue] = useState<string>('');
+    const [confirmedValue, setConfirmedValue] = useState<string>('');
+    const actionData = useActionData();
 
-    const valuesDoesntMatch = providedValue !== confirmedValue && (providedValue !== null && confirmedValue !== null);
+    const [hideError, setHideError] = useState(false);
 
+    useEffect(() => {
+        setHideError(false);
+    }, [actionData])
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
+        setHideError(true);
+        if (id === "password") {
+            setProvidedValue(e.target.value);
+        } else if (id === "confirm-password") {
+            setConfirmedValue(e.target.value);
+        }
+    }
+
+    const valuesDoesntMatch = providedValue !== confirmedValue && providedValue !== '' && confirmedValue !== '';
+    const backendErrorVisible = actionData?.error && !hideError;
     return (
         <Card>
             <AuthHeader title={translations[language].signup.title} />
@@ -28,14 +43,15 @@ export default function SignupPage() {
 
                 <InputFieldsWrapper>
                     <InputField id="email" type="email" label={translations[language].signup.emailPlaceholder} />
-                    <InputField onChange={(e) => setProvidedValue(e.target.value)} id="password" type="password" label={translations[language].signup.passwordPlaceholder} />
-                    <InputField onChange={(e) => setConfirmedValue(e.target.value)} id="confirm-password" type="password" label={translations[language].signup.confirmPasswordPlaceholder} />
+                    <InputField onChange={(e) => handleInputChange(e, "password")} id="password" type="password" label={translations[language].signup.passwordPlaceholder} />
+                    <InputField onChange={(e) => handleInputChange(e, "confirm-password")} id="confirm-password" type="password" label={translations[language].signup.confirmPasswordPlaceholder} />
+                    {(valuesDoesntMatch || backendErrorVisible) && 
                     <div className="flex min-h-10 w-full max-w-sm items-center justify-center px-1">
                         <div className="w-full text-center">
                             {valuesDoesntMatch && <p className="wrap-break-word text-sm leading-5 text-red-500">Values do not match</p>}
-                            {actionData?.error && <p className="wrap-break-word text-sm leading-5 text-red-500">{actionData.error}</p>}
+                            {backendErrorVisible && <p className="wrap-break-word text-sm leading-5 text-red-500">{actionData.error}</p>}
                         </div>
-                    </div>
+                    </div>}
                 </InputFieldsWrapper>
 
                 <SubmitButton disabled={valuesDoesntMatch} text={translations[language].signup.submitButton} />
@@ -55,7 +71,6 @@ export async function action({ request }: { request: Request }) {
         return redirect('/login');
     }
     catch (error) {
-        console.error('Error signing up:', error);
-        return { error: `Failed to sign up. Please try again. ${error}` };//TODO handle error
+        return { error: 'Failed to sign up. Please try again.' };
     }
 }

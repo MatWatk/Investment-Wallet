@@ -5,7 +5,7 @@ export default function InputField({ id, type, placeholder, label, onChange }: I
     const themeState = useTheme();
 
     return (
-        <div className="flex w-3/4 flex-col items-center gap-1">
+        <div className="flex min-w-60 flex-col items-center gap-1">
         {label && <label htmlFor={id} className="text-center text-sm">{label}</label>}
         <input
             id={id}
