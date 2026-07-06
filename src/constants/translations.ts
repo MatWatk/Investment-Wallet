@@ -17,6 +17,7 @@ export const translations: translationsType = {
             passwordPlaceholder: "Password",
             confirmPasswordPlaceholder: "Confirm Password",
             submitButton: "Sign Up",
+            submittingText: "Signing Up...",
             alreadyHaveAccount: "Already have an account?",
             login: "Login"
         },
@@ -68,6 +69,7 @@ export const translations: translationsType = {
             passwordPlaceholder: "Hasło",
             confirmPasswordPlaceholder: "Potwierdź hasło",
             submitButton: "Zarejestruj się",
+            submittingText: "Rejestracja...",
             alreadyHaveAccount: "Masz już konto?",
             login: "Zaloguj się"
         },

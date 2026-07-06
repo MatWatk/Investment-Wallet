@@ -1,4 +1,4 @@
-import { Form, redirect, useActionData } from 'react-router-dom'
+import { Form, redirect, useActionData, useNavigation } from 'react-router-dom'
 import Card from '../../components/Card'
 
 import AuthHeader from '../../components/Auth_components/AuthHeader';
@@ -17,10 +17,11 @@ export default function SignupPage() {
     const [providedValue, setProvidedValue] = useState<string>('');
     const [confirmedValue, setConfirmedValue] = useState<string>('');
     const actionData = useActionData();
+    const navigation = useNavigation();
 
     const [hideError, setHideError] = useState(false);
 
-    useEffect(() => {
+        useEffect(() => {
         setHideError(false);
     }, [actionData])
 
@@ -32,6 +33,8 @@ export default function SignupPage() {
             setConfirmedValue(e.target.value);
         }
     }
+
+    const isSubmitting = navigation.state === 'submitting';
 
     const valuesDoesntMatch = providedValue !== confirmedValue && providedValue !== '' && confirmedValue !== '';
     const backendErrorVisible = actionData?.error && !hideError;
@@ -54,7 +57,7 @@ export default function SignupPage() {
                     </div>}
                 </InputFieldsWrapper>
 
-                <SubmitButton disabled={valuesDoesntMatch} text={translations[language].signup.submitButton} />
+                <SubmitButton disabled={valuesDoesntMatch || isSubmitting} text={isSubmitting ? translations[language].signup.submittingText : translations[language].signup.submitButton} />
                 <AuthSwitch link="/login" />
 
             </Form>
