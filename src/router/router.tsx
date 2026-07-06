@@ -7,6 +7,7 @@ import AssetPricePage from "../pages/AssetsPricePage";
 import { loader as assetPriceLoader } from "../pages/AssetsPricePage";
 import Layout from "../components/DashboardLayout";
 import { action as walletAction } from "../pages/WalletPage";
+import { action as loginAction } from "../pages/login/LoginPage";
 
 export const router = createBrowserRouter([
     {
@@ -29,6 +30,7 @@ export const router = createBrowserRouter([
     {
         path: '/login',
         element: <LoginPage />,
+        action: loginAction,
     },
     {
         path: '/signup',

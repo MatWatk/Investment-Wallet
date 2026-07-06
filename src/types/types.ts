@@ -9,6 +9,7 @@ export type translationsType = {
             submitButton: string;
             dontHaveAccount: string;
             register: string;
+            loginProcessing: string;
         },
         signup: {
             title: string;

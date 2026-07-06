@@ -8,7 +8,8 @@ export const translations: translationsType = {
             passwordPlaceholder: "Password",
             submitButton: "Login",
             dontHaveAccount: "Don't have an account?",
-            register: "Register"
+            register: "Register",
+            loginProcessing: "Logging in..."
         },
         signup: {
             title: "Sign Up",
@@ -60,7 +61,8 @@ export const translations: translationsType = {
             passwordPlaceholder: "Hasło",
             submitButton: "Zaloguj się",
             dontHaveAccount: "Nie masz konta?",
-            register: "Zarejestruj się"
+            register: "Zarejestruj się",
+            loginProcessing: "Logowanie..."
         },
         signup: {
             title: "Zarejestruj się",
