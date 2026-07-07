@@ -3,13 +3,15 @@ import MoonIcon from "../../assets/moonIcon.png";
 
 import { translations } from "../../constants/translations";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { themeActions } from "../../store/themeSlice";
+import { useTheme } from "../../hooks/useTheme";
+import { useLanguage } from "../../hooks/useLanguage";
 
 export default function ThemeSwitch() {
     const dispatch = useDispatch();
-    const themeState = useSelector((state: { theme: { lightTheme: boolean } }) => state.theme.lightTheme);
-    const language = useSelector((state: { language: { language: string } }) => state.language.language);
+    const themeState = useTheme();
+    const language = useLanguage();
 
     const handleThemeChange = () => {
         dispatch(themeActions.toggleTheme());
@@ -17,7 +19,7 @@ export default function ThemeSwitch() {
     return (
         <div className="flex flex-col -translate-y-1 items-center">
             <label htmlFor="theme-select" className="text-xs  ">
-                {language.toLowerCase() === "english" ? translations.english.navBar.themeLabel : translations.polish.navBar.themeLabel}
+                {language === "english" ? translations.english.navBar.themeLabel : translations.polish.navBar.themeLabel}
             </label>
             <div className={`${themeState ? "" : "bg-gray-400"} rounded-full p-1`}>
                 <button id="theme-select" onClick={handleThemeChange}>
