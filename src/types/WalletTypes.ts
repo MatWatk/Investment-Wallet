@@ -20,6 +20,7 @@ export interface WalletPlatformEditRequest {
     platformName: string;
     editStatus?: EditDataStatus;
     actionRequestType?: "asset" | "platform";
+    loggedUser: string;
 }
 
 export interface WalletLoaderData {

@@ -35,6 +35,7 @@ export const createPlatformEditRequest = (
     platformId: string,
     allPlatforms: WalletTab[],
     editStatus: EditDataStatus,
+    loggedUser: string
 ): WalletPlatformEditRequest => {
     const currentPlatform = allPlatforms.find(platform => platform.id === platformId);
     if (!currentPlatform) {
@@ -45,6 +46,7 @@ export const createPlatformEditRequest = (
         platformName: currentPlatform.platformName,
         editStatus: editStatus,
         actionRequestType: "platform",
+        loggedUser: loggedUser,
     };
 }
 

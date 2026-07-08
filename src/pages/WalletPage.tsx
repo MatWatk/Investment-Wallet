@@ -240,6 +240,7 @@ export async function action({ request }: { request: Request }) {
     }
     if (formData.get("actionRequestType") === "platform") {
         const data = parseWalletPlatformRequest(formData);
+        console.log(data);
         await actionPlatformFirebase(data);
         return redirect("/");
     }

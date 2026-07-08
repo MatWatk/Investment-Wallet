@@ -70,11 +70,17 @@ export function parseWalletPlatformRequest(formData: FormData): WalletPlatformEd
     }
     const editStatus = get("editStatus");
     const actionRequestType = "platform";
+    
+    const loggedUser = get("loggedUser");
+    if (!loggedUser) {
+        throw new Response("Missing loggedUser", { status: 400 });
+    }
 
     return {
         platformId,
         platformName,
         editStatus: editStatus as "edit" | "add" | "delete",
         actionRequestType,
+        loggedUser,
     };
 }

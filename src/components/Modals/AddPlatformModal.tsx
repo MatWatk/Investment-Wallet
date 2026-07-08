@@ -10,6 +10,7 @@ import rubbishBin from "../../assets/rubbish_bin.png";
 import { useState } from "react";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import { convertDataForRequest, createPlatformEditRequest } from "../../utils/requests";
+import { auth } from "../../services/firebase/config";
 
 export default function AddPlatformModal({
     isOpen,
@@ -32,13 +33,15 @@ export default function AddPlatformModal({
 
     const themeState = useTheme();
 
+    const currentlyLoggedUser = auth.currentUser?.email || "";
+
     const handleDeletePlatform = (platform: WalletTab) => {
         setPlatformToDelete(platform);
     }
 
     
     const handleConfirmDelete = () => {
-        const reqData = createPlatformEditRequest(platformToDelete?.id ?? "", walletTabs, "delete");
+        const reqData = createPlatformEditRequest(platformToDelete?.id ?? "", walletTabs, "delete", currentlyLoggedUser);
         const formData = convertDataForRequest(reqData);
         submit(formData, {
             method: "post",
@@ -58,6 +61,7 @@ export default function AddPlatformModal({
             <div>
                 <Form method="post" onSubmit={onClose} className="mt-4 flex flex-col gap-4">
                     <input type="hidden" name="actionRequestType" value="platform" />
+                    <input type="hidden" name="loggedUser" value={currentlyLoggedUser} />
                     <input type="hidden" name="editStatus" value="add" />
                     <input type="hidden" name="platformId" value="" />
                     <ModalInput
