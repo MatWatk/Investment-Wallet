@@ -36,6 +36,11 @@ export function parseWalletAssetRequest(formData: FormData): WalletAssetEditRequ
         }
     }
 
+    const loggedUser = get("loggedUser");
+    if (!loggedUser) {
+        throw new Response("Missing loggedUser", { status: 400 });
+    }
+
     return {
         name,
         amount,
@@ -47,6 +52,7 @@ export function parseWalletAssetRequest(formData: FormData): WalletAssetEditRequ
         assetId,
         defaultData,
         actionRequestType: "asset",
+        loggedUser,
     };
 }
 

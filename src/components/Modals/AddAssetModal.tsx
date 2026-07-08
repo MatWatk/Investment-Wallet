@@ -10,6 +10,7 @@ import { Form } from "react-router-dom";
 import { assets, currencies } from "../../constants/assets";
 import type { EditDataStatus, WalletAssetEditRequest, WalletTab } from "../../types/WalletTypes";
 import { useState } from "react";
+import { auth } from "../../services/firebase/config";
 
 export default function AddAssetModal({
     isOpen,
@@ -43,6 +44,7 @@ export default function AddAssetModal({
             <ModalHeader title={currentEditStatus === "edit" ? "Edit Asset" : "Add Asset"} themeState={themeState} />
             <Form method="post" onSubmit={onClose} className="mt-4 flex flex-col gap-4">
                 <input type="hidden" name="editStatus" value={currentEditStatus} />
+                <input type="hidden" name="loggedUser" value={auth.currentUser?.email || ""} />
                 <input type="hidden" name="assetId" value={defaultData?.assetId || ""} />
                 <input type="hidden" name="defaultData" value={defaultData ? JSON.stringify(defaultData) : ""} />
                 <input type="hidden" name="actionRequestType" value="asset" />

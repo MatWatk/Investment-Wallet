@@ -10,7 +10,8 @@ export const createWalletAssetEditRequest =
         coingeckoData: CoinMarketData[],
         currency: "USD" | "PLN",
         assetId: string,
-        editStatus: EditDataStatus
+        editStatus: EditDataStatus,
+        loggedUser: string
     ): WalletAssetEditRequest => {
         const asset = actualVisibleAssets.find(asset => asset.id === assetId);
         if (!asset) {
@@ -26,13 +27,14 @@ export const createWalletAssetEditRequest =
             date: new Date().toISOString().split("T")[0],
             editStatus: editStatus,
             actionRequestType: "asset",
+            loggedUser: loggedUser,
         });
     }
 
 export const createPlatformEditRequest = (
     platformId: string,
     allPlatforms: WalletTab[],
-    editStatus: EditDataStatus
+    editStatus: EditDataStatus,
 ): WalletPlatformEditRequest => {
     const currentPlatform = allPlatforms.find(platform => platform.id === platformId);
     if (!currentPlatform) {

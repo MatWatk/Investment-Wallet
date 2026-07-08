@@ -12,6 +12,7 @@ export interface WalletAssetEditRequest {
     prevAmount?: number;
     defaultData?: WalletAssetEditRequest;
     actionRequestType?: "asset" | "platform";
+    loggedUser: string;
 }
 
 export interface WalletPlatformEditRequest {

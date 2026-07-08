@@ -39,12 +39,15 @@ import RubbishBinButton from "../components/Wallet_components/RubbishBinButton";
 import actionAssetFirebase from "../services/api/actionAssetFirebase";
 import actionPlatformFirebase from "../services/api/actionPlatformFirebase";
 import DeleteConfirmationModal from "../components/Modals/DeleteConfirmationModal";
+import { auth } from "../services/firebase/config";
 
 export default function WalletPage() {
     const currency = useCurrency();
     const language = useLanguage();
     const themeState = useTheme();
     useRevalidatePage(currency);
+
+    const loggedUser = auth.currentUser?.email || "";
 
     const { coingeckoData, assetsFirestore, walletTabs } = useLoaderData<WalletLoaderData>();
     useRevalidatePage(walletTabs.length);
@@ -95,7 +98,8 @@ export default function WalletPage() {
             coingeckoData,
             currency,
             assetId,
-            "delete"
+            "delete",
+            loggedUser,
         );
         const formData = convertDataForRequest(reqData);
         submit(formData, {
@@ -114,7 +118,8 @@ export default function WalletPage() {
             coingeckoData,
             currency,
             assetId,
-            "edit"
+            "edit",
+            loggedUser,
         );
         setAssetFormData(reqData);
     }
