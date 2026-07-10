@@ -1,19 +1,19 @@
 import { Form, redirect, useActionData, useNavigation } from 'react-router-dom'
-import Card from '../../components/Card'
+import Card from '../components/Card'
 
-import InputField from '../../components/Auth_components/InputField';
-import SubmitButton from '../../components/Auth_components/SubmitButton';
-import AuthSwitch from '../../components/Auth_components/AuthSwitch';
-import AuthHeader from '../../components/Auth_components/AuthHeader';
-import InputFieldsWrapper from '../../components/Auth_components/InputFieldsWrapper';
+import InputField from '../components/Auth_components/InputField';
+import SubmitButton from '../components/Auth_components/SubmitButton';
+import AuthSwitch from '../components/Auth_components/AuthSwitch';
+import AuthHeader from '../components/Auth_components/AuthHeader';
+import InputFieldsWrapper from '../components/Auth_components/InputFieldsWrapper';
 
-import { useLanguage } from "../../hooks/useLanguage";
-import { translations } from "../../constants/translations";
-import login from '../../services/api/authLogin';
+import { useLanguage } from "../hooks/useLanguage";
+import { translations } from "../constants/translations";
+import login from '../services/api/authLogin';
 import { useEffect, useState } from 'react';
-import { store } from '../../store';
-import { authActions } from '../../store/authSlice';
-import { useAuth } from '../../hooks/useAuth';
+import { store } from '../store';
+import { authActions } from '../store/authSlice';
+import { useAuth } from '../hooks/useAuth';
 
 export default function LoginPage() {
     const language = useLanguage();

@@ -1,13 +1,13 @@
 import { createBrowserRouter } from "react-router-dom";
 import WalletPage from "../pages/WalletPage";
 import { loader as walletLoader } from "../pages/WalletPage";
-import LoginPage from "../pages/login/LoginPage";
-import SignupPage, { action as signupAction } from "../pages/signup/SignupPage";
+import LoginPage from "../pages/LoginPage";
+import SignupPage, { action as signupAction } from "../pages/SignupPage";
 import AssetPricePage from "../pages/AssetsPricePage";
 import { loader as assetPriceLoader } from "../pages/AssetsPricePage";
 import Layout from "../components/DashboardLayout";
 import { action as walletAction } from "../pages/WalletPage";
-import { action as loginAction } from "../pages/login/LoginPage";
+import { action as loginAction } from "../pages/LoginPage";
 
 export const router = createBrowserRouter([
     {
