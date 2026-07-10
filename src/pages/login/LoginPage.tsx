@@ -27,23 +27,24 @@ export default function LoginPage() {
     }, [actionData])
 
     const isSubmitting = navigation.state === 'submitting';
+    const idleState = navigation.state === 'idle';
     return (
         <Card>
             <AuthHeader title={translations[language].login.title} />
-
-            {isAuthenticated && user && (
-                <div className="mb-4 text-center text-sm text-green-600">
-                    Logged in as {user.email ?? user.uid}
-                </div>
-            )}
 
             <Form method="post" className="flex flex-col gap-4">
                 <InputFieldsWrapper>
                     <InputField id="email" type="email" placeholder={translations[language].login.emailPlaceholder} />
                     <InputField id="password" type="password" placeholder={translations[language].login.passwordPlaceholder} />
                 </InputFieldsWrapper>
-                {actionData?.error && !hideError && (
+                {actionData?.error && !hideError && idleState && (
                     <div className="flex justify-center text-red-500">{actionData.error}</div>
+                )}
+
+                {isAuthenticated && user && (
+                    <div className="mb-4 text-center text-sm text-green-600">
+                        Logged in as {user.email ?? user.uid}
+                    </div>
                 )}
                 <SubmitButton disabled={isSubmitting} text={isSubmitting ? translations[language].login.loginProcessing : translations[language].login.submitButton} />
                 <AuthSwitch link="/signup" />
