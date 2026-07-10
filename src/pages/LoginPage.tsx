@@ -42,8 +42,8 @@ export default function LoginPage() {
                 )}
 
                 {isAuthenticated && user && (
-                    <div className="mb-4 text-center text-sm text-green-600">
-                        Logged in as {user.email ?? user.uid}
+                    <div className="text-center text-sm text-green-600">
+                        Logged successfully. Please wait...
                     </div>
                 )}
                 <SubmitButton disabled={isSubmitting} text={isSubmitting ? translations[language].login.loginProcessing : translations[language].login.submitButton} />
