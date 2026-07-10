@@ -34,6 +34,7 @@ export interface WalletAsset {
     name: string;
     amount: number;
     market: MarketsType;
+    loggedUser: string;
 }
 
 export type MarketsType = "Summary" | "Binance" | "Kanga" | "ByBit" | "Physical";
@@ -41,6 +42,7 @@ export type MarketsType = "Summary" | "Binance" | "Kanga" | "ByBit" | "Physical"
 export interface WalletTab {
     id: string;
     platformName: MarketsType;
+    loggedUser: string;
 }
 
 export interface SummaryAssets {

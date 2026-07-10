@@ -26,7 +26,7 @@ import type { WalletLoaderData } from "../types/WalletTypes";
 import { translations } from "../constants/translations";
 import SummaryBar from "../components/Wallet_components/SummaryBar";
 import AssetButton from "../components/Wallet_components/AssetButton";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import AddAssetModal from "../components/Modals/AddAssetModal";
 import AddPlatformModal from "../components/Modals/AddPlatformModal";
 
@@ -51,13 +51,28 @@ export default function WalletPage() {
 
     const { coingeckoData, assetsFirestore, walletTabs } = useLoaderData<WalletLoaderData>();
     useRevalidatePage(walletTabs.length);
+
+    const filterTabsForUser = useMemo(() => {
+        return walletTabs.filter(tab => tab.loggedUser === loggedUser);
+    }, [walletTabs, loggedUser]
+    );
+
     useRevalidatePage(assetsFirestore.length);
 
-    const { sortedData, requestSort, sortConfig } = useSortData<WalletAsset, "name" | "amount" | "value">(assetsFirestore, {
-        name: (asset) => asset.name,
-        amount: (asset) => asset.amount,
-        value: (asset) => findAssetPrice(assets, coingeckoData, asset) * asset.amount,
-    }, { key: "name", direction: "ascending" });
+    const filterDataForUser = useCallback(
+        (asset: WalletAsset) => asset.loggedUser === loggedUser,
+        [assetsFirestore, loggedUser]
+    );
+
+    const { sortedData, requestSort, sortConfig } = useSortData<WalletAsset, "name" | "amount" | "value">
+        (assetsFirestore, {
+            name: (asset) => asset.name,
+            amount: (asset) => asset.amount,
+            value: (asset) => findAssetPrice(assets, coingeckoData, asset) * asset.amount,
+        },
+            { key: "name", direction: "ascending" },
+            filterDataForUser
+        );
 
     const { visibleAssets, handleSearch } = useFilter({ sortedData });
     const { activeTab, handleTabSwitch, actualVisibleAssets, setActiveTab } = useTabSwitch<MarketsType, WalletAsset>
@@ -145,15 +160,15 @@ export default function WalletPage() {
                         isOpen={showAssetModal}
                         onClose={() => setShowAssetModal(false)}
                         openPlatformModal={() => setShowPlatformModal(true)}
-                        platforms={walletTabs}
+                        platforms={filterTabsForUser}
                         defaultData={assetFormData}
                         editStatus={editStatus} />}
                 {showPlatformModal &&
                     <AddPlatformModal
                         isOpen={showPlatformModal}
                         onClose={() => setShowPlatformModal(false)}
-                        walletTabs={walletTabs}
-                        allAssets={assetsFirestore} 
+                        walletTabs={filterTabsForUser}
+                        allAssets={assetsFirestore}
                         setActiveTab={setActiveTab}
                         activeTab={activeTab} />}
                 <SearchInput
@@ -161,7 +176,7 @@ export default function WalletPage() {
                     label={translations[language].walletPage.searchbarLabel}
                     placeholder={translations[language].walletPage.searchbarPlaceholder}
                 />
-                <TabsBar<WalletTab> tabs={walletTabs} activeTab={activeTab} handleTabSwitch={handleTabSwitch} />
+                <TabsBar<WalletTab> tabs={filterTabsForUser} activeTab={activeTab} handleTabSwitch={handleTabSwitch} />
                 <AssetTableHeader
                     name
                     amount
@@ -223,8 +238,8 @@ export async function loader() {
     const currency = store.getState().currency.currency;
     const [coingeckoData, assetsFirestore, walletTabs] = await Promise.all([
         loadAssetPrices<{ coingeckoId: string }[]>({ assets, currency }),
-        loadWalletAssets<WalletAsset[]>("wallet-edit-history", ["name", "amount", "market"]),
-        loadWalletAssets<WalletTab[]>("wallet-tabs", ["platformName"]),
+        loadWalletAssets<WalletAsset[]>("wallet-edit-history", ["name", "amount", "market", "loggedUser"]),
+        loadWalletAssets<WalletTab[]>("wallet-tabs", ["platformName", "loggedUser"]),
     ]);
 
     return { coingeckoData, assetsFirestore, walletTabs };
