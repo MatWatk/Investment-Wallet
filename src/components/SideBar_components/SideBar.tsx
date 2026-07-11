@@ -11,9 +11,9 @@ export default function SideBar() {
     return (
         <SideBarWrapper>
             <SideButtonsWrapper>
-                <SideBarButton link={'/'}>{language.toLowerCase() === "english" ? translations.english.sideBar.sideButtons[0] : translations.polish.sideBar.sideButtons[0]}</SideBarButton>
-                <SideBarButton link={'/assets-price-list'}>{language.toLowerCase() === "english" ? translations.english.sideBar.sideButtons[1] : translations.polish.sideBar.sideButtons[1]}</SideBarButton>
-                <SideBarButton link={'/current-prices'}>{language.toLowerCase() === "english" ? translations.english.sideBar.sideButtons[2] : translations.polish.sideBar.sideButtons[2]}</SideBarButton>
+                <SideBarButton link={'/'}>{language === "english" ? translations.english.sideBar.sideButtons[0] : translations.polish.sideBar.sideButtons[0]}</SideBarButton>
+                <SideBarButton link={'/assets-price-list'}>{language === "english" ? translations.english.sideBar.sideButtons[1] : translations.polish.sideBar.sideButtons[1]}</SideBarButton>
+                <SideBarButton link={'/current-prices'}>{language === "english" ? translations.english.sideBar.sideButtons[2] : translations.polish.sideBar.sideButtons[2]}</SideBarButton>
             </SideButtonsWrapper>
             <LogoutButton />
         </SideBarWrapper>
