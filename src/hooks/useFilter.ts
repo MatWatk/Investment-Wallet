@@ -1,16 +1,15 @@
 import { useMemo, useState } from "react";
 
-export default function useFilter<T extends {id: string} | {name: string}>({ sortedData }: { sortedData: T[] }) {
+export default function useFilter<T extends { id: string } | { name: string }>({ sortedData }: { sortedData: T[] }) {
     const [query, setQuery] = useState("");
+    console.log(sortedData)
 
     const visibleAssets = useMemo(() => {
         const normalizedQuery = query.trim().toLowerCase();
         if (!normalizedQuery) return sortedData;
 
         return sortedData.filter((asset) => {
-            if ("id" in asset) {
-                return asset.id.toLowerCase().includes(normalizedQuery);
-            } else if ("name" in asset) {
+            if ("name" in asset) {
                 return asset.name.toLowerCase().includes(normalizedQuery);
             }
             return false;
