@@ -43,6 +43,12 @@ export default function ModalInput({
                     [name]: existingPlatformNames.includes(value.toLowerCase()),
                 }));
             }
+            if (inputType === "number" && !hasBadInput && value !== "" && Number(value) > 0) {
+                setInvalidInput((currentState) => ({
+                    ...currentState,
+                    [name]: false,
+                }));
+            }
         };
 
     return (
