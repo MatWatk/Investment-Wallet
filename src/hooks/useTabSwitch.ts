@@ -1,12 +1,11 @@
 import { useMemo, useState } from 'react';
-import type { MarketsType, WalletAsset } from '../types/WalletTypes';
 
-export default function useTabSwitch<T, D extends { market: MarketsType } | { someFilteringTabsData: string }>
+export default function useTabSwitch<T, D extends { market: string }>
     (
         initialState: T,
         visibleAssets: D[],
         getTabValue: (asset: D) => string,
-        summaryTransformation?: (assets: D[]) => WalletAsset[]
+        summaryTransformation?: (assets: D[]) => D[]
     ) {
     const [activeTab, setActiveTab] = useState(initialState);
 

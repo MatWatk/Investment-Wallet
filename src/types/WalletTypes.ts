@@ -33,15 +33,13 @@ export interface WalletAsset {
     id: string;
     name: string;
     amount: number;
-    market: MarketsType;
+    market: string;
     loggedUser: string;
 }
 
-export type MarketsType = "Summary" | "Binance" | "Kanga" | "ByBit" | "Physical";
-
 export interface WalletTab {
     id: string;
-    platformName: MarketsType;
+    platformName: string;
     loggedUser: string;
 }
 

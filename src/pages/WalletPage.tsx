@@ -13,7 +13,7 @@ import useSortData from "../hooks/useSortData";
 import useFilter from "../hooks/useFilter";
 import useRevalidatePage from "../hooks/useRevalidatePage";
 
-import type { EditDataStatus, MarketsType, WalletAssetEditRequest, WalletTab } from "../types/WalletTypes";
+import type { EditDataStatus, WalletAssetEditRequest, WalletTab } from "../types/WalletTypes";
 import useTabSwitch from "../hooks/useTabSwitch";
 
 import type { WalletAsset } from "../types/WalletTypes";
@@ -75,7 +75,7 @@ export default function WalletPage() {
         );
 
     const { visibleAssets, handleSearch } = useFilter({ sortedData });
-    const { activeTab, handleTabSwitch, actualVisibleAssets, setActiveTab } = useTabSwitch<MarketsType, WalletAsset>
+    const { activeTab, handleTabSwitch, actualVisibleAssets, setActiveTab } = useTabSwitch<string, WalletAsset>
         (
             "Summary",
             visibleAssets,
