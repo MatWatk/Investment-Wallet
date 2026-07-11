@@ -2,6 +2,8 @@ import { redirect } from "react-router-dom";
 import type { Asset } from "../constants/assets";
 import type { CoinMarketData } from "../types/AssetTableTypes";
 import type { WalletAsset } from "../types/WalletTypes";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../services/firebase/config";
 
 export const formatPercent = (value: number | null | undefined) => {
     if (value == null) {
@@ -34,6 +36,15 @@ export const countTotalValue = (assets: WalletAsset[], assetList: Asset[], coing
         const price = findAssetPrice(assetList, coingeckoData, asset);
         return total + (asset.amount * price);
     }, 0);
+}
+
+export function getCurrentUser() : Promise<string | null> {
+    return new Promise((resolve) => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            unsubscribe();
+            resolve(user?.email ?? null);
+        });
+    });
 }
 
 export const checkAuth = (loggedUser: string | undefined | null) => {

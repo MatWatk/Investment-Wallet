@@ -24,8 +24,7 @@ import { store } from "../store/index";
 import { useCurrency } from "../hooks/useCurrency";
 import { useLanguage } from "../hooks/useLanguage";
 import { translations } from "../constants/translations";
-import { checkAuth } from "../utils/utils";
-import { auth } from "../services/firebase/config";
+import { checkAuth, getCurrentUser } from "../utils/utils";
 
 
 export default function AssetPricePage() {
@@ -83,8 +82,9 @@ export default function AssetPricePage() {
     )
 }
 
-export function loader() {
-    checkAuth(auth.currentUser?.email);
+export async function loader() {
+    const loggedUser = await getCurrentUser();
+    checkAuth(loggedUser);
     const currency = store.getState().currency.currency;
 
     return loadAssetPrices<{ coingeckoId: string }[]>({ assets, currency });
