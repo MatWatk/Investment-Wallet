@@ -1,3 +1,4 @@
+import { redirect } from "react-router-dom";
 import type { Asset } from "../constants/assets";
 import type { CoinMarketData } from "../types/AssetTableTypes";
 import type { WalletAsset } from "../types/WalletTypes";
@@ -33,4 +34,10 @@ export const countTotalValue = (assets: WalletAsset[], assetList: Asset[], coing
         const price = findAssetPrice(assetList, coingeckoData, asset);
         return total + (asset.amount * price);
     }, 0);
+}
+
+export const checkAuth = (loggedUser: string | undefined | null) => {
+    if (!loggedUser) {
+        throw redirect("/login");
+    }
 }

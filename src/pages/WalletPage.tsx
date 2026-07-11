@@ -17,7 +17,7 @@ import type { EditDataStatus, MarketsType, WalletAssetEditRequest, WalletTab } f
 import useTabSwitch from "../hooks/useTabSwitch";
 
 import type { WalletAsset } from "../types/WalletTypes";
-import { summaryTransformation, findAssetPrice, countTotalValue } from "../utils/utils";
+import { summaryTransformation, findAssetPrice, countTotalValue, checkAuth } from "../utils/utils";
 import { convertDataForRequest, createWalletAssetEditRequest } from "../utils/requests";
 import { store } from "../store";
 import loadAssetPrices from "../services/api/loadAssetPrices";
@@ -235,6 +235,7 @@ export default function WalletPage() {
 }
 
 export async function loader() {
+    checkAuth(auth.currentUser?.email);
     const currency = store.getState().currency.currency;
     const [coingeckoData, assetsFirestore, walletTabs] = await Promise.all([
         loadAssetPrices<{ coingeckoId: string }[]>({ assets, currency }),
