@@ -4,7 +4,7 @@ import ModalInput from "./ModalInput";
 
 import { useTheme } from "../../hooks/useTheme";
 import { Form, useSubmit } from "react-router-dom";
-import type { MarketsType, WalletAsset, WalletTab } from "../../types/WalletTypes";
+import type { WalletAsset, WalletTab } from "../../types/WalletTypes";
 
 import rubbishBin from "../../assets/rubbish_bin.png";
 import { useState } from "react";
@@ -24,8 +24,8 @@ export default function AddPlatformModal({
     onClose: () => void;
     walletTabs: WalletTab[];
     allAssets: WalletAsset[];
-    setActiveTab: React.Dispatch<React.SetStateAction<MarketsType>>;
-    activeTab: MarketsType;
+    setActiveTab: React.Dispatch<React.SetStateAction<string>>;
+    activeTab: string;
 }) {
     const [platformToDelete, setPlatformToDelete] = useState<WalletTab | null>(null);
     const [isInputInvalid, setIsInputInvalid] = useState<Record<string, boolean>>({});
