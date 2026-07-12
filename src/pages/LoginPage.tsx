@@ -11,13 +11,10 @@ import { useLanguage } from "../hooks/useLanguage";
 import { translations } from "../constants/translations";
 import login from '../services/api/authLogin';
 import { useEffect, useState } from 'react';
-import { store } from '../store';
-import { authActions } from '../store/authSlice';
-import { useAuth } from '../hooks/useAuth';
+import { auth } from '../services/firebase/config';
 
 export default function LoginPage() {
     const language = useLanguage();
-    const { user, isAuthenticated } = useAuth();
     const navigation = useNavigation();
     const [hideError, setHideError] = useState(false);
     const actionData = useActionData();
@@ -34,14 +31,14 @@ export default function LoginPage() {
 
             <Form method="post" className="flex flex-col gap-4">
                 <InputFieldsWrapper>
-                    <InputField id="email" type="email" placeholder={translations[language].login.emailPlaceholder} />
-                    <InputField id="password" type="password" placeholder={translations[language].login.passwordPlaceholder} />
+                    <InputField onChange={() => setHideError(true)} id="email" type="email" placeholder={translations[language].login.emailPlaceholder} />
+                    <InputField onChange={() => setHideError(true)} id="password" type="password" placeholder={translations[language].login.passwordPlaceholder} />
                 </InputFieldsWrapper>
                 {actionData?.error && !hideError && idleState && (
                     <div className="flex justify-center text-red-500">{actionData.error}</div>
                 )}
 
-                {isAuthenticated && user && (
+                {auth.currentUser && (
                     <div className="text-center text-sm text-green-600">
                         Logged successfully. Please wait...
                     </div>
@@ -58,17 +55,9 @@ export async function action({ request }: { request: Request }) {
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
     try {
-        const user = await login(email, password);
-        store.dispatch(authActions.setAuth({
-            isAuthenticated: true,
-            user: {
-                uid: user.uid,
-                email: user.email,
-            }
-        }));
+        await login(email, password);
         return redirect('/');
     } catch (error) {
-        store.dispatch(authActions.setAuth({ isAuthenticated: false, user: null }));
         if (error instanceof Error) {
             if (error.message.includes('auth/invalid-credential')) {
                 return { error: 'Incorrect password or email.' };
@@ -80,5 +69,6 @@ export async function action({ request }: { request: Request }) {
                 return { error: 'Failed to log in. Please try again.' };
             }
         }
+        throw error;
     }
 }
