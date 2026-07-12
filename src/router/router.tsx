@@ -19,11 +19,13 @@ export const router = createBrowserRouter([
                 element: <WalletPage />,
                 loader: walletLoader,
                 action: walletAction,
+                errorElement: <div>Error loading wallet data</div>
             },
             {
                 path: 'assets-price-list',
                 element: <AssetPricePage />,
                 loader: assetPriceLoader,
+                errorElement: <div>Error loading asset price data</div>
             },
         ]
     },

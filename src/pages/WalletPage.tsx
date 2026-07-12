@@ -250,6 +250,10 @@ export async function loader() {
 export async function action({ request }: { request: Request }) {
     const formData = await request.formData();
 
+    if(formData.get("actionRequestType") !== "asset" && formData.get("actionRequestType") !== "platform") {
+        throw new Response("Invalid actionRequestType", { status: 400 });
+    }
+
     if (formData.get("actionRequestType") === "asset") {
         const data = parseWalletAssetRequest(formData);
         await actionAssetFirebase(data);
@@ -257,7 +261,6 @@ export async function action({ request }: { request: Request }) {
     }
     if (formData.get("actionRequestType") === "platform") {
         const data = parseWalletPlatformRequest(formData);
-        console.log(data);
         await actionPlatformFirebase(data);
         return redirect("/");
     }

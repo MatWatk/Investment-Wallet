@@ -1,20 +1,29 @@
 import { db } from "../../services/firebase/config";
 import { collection, getDocs } from "firebase/firestore";
 
+type CollectionName =
+    | "wallet-edit-history"
+    | "wallet-tabs";
+
 export default async function loadWalletAssets<T>(
-    collectionName: string, 
+    collectionName: CollectionName,
     fetchedFields: string[]
 ): Promise<T[]> {
     const collectionRef = collection(db, collectionName);
+    try {
+        const querySnapshot = await getDocs(collectionRef);
+        const data = querySnapshot.docs.map(doc => {
+            const docData = doc.data();
+            const fieldData = Object.fromEntries(
+                fetchedFields.map(field => [field, docData[field]])
+            );
+            return { id: doc.id, ...fieldData } as T;
+        });
 
-    const querySnapshot = await getDocs(collectionRef);
-    const data = querySnapshot.docs.map(doc => {
-        const docData = doc.data();
-        const fieldData = Object.fromEntries(
-            fetchedFields.map(field => [field, docData[field]])
-        );
-        return { id: doc.id, ...fieldData } as T;
-    });
-
-    return data;
+        return data;
+    }
+    catch (error) {
+        console.error(error)
+        throw new Response('Failed to load data from collection', { status: 500 });
+    }
 }
