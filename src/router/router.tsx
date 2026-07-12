@@ -33,10 +33,12 @@ export const router = createBrowserRouter([
         path: '/login',
         element: <LoginPage />,
         action: loginAction,
+        errorElement: <div>Error loading login page</div>
     },
     {
         path: '/signup',
         element: <SignupPage />,
         action: signupAction,
+        errorElement: <div>Error loading signup page</div>
     },
 ]);

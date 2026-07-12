@@ -91,5 +91,6 @@ export async function action({ request }: { request: Request }) {
             return { error: 'Failed to sign up. Please try again.' };
             }
         }
+        throw error;
     }
 }
