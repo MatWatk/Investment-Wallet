@@ -1,74 +1,110 @@
-<<<<<<< HEAD
-# Investment-Wallet
-=======
-# React + TypeScript + Vite
+# Investment Wallet
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A portfolio web application for tracking cryptocurrency holdings across multiple platforms.
 
-Currently, two official plugins are available:
+The app includes authentication, wallet management, market price monitoring, filtering and sorting, and user-specific investment views.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Live status
 
+Active development. Core features are implemented and continuously improved.
 
-## Expanding the ESLint configuration
+## Core features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- User authentication (signup, login, logout) with Firebase Auth
+- Wallet management with add, edit, and delete flows
+- Platform-based portfolio organization (for example exchange accounts)
+- Live crypto market prices loaded from CoinGecko API
+- Asset search, sorting, and summary calculations
+- Route protection for authenticated views
+- Error boundaries for key routes
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Tech stack
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- React 19
+- TypeScript
+- Vite 8
+- React Router
+- Redux Toolkit
+- Firebase (Auth + Firestore)
+- Tailwind CSS
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Project structure
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The project follows a modular frontend architecture:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- src/pages: route-level screens and route actions/loaders
+- src/components: reusable UI and feature components
+- src/services: API and Firebase integration
+- src/hooks: custom hooks for shared behavior
+- src/store: global state slices and store setup
+- src/utils: helpers, parsers, and request builders
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
->>>>>>> 0c8616c (-Project setup,)
+## Getting started
+
+### 1. Install dependencies
+
+npm install
+
+### 2. Run in development
+
+npm run dev
+
+### 3. Build for production
+
+npm run build
+
+### 4. Preview production build locally
+
+npm run preview
+
+## Environment variables
+
+Create a .env file in the project root.
+
+Required:
+
+- VITE_COINGECKO_API_KEY
+
+Example:
+
+VITE_COINGECKO_API_KEY=your_api_key_here
+
+Note: Firebase configuration is currently defined in source code and can be migrated to environment variables for stricter production configuration.
+
+## Scripts
+
+- npm run dev: start local development server
+- npm run build: run TypeScript build and Vite production build
+- npm run lint: run ESLint
+- npm run preview: preview production output locally
+
+## Deploy to Vercel
+
+### Option A: Vercel dashboard
+
+1. Push the repository to GitHub.
+2. Import the repository in Vercel.
+3. Framework preset: Vite.
+4. Add environment variable in Vercel project settings:
+   - VITE_COINGECKO_API_KEY
+5. Deploy.
+
+### Option B: Vercel CLI
+
+1. Install CLI:
+   npm i -g vercel
+2. Run:
+   vercel
+3. For production:
+   vercel --prod
+
+## Next improvements
+
+- Unit and integration tests
+- End-to-end tests
+- CI pipeline for build and test automation
+- Additional portfolio analytics (for example profit/loss history)
+
+## Author
+
+Mateusz
