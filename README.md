@@ -59,9 +59,9 @@ npm run preview
 
 ## Environment variables
 
-Create a .env file in the project root.
+Create a .env.local file in the project root.
 
-Required:
+Local development (optional direct API fallback):
 
 - VITE_COINGECKO_API_KEY
 
@@ -69,7 +69,15 @@ Example:
 
 VITE_COINGECKO_API_KEY=your_api_key_here
 
-Note: Firebase configuration is currently defined in source code and can be migrated to environment variables for stricter production configuration.
+Production on Vercel (required):
+
+- COINGECKO_API_KEY
+
+Example (Vercel Project Settings -> Environment Variables):
+
+COINGECKO_API_KEY=your_api_key_here
+
+Note: In production, market data is fetched through a serverless endpoint at /api/markets, so the API key is not exposed to the browser.
 
 ## Scripts
 
@@ -86,7 +94,7 @@ Note: Firebase configuration is currently defined in source code and can be migr
 2. Import the repository in Vercel.
 3. Framework preset: Vite.
 4. Add environment variable in Vercel project settings:
-   - VITE_COINGECKO_API_KEY
+   - COINGECKO_API_KEY
 5. Deploy.
 
 ### Option B: Vercel CLI
