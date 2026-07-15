@@ -10,6 +10,10 @@ export type translationsType = {
             dontHaveAccount: string;
             register: string;
             loginProcessing: string;
+            successMessage: string;
+            invalidCredentialsError: string;
+            networkError: string;
+            genericError: string;
         },
         signup: {
             title: string;
@@ -21,6 +25,12 @@ export type translationsType = {
             submittingText: string;
             alreadyHaveAccount: string;
             login: string;
+            valuesDoNotMatch: string;
+            emailInUseError: string;
+            invalidEmailError: string;
+            weakPasswordError: string;
+            networkError: string;
+            genericError: string;
         },
         assetPricePage: {
             title: string;
@@ -52,6 +62,54 @@ export type translationsType = {
             summaryBar: string;
             addAssetButton: string;
             addPlatform: string;
+            editButton: string;
+            summaryTab: string;
+        },
+        modals: {
+            addAsset: {
+                titleEdit: string;
+                titleAdd: string;
+                assetName: string;
+                amount: string;
+                price: string;
+                currency: string;
+                platform: string;
+                addPlatform: string;
+                date: string;
+                close: string;
+                submitEdit: string;
+                submitAdd: string;
+            },
+            addPlatform: {
+                title: string;
+                platformName: string;
+                platformsList: string;
+                close: string;
+                submit: string;
+                deleteAlt: string;
+            },
+            deleteConfirmation: {
+                title: string;
+                connectedAssetWithAmount: string;
+                removeConnectedAssetsPrefix: string;
+                removeConnectedAssetsSuffix: string;
+                confirmPlatformDeletePrefix: string;
+                confirmPlatformDeleteSuffix: string;
+                confirmAssetDeletePrefix: string;
+                confirmAssetDeleteMiddle: string;
+                cancel: string;
+                confirm: string;
+            },
+            inputErrors: {
+                amountPositive: string;
+                platformExists: string;
+            }
+        },
+        routerErrors: {
+            walletData: string;
+            assetPriceData: string;
+            loginPage: string;
+            signupPage: string;
         }
     }
 }

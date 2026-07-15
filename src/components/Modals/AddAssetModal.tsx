@@ -11,6 +11,8 @@ import { assets, currencies } from "../../constants/assets";
 import type { EditDataStatus, WalletAssetEditRequest, WalletTab } from "../../types/WalletTypes";
 import { useState } from "react";
 import { auth } from "../../services/firebase/config";
+import { useLanguage } from "../../hooks/useLanguage";
+import { translations } from "../../constants/translations";
 
 export default function AddAssetModal({
     isOpen,
@@ -31,6 +33,7 @@ export default function AddAssetModal({
     const [isInputInvalid, setIsInputInvalid] = useState<Record<string, boolean>>({});
 
     const themeState = useTheme();
+    const language = useLanguage();
 
     const currentDate = new Date().toISOString().split("T")[0];
     const currentEditStatus = editStatus ?? "add";
@@ -41,7 +44,7 @@ export default function AddAssetModal({
 
     return (
         <ModalWrapper>
-            <ModalHeader title={currentEditStatus === "edit" ? "Edit Asset" : "Add Asset"} themeState={themeState} />
+            <ModalHeader title={currentEditStatus === "edit" ? translations[language].modals.addAsset.titleEdit : translations[language].modals.addAsset.titleAdd} themeState={themeState} />
             <Form method="post" onSubmit={onClose} className="mt-4 flex flex-col gap-4">
                 <input type="hidden" name="editStatus" value={currentEditStatus} />
                 <input type="hidden" name="loggedUser" value={auth.currentUser?.email || ""} />
@@ -58,7 +61,7 @@ export default function AddAssetModal({
                 )}
                 <ModalSelect
                     themeState={themeState}
-                    labelText="Asset Name"
+                    labelText={translations[language].modals.addAsset.assetName}
                     name="name"
                     options={assets.map((asset) => ({ value: asset.name, label: asset.name }))}
                     defaultValue={defaultData?.name}
@@ -66,7 +69,7 @@ export default function AddAssetModal({
                 />
                 <ModalInput
                     themeState={themeState}
-                    labelText="Amount"
+                    labelText={translations[language].modals.addAsset.amount}
                     inputType="number"
                     name="amount"
                     defaultValue={defaultData?.amount}
@@ -76,7 +79,7 @@ export default function AddAssetModal({
                 <ModalRowWrapper>
                     <ModalInput
                         themeState={themeState}
-                        labelText="Price"
+                        labelText={translations[language].modals.addAsset.price}
                         inputType="number"
                         name="price" defaultValue={defaultData?.price}
                         disabled={disableField}
@@ -85,7 +88,7 @@ export default function AddAssetModal({
                     />
                     <ModalSelect
                         themeState={themeState}
-                        labelText="Currency"
+                        labelText={translations[language].modals.addAsset.currency}
                         name="currency"
                         options={currencies.map((currency) => ({ value: currency, label: currency }))}
                         defaultValue={defaultData?.currency}
@@ -95,7 +98,7 @@ export default function AddAssetModal({
                 <ModalRowWrapper>
                     <ModalSelect
                         themeState={themeState}
-                        labelText="Platform"
+                        labelText={translations[language].modals.addAsset.platform}
                         name="market"
                         options={platforms.map((platform) => ({ value: platform.platformName, label: platform.platformName }))}
                         defaultValue={defaultData?.market}
@@ -104,24 +107,24 @@ export default function AddAssetModal({
                         type="button"
                         onClick={openPlatformModal}
                         themeState={themeState}>
-                        Add Platform
+                        {translations[language].modals.addAsset.addPlatform}
                     </ModalButton>
                 </ModalRowWrapper>
                 <ModalInput
                     themeState={themeState}
-                    labelText="Date"
+                    labelText={translations[language].modals.addAsset.date}
                     inputType="date"
                     name="date"
                     defaultValue={defaultData?.date || currentDate}
                     disabled={disableField}
                 />
-                <div className="mt-2 flex flex-row gap-4 justify-evenly">
-                    <ModalButton type="button" onClick={onClose} themeState={themeState}>Close</ModalButton>
+                <div className="mt-2 mb-2 flex flex-row gap-4 justify-evenly">
+                    <ModalButton type="button" onClick={onClose} themeState={themeState}>{translations[language].modals.addAsset.close}</ModalButton>
                     <ModalButton
                         type="submit"
                         themeState={themeState}
                         disabled={Object.values(isInputInvalid).some(Boolean)}>
-                        {currentEditStatus === "edit" ? "Edit Asset" : "Add Asset"}
+                        {currentEditStatus === "edit" ? translations[language].modals.addAsset.submitEdit : translations[language].modals.addAsset.submitAdd}
                     </ModalButton>
                 </div>
             </Form>

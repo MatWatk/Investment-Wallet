@@ -17,7 +17,7 @@ export default function LoginPage() {
     const language = useLanguage();
     const navigation = useNavigation();
     const [hideError, setHideError] = useState(false);
-    const actionData = useActionData();
+    const actionData = useActionData() as { errorKey?: "invalidCredentials" | "network" | "generic" } | undefined;
 
     useEffect(() => {
         setHideError(false);
@@ -25,6 +25,16 @@ export default function LoginPage() {
 
     const isSubmitting = navigation.state === 'submitting';
     const idleState = navigation.state === 'idle';
+
+    const loginErrorMessage =
+        actionData?.errorKey === "invalidCredentials"
+            ? translations[language].login.invalidCredentialsError
+            : actionData?.errorKey === "network"
+                ? translations[language].login.networkError
+                : actionData?.errorKey === "generic"
+                    ? translations[language].login.genericError
+                    : "";
+
     return (
         <Card>
             <AuthHeader title={translations[language].login.title} />
@@ -34,13 +44,13 @@ export default function LoginPage() {
                     <InputField onChange={() => setHideError(true)} id="email" type="email" placeholder={translations[language].login.emailPlaceholder} />
                     <InputField onChange={() => setHideError(true)} id="password" type="password" placeholder={translations[language].login.passwordPlaceholder} />
                 </InputFieldsWrapper>
-                {actionData?.error && !hideError && idleState && (
-                    <div className="flex justify-center text-red-500">{actionData.error}</div>
+                {actionData?.errorKey && !hideError && idleState && (
+                    <div className="flex justify-center text-red-500">{loginErrorMessage}</div>
                 )}
 
                 {auth.currentUser && (
                     <div className="text-center text-sm text-green-600">
-                        Logged successfully. Please wait...
+                        {translations[language].login.successMessage}
                     </div>
                 )}
                 <SubmitButton disabled={isSubmitting} text={isSubmitting ? translations[language].login.loginProcessing : translations[language].login.submitButton} />
@@ -60,13 +70,13 @@ export async function action({ request }: { request: Request }) {
     } catch (error) {
         if (error instanceof Error) {
             if (error.message.includes('auth/invalid-credential')) {
-                return { error: 'Incorrect password or email.' };
+                return { errorKey: 'invalidCredentials' };
             }
             else if (error.message.includes('auth/network-request-failed')) {
-                return { error: 'Network error. Please check your internet connection and try again.' };
+                return { errorKey: 'network' };
             }
             else {
-                return { error: 'Failed to log in. Please try again.' };
+                return { errorKey: 'generic' };
             }
         }
         throw error;

@@ -12,7 +12,7 @@ export default function Card({ children }: { children: React.ReactNode }) {
             <div className={`relative min-h-screen min-w-160 w-full ${themeState ? "text-violet-900 border-violet-900 bg-linear-to-l from-violet-300 to-white" : "bg-linear-to-t from-gray-700 to-gray-900 text-yellow-500"} flex flex-col items-center justify-center`}>
                 <div className="absolute top-4 right-4 flex flex-row items-center gap-4">
                     <SelectInput
-                        label="Language"
+                        type="language"
                         selectOptions={translations[language].navBar.languages}
                         selectValues={["english", "polish"]} />
                     <ThemeSwitch />

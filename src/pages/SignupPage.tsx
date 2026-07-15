@@ -16,7 +16,7 @@ export default function SignupPage() {
     const language = useLanguage();
     const [providedValue, setProvidedValue] = useState<string>('');
     const [confirmedValue, setConfirmedValue] = useState<string>('');
-    const actionData = useActionData();
+    const actionData = useActionData() as { errorKey?: "emailInUse" | "invalidEmail" | "weakPassword" | "network" | "generic" } | undefined;
     const navigation = useNavigation();
 
     const [hideError, setHideError] = useState(false);
@@ -37,7 +37,21 @@ export default function SignupPage() {
     const isSubmitting = navigation.state === 'submitting';
 
     const valuesDoesntMatch = providedValue !== confirmedValue && providedValue !== '' && confirmedValue !== '';
-    const backendErrorVisible = actionData?.error && !hideError;
+    const backendErrorVisible = actionData?.errorKey && !hideError;
+
+    const signupErrorMessage =
+        actionData?.errorKey === "emailInUse"
+            ? translations[language].signup.emailInUseError
+            : actionData?.errorKey === "invalidEmail"
+                ? translations[language].signup.invalidEmailError
+                : actionData?.errorKey === "weakPassword"
+                    ? translations[language].signup.weakPasswordError
+                    : actionData?.errorKey === "network"
+                        ? translations[language].signup.networkError
+                        : actionData?.errorKey === "generic"
+                            ? translations[language].signup.genericError
+                            : "";
+
     return (
         <Card>
             <AuthHeader title={translations[language].signup.title} />
@@ -51,8 +65,8 @@ export default function SignupPage() {
                     {(valuesDoesntMatch || backendErrorVisible) && 
                     <div className="flex min-h-10 w-full max-w-sm items-center justify-center px-1">
                         <div className="w-3/4 text-center">
-                            {valuesDoesntMatch && <p className="wrap-break-word text-sm leading-5 text-red-500">Values do not match</p>}
-                            {backendErrorVisible && <p className="wrap-break-word text-sm leading-5 text-red-500">{actionData.error}</p>}
+                            {valuesDoesntMatch && <p className="wrap-break-word text-sm leading-5 text-red-500">{translations[language].signup.valuesDoNotMatch}</p>}
+                            {backendErrorVisible && <p className="wrap-break-word text-sm leading-5 text-red-500">{signupErrorMessage}</p>}
                         </div>
                     </div>}
                 </InputFieldsWrapper>
@@ -76,19 +90,19 @@ export async function action({ request }: { request: Request }) {
     catch (error) {
         if (error instanceof Error) {
             if (error.message.includes('auth/email-already-in-use')) {
-                return { error: 'Email already in use. Please use a different email.' };
+                return { errorKey: 'emailInUse' };
             }
             else if (error.message.includes('auth/invalid-email')) {
-                return { error: 'Invalid email address. Please enter a valid email.' };
+                return { errorKey: 'invalidEmail' };
             }
             else if (error.message.includes('auth/weak-password')) {
-                return { error: 'Weak password. Please use a stronger password with at least 6 characters.' };
+                return { errorKey: 'weakPassword' };
             }
             else if (error.message.includes('auth/network-request-failed')) {
-                return { error: 'Network error. Please check your internet connection and try again.' };
+                return { errorKey: 'network' };
             }
             else {
-            return { error: 'Failed to sign up. Please try again.' };
+            return { errorKey: 'generic' };
             }
         }
         throw error;

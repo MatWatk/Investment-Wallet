@@ -20,8 +20,8 @@ export default function NavBar() {
                 <h1 className="truncate">{auth.currentUser?.email ?? ''}</h1>
             </div>
             <div className="ml-auto flex min-w-0 flex-wrap items-center justify-end gap-3 sm:gap-5">
-                <SelectInput label="Currency" selectOptions={currencies} selectValues={currencies} />
-                <SelectInput label="Language" selectOptions={language === "english" ? translations.english.navBar.languages : translations.polish.navBar.languages} selectValues={["english", "polish"]} />
+                <SelectInput type="currency" selectOptions={currencies} selectValues={currencies} />
+                <SelectInput type="language" selectOptions={language === "english" ? translations.english.navBar.languages : translations.polish.navBar.languages} selectValues={["english", "polish"]} />
                 <ThemeSwitch />
                 <ProfileButton />
             </div>

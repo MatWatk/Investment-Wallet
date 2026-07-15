@@ -11,6 +11,8 @@ import { useState } from "react";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import { convertDataForRequest, createPlatformEditRequest } from "../../utils/requests";
 import { auth } from "../../services/firebase/config";
+import { useLanguage } from "../../hooks/useLanguage";
+import { translations } from "../../constants/translations";
 
 export default function AddPlatformModal({
     isOpen,
@@ -32,6 +34,7 @@ export default function AddPlatformModal({
     const submit = useSubmit();
 
     const themeState = useTheme();
+    const language = useLanguage();
 
     const currentlyLoggedUser = auth.currentUser?.email || "";
 
@@ -57,7 +60,7 @@ export default function AddPlatformModal({
 
     return (
         <ModalWrapper>
-            <h2 className={`text-start font-bold ${themeState ? "text-violet-900" : "text-yellow-500"}`}>Add Platform</h2>
+            <h2 className={`text-start font-bold ${themeState ? "text-violet-900" : "text-yellow-500"}`}>{translations[language].modals.addPlatform.title}</h2>
             <div>
                 <Form method="post" onSubmit={onClose} className="mt-4 flex flex-col gap-4">
                     <input type="hidden" name="actionRequestType" value="platform" />
@@ -66,26 +69,26 @@ export default function AddPlatformModal({
                     <input type="hidden" name="platformId" value="" />
                     <ModalInput
                         themeState={themeState}
-                        labelText="Platform Name"
+                        labelText={translations[language].modals.addPlatform.platformName}
                         inputType="text"
                         name="platformName"
                         existingPlatforms={walletTabs}
                         invalidInput={isInputInvalid}
                         setInvalidInput={setIsInputInvalid} />
                     <div>
-                        <h2 className={`text-start font-bold ${themeState ? "text-violet-900" : "text-yellow-500"}`}>Platforms:</h2>
+                        <h2 className={`text-start font-bold ${themeState ? "text-violet-900" : "text-yellow-500"}`}>{translations[language].modals.addPlatform.platformsList}</h2>
                         <ol>
                             {walletTabs.map((tab) => (
                                 <li key={tab.id} className={`flex flex-row gap-4 items-center text-xl justify-start mt-2 ${themeState ? "text-violet-900" : "text-yellow-500"}`}>
                                     <p className="flex-1">{tab.platformName}</p>
-                                    <button type="button" onClick={() => handleDeletePlatform(tab)}><img className="w-6 h-6" src={rubbishBin} alt="Delete" /></button>
+                                    <button type="button" onClick={() => handleDeletePlatform(tab)}><img className="w-6 h-6" src={rubbishBin} alt={translations[language].modals.addPlatform.deleteAlt} /></button>
                                 </li>
                             ))}
                         </ol>
                     </div>
                     <div className="mt-2 flex flex-row gap-4 justify-evenly">
-                        <ModalButton onClick={onClose} themeState={themeState}>Close</ModalButton>
-                        <ModalButton type="submit" themeState={themeState} disabled={Object.values(isInputInvalid).some(Boolean)}>Add Platform</ModalButton>
+                        <ModalButton onClick={onClose} themeState={themeState}>{translations[language].modals.addPlatform.close}</ModalButton>
+                        <ModalButton type="submit" themeState={themeState} disabled={Object.values(isInputInvalid).some(Boolean)}>{translations[language].modals.addPlatform.submit}</ModalButton>
                     </div>
                     {platformToDelete &&
                         <DeleteConfirmationModal handleConfirmDelete={handleConfirmDelete} objectToDelete={platformToDelete} closeModal={() => setPlatformToDelete(null)} allAssets={allAssets} />}

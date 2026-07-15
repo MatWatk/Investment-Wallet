@@ -16,7 +16,7 @@ export default function ModalButton({
                 type={type}
                 onClick={onClick}
                 disabled={disabled}
-                className={`mt-4 border-2 rounded-lg min-w-28 h-10 ${disabled
+                className={`mt-4 border-2 rounded-lg min-w-28 h-14 ${disabled
                     ? themeState
                         ? "border-violet-300 text-violet-300 bg-gray-100 cursor-not-allowed opacity-60"
                         : "border-gray-500 text-gray-500 bg-gray-800 cursor-not-allowed opacity-60"

@@ -203,7 +203,7 @@ export default function WalletPage() {
                                         image={assets.find(a => a.name === walletAsset.name)?.image || ""} />
                                     {activeTab !== "Summary" &&
                                         <>
-                                            <AssetButton onClick={() => handleEdit(walletAsset.id)} big={false}>Edit</AssetButton>
+                                            <AssetButton onClick={() => handleEdit(walletAsset.id)} big={false}>{translations[language].walletPage.editButton}</AssetButton>
                                             <RubbishBinButton onClick={() => handleDelete(walletAsset.id)} />
                                         </>}
                                 </div>

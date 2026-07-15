@@ -8,6 +8,13 @@ import { loader as assetPriceLoader } from "../pages/AssetsPricePage";
 import Layout from "../components/DashboardLayout";
 import { action as walletAction } from "../pages/WalletPage";
 import { action as loginAction } from "../pages/LoginPage";
+import { useLanguage } from "../hooks/useLanguage";
+import { translations } from "../constants/translations";
+
+function RouterError({ type }: { type: keyof typeof translations.english.routerErrors }) {
+    const language = useLanguage();
+    return <div>{translations[language].routerErrors[type]}</div>;
+}
 
 export const router = createBrowserRouter([
     {
@@ -19,13 +26,13 @@ export const router = createBrowserRouter([
                 element: <WalletPage />,
                 loader: walletLoader,
                 action: walletAction,
-                errorElement: <div>Error loading wallet data</div>
+                errorElement: <RouterError type="walletData" />
             },
             {
                 path: 'assets-price-list',
                 element: <AssetPricePage />,
                 loader: assetPriceLoader,
-                errorElement: <div>Error loading asset price data</div>
+                errorElement: <RouterError type="assetPriceData" />
             },
         ]
     },
@@ -33,12 +40,12 @@ export const router = createBrowserRouter([
         path: '/login',
         element: <LoginPage />,
         action: loginAction,
-        errorElement: <div>Error loading login page</div>
+        errorElement: <RouterError type="loginPage" />
     },
     {
         path: '/signup',
         element: <SignupPage />,
         action: signupAction,
-        errorElement: <div>Error loading signup page</div>
+        errorElement: <RouterError type="signupPage" />
     },
 ]);
