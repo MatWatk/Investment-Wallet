@@ -53,7 +53,7 @@ export default function LoginPage() {
                         {translations[language].login.successMessage}
                     </div>
                 )}
-                <SubmitButton disabled={isSubmitting} text={isSubmitting ? translations[language].login.loginProcessing : translations[language].login.submitButton} />
+                <SubmitButton disabled={isSubmitting || !!auth.currentUser} text={isSubmitting ? translations[language].login.loginProcessing : translations[language].login.submitButton} />
                 <AuthSwitch link="/signup" />
             </Form>
         </Card>

@@ -1,10 +1,11 @@
 import NavBar from "../components/NavBar_components/NavBar";
 import SideBar from "./SideBar_components/SideBar";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigation } from "react-router-dom";
 
 import { useTheme } from "../hooks/useTheme";
 
 export default function Layout() {
+    const navigation = useNavigation();
     const themeState = useTheme();
 
     return (
@@ -15,6 +16,9 @@ export default function Layout() {
                 <SideBar />
 
                 <main className="flex-1 min-w-0 overflow-y-auto overflow-x-hidden p-6">
+                    {navigation.state === "loading" && (
+                            <p className={`${themeState ? "text-violet-400" : "text-yellow-400"} text-2xl flex items-center`}>Loading...</p>
+                    )}
                     <Outlet />
                 </main>
             </div>

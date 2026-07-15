@@ -1,12 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
-import WalletPage from "../pages/WalletPage";
-import { loader as walletLoader } from "../pages/WalletPage";
 import LoginPage from "../pages/LoginPage";
-import SignupPage, { action as signupAction } from "../pages/SignupPage";
-import AssetPricePage from "../pages/AssetsPricePage";
-import { loader as assetPriceLoader } from "../pages/AssetsPricePage";
 import Layout from "../components/DashboardLayout";
-import { action as walletAction } from "../pages/WalletPage";
 import { action as loginAction } from "../pages/LoginPage";
 import { useLanguage } from "../hooks/useLanguage";
 import { translations } from "../constants/translations";
@@ -23,15 +17,25 @@ export const router = createBrowserRouter([
         children: [
             {
                 index: true,
-                element: <WalletPage />,
-                loader: walletLoader,
-                action: walletAction,
+                lazy: async () => {
+                    const module = await import('../pages/WalletPage');
+                    return {
+                        Component: module.default,
+                        loader: module.loader,
+                        action: module.action
+                    };
+                },
                 errorElement: <RouterError type="walletData" />
             },
             {
                 path: 'assets-price-list',
-                element: <AssetPricePage />,
-                loader: assetPriceLoader,
+                lazy: async () => {
+                    const module = await import('../pages/AssetsPricePage');
+                    return {
+                        Component: module.default,
+                        loader: module.loader
+                    };
+                },
                 errorElement: <RouterError type="assetPriceData" />
             },
         ]
@@ -44,8 +48,13 @@ export const router = createBrowserRouter([
     },
     {
         path: '/signup',
-        element: <SignupPage />,
-        action: signupAction,
+        lazy: async () => {
+            const module = await import('../pages/SignupPage');
+            return {
+                Component: module.default,
+                action: module.action
+            };
+        },
         errorElement: <RouterError type="signupPage" />
     },
 ]);
