@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 
 export default function useFilter<T extends { id: string } | { name: string }>({ sortedData }: { sortedData: T[] }) {
     const [query, setQuery] = useState("");
-    console.log(sortedData)
 
     const visibleAssets = useMemo(() => {
         const normalizedQuery = query.trim().toLowerCase();
