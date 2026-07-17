@@ -240,8 +240,8 @@ export async function loader() {
     const currency = store.getState().currency.currency;
     const [coingeckoData, assetsFirestore, walletTabs] = await Promise.all([
         loadAssetPrices<{ coingeckoId: string }[]>({ assets, currency }),
-        loadWalletAssets<WalletAsset[]>("wallet-edit-history", ["name", "amount", "market", "loggedUser"]),
-        loadWalletAssets<WalletTab[]>("wallet-tabs", ["platformName", "loggedUser"]),
+        loadWalletAssets<WalletAsset[]>("wallet-edit-history", ["name", "amount", "market", "loggedUser"], loggedUser || ""),
+        loadWalletAssets<WalletTab[]>("wallet-tabs", ["platformName", "loggedUser"], loggedUser || ""),
     ]);
 
     return { coingeckoData, assetsFirestore, walletTabs };

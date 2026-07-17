@@ -1,5 +1,5 @@
 import { db } from "../../services/firebase/config";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 type CollectionName =
     | "wallet-edit-history"
@@ -7,11 +7,13 @@ type CollectionName =
 
 export default async function loadWalletAssets<T>(
     collectionName: CollectionName,
-    fetchedFields: string[]
+    fetchedFields: string[],
+    loggedUserEmail: string,
 ): Promise<T[]> {
     const collectionRef = collection(db, collectionName);
     try {
-        const querySnapshot = await getDocs(collectionRef);
+        const filteredQuery = query(collectionRef, where("loggedUser", "==", loggedUserEmail));
+        const querySnapshot = await getDocs(filteredQuery);
         const data = querySnapshot.docs.map(doc => {
             const docData = doc.data();
             const fieldData = Object.fromEntries(
@@ -19,7 +21,6 @@ export default async function loadWalletAssets<T>(
             );
             return { id: doc.id, ...fieldData } as T;
         });
-
         return data;
     }
     catch (error) {
