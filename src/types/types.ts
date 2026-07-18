@@ -79,6 +79,8 @@ export type translationsType = {
                 close: string;
                 submitEdit: string;
                 submitAdd: string;
+                automaticCalculation: string;
+                exchangeRateNotAvailable: string;
             },
             addPlatform: {
                 title: string;

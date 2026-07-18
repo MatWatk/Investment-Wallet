@@ -26,9 +26,15 @@ export const summaryTransformation = (assets: WalletAsset[]): WalletAsset[] => {
     return summary;
 };
 
-export const findAssetPrice = (assetList: Asset[], coingeckoData: CoinMarketData[], currentAsset: WalletAsset) => {
-    const assetData = (coingeckoData.find(d => d.id === assetList.find(a => a.name === currentAsset.name)?.coingeckoId)?.current_price || 0);
-    return assetData;
+export const findAssetPrice = (assetList: Asset[], coingeckoData: CoinMarketData[], currentAsset: WalletAsset | string) => {
+    
+    if (typeof currentAsset === "string") {
+        const assetData = (coingeckoData.find(d => d.id === assetList.find(a => a.name === currentAsset)?.coingeckoId)?.current_price || 0);
+        return assetData;
+    } else {
+        const assetData = (coingeckoData.find(d => d.id === assetList.find(a => a.name === currentAsset.name)?.coingeckoId)?.current_price || 0);
+        return assetData;
+    }
 }
 
 export const countTotalValue = (assets: WalletAsset[], assetList: Asset[], coingeckoData: CoinMarketData[]) => {
@@ -38,7 +44,7 @@ export const countTotalValue = (assets: WalletAsset[], assetList: Asset[], coing
     }, 0);
 }
 
-export function getCurrentUser() : Promise<string | null> {
+export function getCurrentUser(): Promise<string | null> {
     return new Promise((resolve) => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             unsubscribe();

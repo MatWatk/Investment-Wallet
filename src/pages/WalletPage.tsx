@@ -50,6 +50,7 @@ export default function WalletPage() {
     const loggedUser = auth.currentUser?.email || "";
 
     const { coingeckoData, assetsFirestore, walletTabs } = useLoaderData<WalletLoaderData>();
+
     useRevalidatePage(walletTabs.length);
 
     const filterTabsForUser = useMemo(() => {
@@ -162,7 +163,8 @@ export default function WalletPage() {
                         openPlatformModal={() => setShowPlatformModal(true)}
                         platforms={filterTabsForUser}
                         defaultData={assetFormData}
-                        editStatus={editStatus} />}
+                        editStatus={editStatus} 
+                        coingeckoData={coingeckoData} />}
                 {showPlatformModal &&
                     <AddPlatformModal
                         isOpen={showPlatformModal}
@@ -240,7 +242,7 @@ export async function loader() {
     const currency = store.getState().currency.currency;
     const [coingeckoData, assetsFirestore, walletTabs] = await Promise.all([
         loadAssetPrices<{ coingeckoId: string }[]>({ assets, currency }),
-        loadWalletAssets<WalletAsset[]>("wallet-edit-history", ["name", "amount", "market", "loggedUser"], loggedUser || ""),
+        loadWalletAssets<WalletAsset[]>("wallet-edit-history", ["name", "amount", "market", "loggedUser", "price"], loggedUser || ""),
         loadWalletAssets<WalletTab[]>("wallet-tabs", ["platformName", "loggedUser"], loggedUser || ""),
     ]);
 
@@ -255,6 +257,7 @@ export async function action({ request }: { request: Request }) {
     }
 
     if (formData.get("actionRequestType") === "asset") {
+        console.log(formData)
         const data = parseWalletAssetRequest(formData);
         await actionAssetFirebase(data);
         return redirect("/");
