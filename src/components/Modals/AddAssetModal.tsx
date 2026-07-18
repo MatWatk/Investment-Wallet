@@ -44,6 +44,7 @@ export default function AddAssetModal({
     const [isAutomaticCalculationEnabled, setIsAutomaticCalculationEnabled] = useState<boolean>(false);
     const [selectedAsset, setSelectedAsset] = useState<string>(defaultData?.name || 'Bitcoin');
     const [modalCurrency, setModalCurrency] = useState<string>('USD');
+    const [providedAmount, setProvidedAmount] = useState<number>(defaultData?.amount || 0);
     
     // Move to separate hook
     const [currentExchangeRate, setCurrentExchangeRate] = useState<number>(1);
@@ -86,7 +87,7 @@ export default function AddAssetModal({
 
     if (!isOpen) return null;
 
-    const assetsPrices = (findAssetPrice(assets, coingeckoData, selectedAsset) * currentExchangeRate).toFixed(2);
+    const assetsPrices = (findAssetPrice(assets, coingeckoData, selectedAsset) * currentExchangeRate * providedAmount).toFixed(2);
 
     return (
         <ModalWrapper>
@@ -136,6 +137,7 @@ export default function AddAssetModal({
                     defaultValue={defaultData?.amount}
                     invalidInput={isInputInvalid}
                     setInvalidInput={setIsInputInvalid}
+                    onChange={(event) => setProvidedAmount(Number(event.target.value))}
                 />
                 <ModalRowWrapper>
                     <ModalInput

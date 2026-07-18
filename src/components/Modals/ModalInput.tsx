@@ -13,6 +13,7 @@ export default function ModalInput({
     invalidInput,
     setInvalidInput,
     existingPlatforms,
+    onChange,
     }: {
         themeState: boolean,
         labelText: string,
@@ -23,6 +24,7 @@ export default function ModalInput({
         invalidInput?: Record<string, boolean>,
         setInvalidInput?: Dispatch<SetStateAction<Record<string, boolean>>>,
         existingPlatforms?: WalletTab[],
+        onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void,
     }) {
         const language = useLanguage();
         const existingPlatformNames = useMemo(() => {
@@ -65,6 +67,7 @@ export default function ModalInput({
                 step={inputType === "number" ? "any" : undefined}
                 disabled={disabled}
                 onInput={(event) => handleChange(event.currentTarget.value, event.currentTarget.validity.badInput)}
+                onChange={onChange}
                 className={`w-full rounded-md border ${themeState ? "border-gray-300 bg-white text-gray-900 focus:ring-violet-500" : "border-gray-600 bg-gray-800 text-gray-100 focus:ring-yellow-500"} px-3 py-2 focus:outline-none focus:ring-2 ${disabled ? "opacity-30 cursor-not-allowed" : ""} ${invalidInput?.[name] && !disabled ? "border-red-500" : ""}`}
             />
             {invalidInput?.[name] && inputType === "number" && !disabled &&<span className="text-red-500 text-sm">{translations[language].modals.inputErrors.amountPositive}</span>}
