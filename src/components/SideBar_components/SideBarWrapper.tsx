@@ -1,6 +1,11 @@
-export default function SideBarWrapper({ children }: { children: React.ReactNode }) {
+interface SideBarWrapperProps {
+    children: React.ReactNode;
+    foldState: boolean;
+}
+
+export default function SideBarWrapper({ children, foldState }: SideBarWrapperProps) {
     return (
-        <div className="w-[15%] min-w-55 bg-gray-800 py-4 rounded-r">
+        <div className={` bg-gray-800 py-4 rounded-r ${foldState ? 'w-[7%] min-w-10' : 'w-[17%] min-w-55'}`}>
             <div className="h-full flex flex-col py-6">
                 {children}
             </div>
