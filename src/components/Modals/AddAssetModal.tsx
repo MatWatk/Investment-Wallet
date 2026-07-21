@@ -45,7 +45,7 @@ export default function AddAssetModal({
     const [selectedAsset, setSelectedAsset] = useState<string>(defaultData?.name || 'Bitcoin');
     const [modalCurrency, setModalCurrency] = useState<string>('USD');
     const [providedAmount, setProvidedAmount] = useState<number>(defaultData?.amount || 0);
-    
+
     // Move to separate hook
     const [currentExchangeRate, setCurrentExchangeRate] = useState<number>(1);
     const [exchangeRateError, setExchangeRateError] = useState<string | null>(null);
@@ -53,7 +53,7 @@ export default function AddAssetModal({
     useEffect(() => {
         let canceled = false;
         const loadRate = async () => {
-            if(!isAutomaticCalculationEnabled){
+            if (!isAutomaticCalculationEnabled) {
                 return;
             }
             try {
@@ -75,11 +75,6 @@ export default function AddAssetModal({
     }, [modalCurrency, currency]);
     // End of separate hook
 
-    // TODO add calculation for ammount provided in different currency than the one selected in the modal. Use currentExchangeRate to convert it to the selected currency.
-
-
-
-
     const currentDate = new Date().toISOString().split("T")[0];
     const currentEditStatus = editStatus ?? "add";
 
@@ -89,6 +84,9 @@ export default function AddAssetModal({
 
     const assetsPrices = (findAssetPrice(assets, coingeckoData, selectedAsset) * currentExchangeRate * providedAmount).toFixed(2);
 
+    // console.log(`default data: ${defaultData?.price}`)
+    // console.log(`assetsPrices: ${selectedAsset}`)
+    console.log(findAssetPrice(assets, coingeckoData, selectedAsset) * currentExchangeRate * providedAmount)
     return (
         <ModalWrapper>
             <ModalHeader title={currentEditStatus === "edit" ? translations[language].modals.addAsset.titleEdit : translations[language].modals.addAsset.titleAdd} themeState={themeState} />
@@ -122,13 +120,6 @@ export default function AddAssetModal({
                     disabled={disableField}
                     onChange={(event) => setSelectedAsset(event.target.value)}
                 />
-                <ModalCheckbox
-                    themeState={themeState}
-                    labelText={translations[language].modals.addAsset.automaticCalculation}
-                    name="automaticCalculation"
-                    defaultChecked={isAutomaticCalculationEnabled}
-                    setChecked={setIsAutomaticCalculationEnabled}
-                />
                 <ModalInput
                     themeState={themeState}
                     labelText={translations[language].modals.addAsset.amount}
@@ -139,12 +130,19 @@ export default function AddAssetModal({
                     setInvalidInput={setIsInputInvalid}
                     onChange={(event) => setProvidedAmount(Number(event.target.value))}
                 />
+                <ModalCheckbox
+                    themeState={themeState}
+                    labelText={translations[language].modals.addAsset.automaticCalculation}
+                    name="automaticCalculation"
+                    defaultChecked={isAutomaticCalculationEnabled}
+                    setChecked={setIsAutomaticCalculationEnabled}
+                />
                 <ModalRowWrapper>
                     <ModalInput
                         themeState={themeState}
                         labelText={translations[language].modals.addAsset.price}
                         inputType="number"
-                        name="price" 
+                        name="price"
                         defaultValue={defaultData?.price || (isAutomaticCalculationEnabled ? assetsPrices : undefined)}
                         disabled={disableField || isAutomaticCalculationEnabled}
                         invalidInput={isInputInvalid}
