@@ -3,7 +3,7 @@ import ModalWrapper from "./ModalWrapper";
 import ModalInput from "./ModalInput";
 
 import { useTheme } from "../../hooks/useTheme";
-import { Form, useSubmit } from "react-router-dom";
+import { Form, useNavigation, useSubmit } from "react-router-dom";
 import type { WalletAsset, WalletTab } from "../../types/WalletTypes";
 
 import rubbishBin from "../../assets/rubbish_bin.png";
@@ -32,11 +32,16 @@ export default function AddPlatformModal({
     const [platformToDelete, setPlatformToDelete] = useState<WalletTab | null>(null);
     const [isInputInvalid, setIsInputInvalid] = useState<Record<string, boolean>>({});
     const submit = useSubmit();
+    const navigation = useNavigation();
 
     const themeState = useTheme();
     const language = useLanguage();
 
     const currentlyLoggedUser = auth.currentUser?.email || "";
+
+    const isPlatformMutationPending =
+        navigation.state !== "idle" &&
+        navigation.formData?.get("actionRequestType") === "platform";
 
     const handleDeletePlatform = (platform: WalletTab) => {
         setPlatformToDelete(platform);
@@ -74,21 +79,27 @@ export default function AddPlatformModal({
                         name="platformName"
                         existingPlatforms={walletTabs}
                         invalidInput={isInputInvalid}
-                        setInvalidInput={setIsInputInvalid} />
+                        setInvalidInput={setIsInputInvalid}
+                        disabled={isPlatformMutationPending} />
                     <div>
                         <h2 className={`text-start font-bold ${themeState ? "text-violet-900" : "text-yellow-500"}`}>{translations[language].modals.addPlatform.platformsList}</h2>
                         <ol>
                             {walletTabs.map((tab) => (
                                 <li key={tab.id} className={`flex flex-row gap-4 items-center text-xl justify-start mt-2 ${themeState ? "text-violet-900" : "text-yellow-500"}`}>
                                     <p className="flex-1">{tab.platformName}</p>
-                                    <button type="button" onClick={() => handleDeletePlatform(tab)}><img className="w-6 h-6" src={rubbishBin} alt={translations[language].modals.addPlatform.deleteAlt} /></button>
+                                    <button type="button" onClick={() => handleDeletePlatform(tab)} disabled={isPlatformMutationPending}><img className="w-6 h-6" src={rubbishBin} alt={translations[language].modals.addPlatform.deleteAlt} /></button>
                                 </li>
                             ))}
                         </ol>
                     </div>
+                    {isPlatformMutationPending && (
+                        <p className={`text-center text-sm ${themeState ? "text-violet-500" : "text-yellow-300"}`}>
+                            Loading...
+                        </p>
+                    )}
                     <div className="mt-2 flex flex-row gap-4 justify-evenly">
-                        <ModalButton onClick={onClose} themeState={themeState}>{translations[language].modals.addPlatform.close}</ModalButton>
-                        <ModalButton type="submit" themeState={themeState} disabled={Object.values(isInputInvalid).some(Boolean)}>{translations[language].modals.addPlatform.submit}</ModalButton>
+                        <ModalButton onClick={onClose} themeState={themeState} disabled={isPlatformMutationPending}>{translations[language].modals.addPlatform.close}</ModalButton>
+                        <ModalButton type="submit" themeState={themeState} disabled={Object.values(isInputInvalid).some(Boolean) || isPlatformMutationPending}>{translations[language].modals.addPlatform.submit}</ModalButton>
                     </div>
                     {platformToDelete &&
                         <DeleteConfirmationModal handleConfirmDelete={handleConfirmDelete} objectToDelete={platformToDelete} closeModal={() => setPlatformToDelete(null)} allAssets={allAssets} />}
