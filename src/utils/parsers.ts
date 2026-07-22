@@ -14,9 +14,9 @@ export function parseWalletAssetRequest(formData: FormData): WalletAssetEditRequ
     const currency = currencyRaw;
 
     const amount = Number(get("amount"));
-    const price = Number(get("price"));
+    const averagePrice = Number(get("averagePrice"));
 
-    if (Number.isNaN(amount) || Number.isNaN(price)) {
+    if (Number.isNaN(amount) || Number.isNaN(averagePrice)) {
         throw new Response("Invalid number fields", { status: 400 });
     }
 
@@ -45,7 +45,7 @@ export function parseWalletAssetRequest(formData: FormData): WalletAssetEditRequ
         name,
         amount,
         market,
-        price,
+        averagePrice,
         currency,
         date,
         editStatus: editStatusRaw as "edit" | "add" | "delete",

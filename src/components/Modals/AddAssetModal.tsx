@@ -84,9 +84,6 @@ export default function AddAssetModal({
 
     const assetsPrices = (findAssetPrice(assets, coingeckoData, selectedAsset) * currentExchangeRate * providedAmount).toFixed(2);
 
-    // console.log(`default data: ${defaultData?.price}`)
-    // console.log(`assetsPrices: ${selectedAsset}`)
-    console.log(findAssetPrice(assets, coingeckoData, selectedAsset) * currentExchangeRate * providedAmount)
     return (
         <ModalWrapper>
             <ModalHeader title={currentEditStatus === "edit" ? translations[language].modals.addAsset.titleEdit : translations[language].modals.addAsset.titleAdd} themeState={themeState} />
@@ -99,14 +96,14 @@ export default function AddAssetModal({
                 {disableField && (
                     <>
                         <input type="hidden" name="name" value={defaultData?.name ?? ""} />
-                        <input type="hidden" name="price" value={defaultData?.price ?? ""} />
+                        <input type="hidden" name="averagePrice" value={defaultData?.averagePrice ?? ""} />
                         <input type="hidden" name="currency" value={defaultData?.currency ?? ""} />
                         <input type="hidden" name="date" value={defaultData?.date ?? currentDate} />
                     </>
                 )}
                 {isAutomaticCalculationEnabled && (
                     <>
-                        <input type="hidden" name="price" value={assetsPrices} />
+                        <input type="hidden" name="averagePrice" value={assetsPrices} />
                         <input type="hidden" name="currency" value={modalCurrency} />
                     </>
                 )
@@ -142,8 +139,8 @@ export default function AddAssetModal({
                         themeState={themeState}
                         labelText={translations[language].modals.addAsset.price}
                         inputType="number"
-                        name="price"
-                        defaultValue={defaultData?.price || (isAutomaticCalculationEnabled ? assetsPrices : undefined)}
+                        name="averagePrice"
+                        defaultValue={defaultData?.averagePrice || (isAutomaticCalculationEnabled ? assetsPrices : undefined)}
                         disabled={disableField || isAutomaticCalculationEnabled}
                         invalidInput={isInputInvalid}
                         setInvalidInput={setIsInputInvalid}

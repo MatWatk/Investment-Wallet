@@ -17,7 +17,7 @@ import type { EditDataStatus, WalletAssetEditRequest, WalletTab } from "../types
 import useTabSwitch from "../hooks/useTabSwitch";
 
 import type { WalletAsset } from "../types/WalletTypes";
-import { summaryTransformation, findAssetPrice, countTotalValue, checkAuth, getCurrentUser } from "../utils/utils";
+import { summaryTransformation, findAssetPrice, countTotalValue, checkAuth, getCurrentUser, calculateAvaragePrice } from "../utils/utils";
 import { convertDataForRequest, createWalletAssetEditRequest } from "../utils/requests";
 import { store } from "../store";
 import loadAssetPrices from "../services/api/loadAssetPrices";
@@ -113,12 +113,11 @@ export default function WalletPage() {
         setEditStatus("delete");
         const reqData = createWalletAssetEditRequest(
             actualVisibleAssets,
-            assets,
-            coingeckoData,
             currency,
             assetId,
             "delete",
             loggedUser,
+            calculateAvaragePrice(assetsFirestore, activeTab)
         );
         const formData = convertDataForRequest(reqData);
         submit(formData, {
@@ -133,12 +132,11 @@ export default function WalletPage() {
         setEditStatus("edit");
         const reqData = createWalletAssetEditRequest(
             actualVisibleAssets,
-            assets,
-            coingeckoData,
             currency,
             assetId,
             "edit",
             loggedUser,
+            calculateAvaragePrice(assetsFirestore, activeTab)
         );
         setAssetFormData(reqData);
     }
@@ -246,7 +244,7 @@ export async function loader() {
     const currency = store.getState().currency.currency;
     const [coingeckoData, assetsFirestore, walletTabs] = await Promise.all([
         loadAssetPrices<{ coingeckoId: string }[]>({ assets, currency }),
-        loadWalletAssets<WalletAsset[]>("wallet-edit-history", ["name", "amount", "market", "loggedUser", "price"], loggedUser || ""),
+        loadWalletAssets<WalletAsset[]>("wallet-edit-history", ["name", "amount", "market", "loggedUser", "averagePrice"], loggedUser || ""),
         loadWalletAssets<WalletTab[]>("wallet-tabs", ["platformName", "loggedUser"], loggedUser || ""),
     ]);
 
@@ -261,7 +259,6 @@ export async function action({ request }: { request: Request }) {
     }
 
     if (formData.get("actionRequestType") === "asset") {
-        console.log(formData)
         const data = parseWalletAssetRequest(formData);
         await actionAssetFirebase(data);
         return redirect("/");

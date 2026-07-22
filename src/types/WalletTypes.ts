@@ -4,7 +4,7 @@ export interface WalletAssetEditRequest {
     name: string;
     amount: number;
     market: string;
-    price: number;
+    averagePrice: number;
     currency: "USD" | "PLN";
     date: string;
     editStatus?: EditDataStatus;
@@ -35,6 +35,7 @@ export interface WalletAsset {
     amount: number;
     market: string;
     loggedUser: string;
+    averagePrice: number;
 }
 
 export interface WalletTab {

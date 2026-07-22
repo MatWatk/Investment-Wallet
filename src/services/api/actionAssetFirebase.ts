@@ -53,6 +53,7 @@ export default async function actionAssetFirebase(data: WalletAssetEditRequest) 
             const deletePayload = {
                 ...payload,
                 amount: -payload.amount,
+                averangePrice: -payload.averagePrice,
             };
             await addDoc(ref, deletePayload);
             return;

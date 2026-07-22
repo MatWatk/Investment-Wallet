@@ -58,3 +58,15 @@ export const checkAuth = (loggedUser: string | undefined | null) => {
         throw redirect("/login");
     }
 }
+
+export const calculateAvaragePrice = (data: WalletAsset[], platform: string) => {
+    const dataForPlatform = data.filter(asset => asset.market === platform);
+    const averangePricesObject = dataForPlatform.reduce<Record<string, number>>((acc, asset) => {
+        const totalPrice = dataForPlatform.filter(a => a.name === asset.name).reduce((acc, a) => acc + (a.amount * a.averagePrice), 0);
+        const totalAmount = dataForPlatform.filter(a => a.name === asset.name).reduce((acc,a) => acc + a.amount, 0);
+        acc[asset.name] = totalAmount > 0 ? totalPrice / totalAmount : 0;
+        return acc;
+    }, {});
+
+    return averangePricesObject
+};

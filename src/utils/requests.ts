@@ -1,28 +1,26 @@
-import type { Asset } from "../constants/assets";
-import type { CoinMarketData } from "../types/AssetTableTypes";
 import type { EditDataStatus, WalletAsset, WalletAssetEditRequest, WalletPlatformEditRequest, WalletTab } from "../types/WalletTypes";
-import { findAssetPrice } from "./utils";
 
 export const createWalletAssetEditRequest =
     (
         actualVisibleAssets: WalletAsset[],
-        assets: Asset[],
-        coingeckoData: CoinMarketData[],
         currency: "USD" | "PLN",
         assetId: string,
         editStatus: EditDataStatus,
-        loggedUser: string
+        loggedUser: string,
+        averagePriceObject: Record<string, number>,
     ): WalletAssetEditRequest => {
         const asset = actualVisibleAssets.find(asset => asset.id === assetId);
         if (!asset) {
             throw new Error(`Asset ${assetId} not found`);
         }
+        const averangePrice = averagePriceObject[asset.name] || 0;
+
         return ({
             assetId,
             name: asset.name,
             amount: asset.amount,
             market: asset.market,
-            price: findAssetPrice(assets, coingeckoData, asset ?? { id: "", name: "", amount: 0, market: "" }),
+            averagePrice: averangePrice,
             currency: currency,
             date: new Date().toISOString().split("T")[0],
             editStatus: editStatus,
