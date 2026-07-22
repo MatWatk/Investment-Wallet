@@ -21,7 +21,7 @@ import { summaryTransformation, findAssetPrice, countTotalValue, checkAuth, getC
 import { convertDataForRequest, createWalletAssetEditRequest } from "../utils/requests";
 import { store } from "../store";
 import loadAssetPrices from "../services/api/loadAssetPrices";
-import { redirect, useLoaderData, useSubmit } from "react-router-dom";
+import { redirect, useLoaderData, useNavigation, useSubmit } from "react-router-dom";
 import type { WalletLoaderData } from "../types/WalletTypes";
 import { translations } from "../constants/translations";
 import SummaryBar from "../components/Wallet_components/SummaryBar";
@@ -40,12 +40,15 @@ import actionAssetFirebase from "../services/api/actionAssetFirebase";
 import actionPlatformFirebase from "../services/api/actionPlatformFirebase";
 import DeleteConfirmationModal from "../components/Modals/DeleteConfirmationModal";
 import { auth } from "../services/firebase/config";
+import LoadingModal from "../components/Modals/LoadingModal";
 
 export default function WalletPage() {
     const currency = useCurrency();
     const language = useLanguage();
     const themeState = useTheme();
     useRevalidatePage(currency);
+
+    const navigation = useNavigation();
 
     const loggedUser = auth.currentUser?.email || "";
 
@@ -156,6 +159,7 @@ export default function WalletPage() {
                 </div>
             </div>
             <PageContentWrapper>
+                {navigation.state !== "idle" && <LoadingModal />}
                 {showAssetModal &&
                     <AddAssetModal
                         isOpen={showAssetModal}
@@ -163,7 +167,7 @@ export default function WalletPage() {
                         openPlatformModal={() => setShowPlatformModal(true)}
                         platforms={filterTabsForUser}
                         defaultData={assetFormData}
-                        editStatus={editStatus} 
+                        editStatus={editStatus}
                         coingeckoData={coingeckoData} />}
                 {showPlatformModal &&
                     <AddPlatformModal
@@ -252,7 +256,7 @@ export async function loader() {
 export async function action({ request }: { request: Request }) {
     const formData = await request.formData();
 
-    if(formData.get("actionRequestType") !== "asset" && formData.get("actionRequestType") !== "platform") {
+    if (formData.get("actionRequestType") !== "asset" && formData.get("actionRequestType") !== "platform") {
         throw new Response("Invalid actionRequestType", { status: 400 });
     }
 

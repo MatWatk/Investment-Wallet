@@ -5,7 +5,7 @@ interface SideBarWrapperProps {
 
 export default function SideBarWrapper({ children, foldState }: SideBarWrapperProps) {
     return (
-        <div className={` bg-gray-800 py-4 rounded-r ${foldState ? 'min-w-20' : 'min-w-55'}`}>
+        <div className={`bg-gray-800 py-4 rounded-r ${foldState ? 'min-w-20' : 'min-w-55'}`}>
             <div className="h-full flex flex-col py-6">
                 {children}
             </div>

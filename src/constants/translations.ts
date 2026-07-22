@@ -102,6 +102,10 @@ export const translations: translationsType = {
                 cancel: "Cancel",
                 confirm: "Confirm",
             },
+            loadingModal: {
+                header: "Loading...",
+                message: "Please wait while we process your request. This may take a few seconds.",
+            },
             inputErrors: {
                 amountPositive: "Amount must be greater than 0",
                 platformExists: "This platform name already exists",
@@ -214,6 +218,10 @@ export const translations: translationsType = {
                 confirmAssetDeleteMiddle: "o ilości",
                 cancel: "Anuluj",
                 confirm: "Potwierdź",
+            },
+            loadingModal: {
+                header: "Ładowanie...",
+                message: "Proszę czekać, przetwarzamy Twoje żądanie. Może to potrwać kilka sekund.",
             },
             inputErrors: {
                 amountPositive: "Ilość musi być większa od 0",

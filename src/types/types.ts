@@ -90,6 +90,10 @@ export type translationsType = {
                 submit: string;
                 deleteAlt: string;
             },
+            loadingModal: {
+                header: string;
+                message: string;
+            },
             deleteConfirmation: {
                 title: string;
                 connectedAssetWithAmount: string;
