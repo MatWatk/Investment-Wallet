@@ -214,10 +214,10 @@ export default function WalletPage() {
                                         image={assets.find(a => a.name === walletAsset.name)?.image || ""}
                                         earnOrLossValue={earnOrLossObject[walletAsset.name]} />
                                     {activeTab !== "Summary" &&
-                                        <>
+                                        <div className="ml-4 flex shrink-0 items-center gap-2">
                                             <AssetButton onClick={() => handleEdit(walletAsset.id)} big={false}>{translations[language].walletPage.editButton}</AssetButton>
                                             <RubbishBinButton onClick={() => handleDelete(walletAsset.id)} />
-                                        </>}
+                                        </div>}
                                 </div>
                             )}
                             <div className="ml-auto flex flex-row gap-2 shrink-0 items-center whitespace-nowrap">
