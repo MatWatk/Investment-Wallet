@@ -17,7 +17,7 @@ import type { EditDataStatus, WalletAssetEditRequest, WalletTab } from "../types
 import useTabSwitch from "../hooks/useTabSwitch";
 
 import type { WalletAsset } from "../types/WalletTypes";
-import { summaryTransformation, findAssetPrice, countTotalValue, checkAuth, getCurrentUser, calculateAvaragePrice } from "../utils/utils";
+import { summaryTransformation, findAssetPrice, countTotalValue, checkAuth, getCurrentUser, calculateAvaragePrice, displayEarnOrLoss } from "../utils/utils";
 import { convertDataForRequest, createWalletAssetEditRequest } from "../utils/requests";
 import { store } from "../store";
 import loadAssetPrices from "../services/api/loadAssetPrices";
@@ -141,11 +141,18 @@ export default function WalletPage() {
         setAssetFormData(reqData);
     }
 
+    const earnOrLossObject = displayEarnOrLoss(calculateAvaragePrice(assetsFirestore, activeTab), coingeckoData);
+
     return (
         <>
-            <div className="mb-6 flex flex-row items-center gap-4">
+            <div className="mb-6 flex flex-wrap items-start gap-4 shrink-0">
                 <PageHeader title={translations[language].walletPage.walletHeader} />
-                <div className="flex flex-row gap-5 ml-auto">
+
+                {/* <div className="flex flex-col items-center rounded-lg border border-violet-500 p-2 min-w-50">
+                    <p>Your wallet status: +81%</p>
+                </div> */}
+
+                <div className="ml-auto flex w-full flex-wrap justify-end gap-3 sm:w-auto sm:flex-nowrap sm:gap-5">
                     <AssetButton
                         onClick={handleAddAssetClick}>
                         {translations[language].walletPage.addAssetButton}
@@ -204,7 +211,8 @@ export default function WalletPage() {
                                 <div className="min-w-28 flex gap-3 whitespace-nowrap items-center">
                                     <AssetPositionName
                                         name={walletAsset.name}
-                                        image={assets.find(a => a.name === walletAsset.name)?.image || ""} />
+                                        image={assets.find(a => a.name === walletAsset.name)?.image || ""}
+                                        earnOrLossValue={earnOrLossObject[walletAsset.name]} />
                                     {activeTab !== "Summary" &&
                                         <>
                                             <AssetButton onClick={() => handleEdit(walletAsset.id)} big={false}>{translations[language].walletPage.editButton}</AssetButton>

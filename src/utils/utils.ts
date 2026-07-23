@@ -1,5 +1,5 @@
 import { redirect } from "react-router-dom";
-import type { Asset } from "../constants/assets";
+import { assets, type Asset } from "../constants/assets";
 import type { CoinMarketData } from "../types/AssetTableTypes";
 import type { WalletAsset } from "../types/WalletTypes";
 import { onAuthStateChanged } from "firebase/auth";
@@ -27,7 +27,7 @@ export const summaryTransformation = (assets: WalletAsset[]): WalletAsset[] => {
 };
 
 export const findAssetPrice = (assetList: Asset[], coingeckoData: CoinMarketData[], currentAsset: WalletAsset | string) => {
-    
+
     if (typeof currentAsset === "string") {
         const assetData = (coingeckoData.find(d => d.id === assetList.find(a => a.name === currentAsset)?.coingeckoId)?.current_price || 0);
         return assetData;
@@ -60,13 +60,43 @@ export const checkAuth = (loggedUser: string | undefined | null) => {
 }
 
 export const calculateAvaragePrice = (data: WalletAsset[], platform: string) => {
-    const dataForPlatform = data.filter(asset => asset.market === platform);
-    const averangePricesObject = dataForPlatform.reduce<Record<string, number>>((acc, asset) => {
-        const totalPrice = dataForPlatform.filter(a => a.name === asset.name).reduce((acc, a) => acc + (a.amount * a.averagePrice), 0);
-        const totalAmount = dataForPlatform.filter(a => a.name === asset.name).reduce((acc,a) => acc + a.amount, 0);
-        acc[asset.name] = totalAmount > 0 ? totalPrice / totalAmount : 0;
-        return acc;
-    }, {});
+    if (platform === "Summary") {
+        const averangePricesObject = data.reduce<Record<string, number>>((acc, asset) => {
+            const totalPrice = data.filter(a => a.name === asset.name).reduce((acc, a) => acc + (a.amount * a.averagePrice), 0);
+            const totalAmount = data.filter(a => a.name === asset.name).reduce((acc, a) => acc + a.amount, 0);
+            acc[asset.name] = totalAmount > 0 ? totalPrice / totalAmount : 0;
+            return acc;
+        }, {});
+        return averangePricesObject;
+    }
+    else {
+        const dataForPlatform = data.filter(asset => asset.market === platform);
+        const averangePricesObject = dataForPlatform.reduce<Record<string, number>>((acc, asset) => {
+            const totalPrice = dataForPlatform.filter(a => a.name === asset.name).reduce((acc, a) => acc + (a.amount * a.averagePrice), 0);
+            const totalAmount = dataForPlatform.filter(a => a.name === asset.name).reduce((acc, a) => acc + a.amount, 0);
+            acc[asset.name] = totalAmount > 0 ? totalPrice / totalAmount : 0;
+            return acc;
+        }, {});
 
-    return averangePricesObject
+        return averangePricesObject
+    }
 };
+
+export const displayEarnOrLoss = (averangePriceObject: Record<string, number>, priceObject: CoinMarketData[]) => {
+
+    const assetNames = Object.keys(averangePriceObject);
+    const earnOrLossObject: Record<string, string> = {};
+    assetNames.forEach(assetName => {
+        const calculatedAveragePrice = averangePriceObject[assetName] || 0;
+        const currentPrice = findAssetPrice(assets, priceObject, assetName) || 0;
+        const earnOrLoss = ((currentPrice - calculatedAveragePrice) / calculatedAveragePrice) * 100;
+        earnOrLossObject[assetName] = earnOrLoss > 0 ? `+${earnOrLoss.toFixed(2)}%` : `${earnOrLoss.toFixed(2)}%`;
+    });
+    return earnOrLossObject;
+}
+
+
+
+
+
+
