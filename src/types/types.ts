@@ -1,7 +1,9 @@
 export type currencyType = "USD" | "PLN";
 
+export type SupportedLanguage = "english" | "polish";
+
 export type translationsType = {
-    [key: string]: {
+    [key in SupportedLanguage]: {
         login: {
             title: string;
             emailPlaceholder: string;
@@ -118,4 +120,4 @@ export type translationsType = {
             signupPage: string;
         }
     }
-}
+};

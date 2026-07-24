@@ -17,9 +17,8 @@ import type { EditDataStatus, WalletAssetEditRequest, WalletTab } from "../types
 import useTabSwitch from "../hooks/useTabSwitch";
 
 import type { WalletAsset } from "../types/WalletTypes";
-import { summaryTransformation, findAssetPrice, countTotalValue, checkAuth, getCurrentUser, calculateAvaragePrice, displayEarnOrLoss } from "../utils/utils";
+import { summaryTransformation, findAssetPrice, countTotalValue, checkAuth, getCurrentUser, prepareDataForStatistics } from "../utils/utils";
 import { convertDataForRequest, createWalletAssetEditRequest } from "../utils/requests";
-import { store } from "../store";
 import loadAssetPrices from "../services/api/loadAssetPrices";
 import { redirect, useLoaderData, useNavigation, useSubmit } from "react-router-dom";
 import type { WalletLoaderData } from "../types/WalletTypes";
@@ -34,6 +33,7 @@ import loadWalletAssets from "../services/api/loadFirebaseData";
 import { useTheme } from "../hooks/useTheme";
 import { useLanguage } from "../hooks/useLanguage";
 import { useCurrency } from "../hooks/useCurrency";
+import useExchangeRate from "../hooks/useExchangeRate";
 import { parseWalletAssetRequest, parseWalletPlatformRequest } from "../utils/parsers";
 import RubbishBinButton from "../components/Wallet_components/RubbishBinButton";
 import actionAssetFirebase from "../services/api/actionAssetFirebase";
@@ -46,6 +46,7 @@ export default function WalletPage() {
     const currency = useCurrency();
     const language = useLanguage();
     const themeState = useTheme();
+    const { currentExchangeRate } = useExchangeRate("USD", currency);
     useRevalidatePage(currency);
 
     const navigation = useNavigation();
@@ -72,7 +73,7 @@ export default function WalletPage() {
         (assetsFirestore, {
             name: (asset) => asset.name,
             amount: (asset) => asset.amount,
-            value: (asset) => findAssetPrice(assets, coingeckoData, asset) * asset.amount,
+            value: (asset) => findAssetPrice(assets, coingeckoData, asset) * asset.amount * currentExchangeRate,
         },
             { key: "name", direction: "ascending" },
             filterDataForUser
@@ -88,7 +89,7 @@ export default function WalletPage() {
         );
 
 
-    const totalValue = countTotalValue(actualVisibleAssets, assets, coingeckoData);
+    const totalValue = countTotalValue(actualVisibleAssets, assets, coingeckoData) * currentExchangeRate;
 
     const [showAssetModal, setShowAssetModal] = useState(false);
     const [showPlatformModal, setShowPlatformModal] = useState(false);
@@ -117,7 +118,7 @@ export default function WalletPage() {
             assetId,
             "delete",
             loggedUser,
-            calculateAvaragePrice(assetsFirestore, activeTab)
+            assetInvestmentValues
         );
         const formData = convertDataForRequest(reqData);
         submit(formData, {
@@ -136,21 +137,21 @@ export default function WalletPage() {
             assetId,
             "edit",
             loggedUser,
-            calculateAvaragePrice(assetsFirestore, activeTab)
+            assetInvestmentValues
         );
         setAssetFormData(reqData);
     }
 
-    const earnOrLossObject = displayEarnOrLoss(calculateAvaragePrice(assetsFirestore, activeTab), coingeckoData);
+    const assetInvestmentValues = prepareDataForStatistics(assetsFirestore, coingeckoData, activeTab);
 
     return (
         <>
             <div className="mb-6 flex flex-wrap items-start gap-4 shrink-0">
                 <PageHeader title={translations[language].walletPage.walletHeader} />
 
-                {/* <div className="flex flex-col items-center rounded-lg border border-violet-500 p-2 min-w-50">
+                <div className="flex flex-col items-center rounded-lg border border-violet-500 p-2 min-w-50">
                     <p>Your wallet status: +81%</p>
-                </div> */}
+                </div>
 
                 <div className="ml-auto flex w-full flex-wrap justify-end gap-3 sm:w-auto sm:flex-nowrap sm:gap-5">
                     <AssetButton
@@ -199,7 +200,7 @@ export default function WalletPage() {
                 />
                 {actualVisibleAssets.map((walletAsset) => {
                     const assetPrice = findAssetPrice(assets, coingeckoData, walletAsset);
-                    const countedPrice = assetPrice * walletAsset.amount;
+                    const countedPrice = assetPrice * walletAsset.amount * currentExchangeRate;
                     if (walletAsset.amount === 0) {
                         return null;
                     }
@@ -212,7 +213,7 @@ export default function WalletPage() {
                                     <AssetPositionName
                                         name={walletAsset.name}
                                         image={assets.find(a => a.name === walletAsset.name)?.image || ""}
-                                        earnOrLossValue={earnOrLossObject[walletAsset.name]} />
+                                        earnOrLossValue={assetInvestmentValues[walletAsset.name].earnOrLossPercentage} />
                                     {activeTab !== "Summary" &&
                                         <div className="ml-4 flex shrink-0 items-center gap-2">
                                             <AssetButton onClick={() => handleEdit(walletAsset.id)} big={false}>{translations[language].walletPage.editButton}</AssetButton>
@@ -249,7 +250,7 @@ export default function WalletPage() {
 export async function loader() {
     const loggedUser = await getCurrentUser();
     checkAuth(loggedUser);
-    const currency = store.getState().currency.currency;
+    const currency = "USD";
     const [coingeckoData, assetsFirestore, walletTabs] = await Promise.all([
         loadAssetPrices<{ coingeckoId: string }[]>({ assets, currency }),
         loadWalletAssets<WalletAsset[]>("wallet-edit-history", ["name", "amount", "market", "loggedUser", "averagePrice"], loggedUser || ""),

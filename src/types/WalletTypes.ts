@@ -51,3 +51,21 @@ export interface SummaryAssets {
 }
 
 export type EditDataStatus = "edit" | "add" | "delete";
+
+export interface EarnOrLossObject {
+    [assetName: string]: {
+        earnOrLossPercentage: string;
+        averangePrice: number;
+        currentPrice: number;
+    };
+}
+
+export interface AssetsInvestmentValues {
+    [assetName: string]: {
+        earnOrLossPercentage: string;
+        averangePrice: number;
+        currentPrice: number;
+        amount: number;
+        earnedMoneyInUSD: number;
+    };
+}
