@@ -6,6 +6,7 @@ import SortingArrows from "./SortingArrows";
 import { useSelector } from 'react-redux';
 
 import { translations } from "../../constants/translations";
+import { useLanguage } from "../../hooks/useLanguage";
 
 interface AssetTableHeaderProps<SortKey extends string = string> {
     name: boolean;
@@ -27,7 +28,7 @@ export default function AssetTableHeader<SortKey extends string = string>({ ...p
     };
 
     const themeState = useSelector((state: { theme: { lightTheme: boolean } }) => state.theme.lightTheme);
-    const language = useSelector((state: { language: { language: keyof typeof translations } }) => state.language.language);
+    const language = useLanguage();
 
     return (
         <>

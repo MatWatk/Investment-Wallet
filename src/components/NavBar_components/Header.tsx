@@ -1,10 +1,11 @@
 import { useSelector } from 'react-redux';
 
 import { translations } from '../../constants/translations';
+import { useLanguage } from '../../hooks/useLanguage';
 
 export default function Header() {
     const themeState = useSelector((state: { theme: { lightTheme: boolean } }) => state.theme.lightTheme);
-    const language = useSelector((state: { language: { language: string } }) => state.language.language);
+    const language = useLanguage();
     return (
         <div className="min-w-0 shrink flex flex-col items-start justify-start gap-1">
             <h1 className={`text-2xl font-bold ${themeState ? "text-violet-900" : "text-yellow-500"}`}>

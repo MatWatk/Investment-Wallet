@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
-import { translations } from "../constants/translations";
+import type { SupportedLanguage } from "../types/types";
 
-export function useLanguage() {
-    return useSelector((state: { language: { language: keyof typeof translations } }) => state.language.language);
+export function useLanguage(): SupportedLanguage {
+    return useSelector((state: { language: { language: SupportedLanguage } }) => state.language.language);
 }

@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { languageActions } from '../../store/languageSlice';
 import { currencyActions } from '../../store/currencySlice';
 import { translations } from '../../constants/translations';
+import type { SupportedLanguage } from '../../types/types';
 
 export default function SelectInput({ type, selectOptions, selectValues }: { type: "currency" | "language", selectOptions: string[], selectValues: string[] }) {
     const themeState = useSelector((state: { theme: { lightTheme: boolean } }) => state.theme.lightTheme);
@@ -15,7 +16,7 @@ export default function SelectInput({ type, selectOptions, selectValues }: { typ
         if(type === "currency") {
             dispatch(currencyActions.setCurrency(value));
         } else if(type === "language") {
-            dispatch(languageActions.setLanguage(value));
+            dispatch(languageActions.setLanguage(value as SupportedLanguage));
         }
     }
 
