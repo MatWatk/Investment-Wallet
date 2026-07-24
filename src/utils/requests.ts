@@ -1,4 +1,4 @@
-import type { AssetsInvestmentValues, EditDataStatus, WalletAsset, WalletAssetEditRequest, WalletPlatformEditRequest, WalletTab } from "../types/WalletTypes";
+import type { EditDataStatus, WalletAsset, WalletAssetEditRequest, WalletPlatformEditRequest, WalletTab, AssetsInvestmentValues } from "../types/WalletTypes";
 
 export const createWalletAssetEditRequest =
     (
@@ -7,13 +7,13 @@ export const createWalletAssetEditRequest =
         assetId: string,
         editStatus: EditDataStatus,
         loggedUser: string,
-        assetInvestmentValues: AssetsInvestmentValues,
+        AssetsInvestmentValues: AssetsInvestmentValues,
     ): WalletAssetEditRequest => {
         const asset = actualVisibleAssets.find(asset => asset.id === assetId);
         if (!asset) {
             throw new Error(`Asset ${assetId} not found`);
         }
-        const averangePrice = assetInvestmentValues[asset.name].averangePrice || 0;
+        const averangePrice = AssetsInvestmentValues[asset.name].averangePrice || 0;
 
         return ({
             assetId,

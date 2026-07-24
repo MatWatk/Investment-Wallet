@@ -5,11 +5,12 @@ import ModalRowWrapper from "./ModalRowWrapper";
 import ModalHeader from "./ModalHeader";
 import ModalButton from "./ModalButton";
 import { useTheme } from "../../hooks/useTheme";
+import useExchangeRate from "../../hooks/useExchangeRate";
 import { Form } from "react-router-dom";
 
 import { assets, currencies } from "../../constants/assets";
 import type { EditDataStatus, WalletAssetEditRequest, WalletTab } from "../../types/WalletTypes";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { auth } from "../../services/firebase/config";
 import { useLanguage } from "../../hooks/useLanguage";
 import { translations } from "../../constants/translations";
@@ -17,7 +18,6 @@ import { findAssetPrice } from "../../utils/utils";
 import type { CoinMarketData } from "../../types/AssetTableTypes";
 import ModalCheckbox from "./ModalCheckbox";
 import { useCurrency } from "../../hooks/useCurrency";
-import loadCurrencyExchRate from "../../services/api/loadCurrencyExchRate";
 
 export default function AddAssetModal({
     isOpen,
@@ -43,37 +43,9 @@ export default function AddAssetModal({
     const [isInputInvalid, setIsInputInvalid] = useState<Record<string, boolean>>({});
     const [isAutomaticCalculationEnabled, setIsAutomaticCalculationEnabled] = useState<boolean>(false);
     const [selectedAsset, setSelectedAsset] = useState<string>(defaultData?.name || 'Bitcoin');
-    const [modalCurrency, setModalCurrency] = useState<string>('USD');
-    const [providedAmount, setProvidedAmount] = useState<number>(defaultData?.amount || 0);
+    const [modalCurrency, setModalCurrency] = useState<string>(defaultData?.currency || currency);
 
-    // Move to separate hook
-    const [currentExchangeRate, setCurrentExchangeRate] = useState<number>(1);
-    const [exchangeRateError, setExchangeRateError] = useState<string | null>(null);
-
-    useEffect(() => {
-        let canceled = false;
-        const loadRate = async () => {
-            if (!isAutomaticCalculationEnabled) {
-                return;
-            }
-            try {
-                const currencyExchRate = await loadCurrencyExchRate(currency);
-                if (!canceled) {
-                    setCurrentExchangeRate(currencyExchRate.rates[modalCurrency]);
-                }
-            } catch (error) {
-                console.error("Failed to load currency exchange rate:", error);
-                if (!canceled) {
-                    setExchangeRateError(translations[language].modals.addAsset.exchangeRateNotAvailable);
-                }
-            }
-        };
-        loadRate();
-        return () => {
-            canceled = true;
-        };
-    }, [modalCurrency, currency]);
-    // End of separate hook
+    const { currentExchangeRate, exchangeRateError } = useExchangeRate("USD", modalCurrency);
 
     const currentDate = new Date().toISOString().split("T")[0];
     const currentEditStatus = editStatus ?? "add";
@@ -82,7 +54,9 @@ export default function AddAssetModal({
 
     if (!isOpen) return null;
 
-    const assetsPrices = (findAssetPrice(assets, coingeckoData, selectedAsset) * currentExchangeRate * providedAmount).toFixed(2);
+    const currentAssetPrice = findAssetPrice(assets, coingeckoData, selectedAsset);
+    const autoCalculatedPrice = (currentAssetPrice * currentExchangeRate).toFixed(2);
+    console.log(currentExchangeRate)
 
     return (
         <ModalWrapper>
@@ -96,14 +70,14 @@ export default function AddAssetModal({
                 {disableField && (
                     <>
                         <input type="hidden" name="name" value={defaultData?.name ?? ""} />
-                        <input type="hidden" name="averagePrice" value={defaultData?.averagePrice ?? ""} />
+                        <input type="hidden" name="averagePrice" value={defaultData?.averagePrice ? (defaultData.averagePrice * currentExchangeRate).toFixed(2) : ""} />
                         <input type="hidden" name="currency" value={defaultData?.currency ?? ""} />
                         <input type="hidden" name="date" value={defaultData?.date ?? currentDate} />
                     </>
                 )}
                 {isAutomaticCalculationEnabled && (
                     <>
-                        <input type="hidden" name="averagePrice" value={assetsPrices} />
+                        <input type="hidden" name="averagePrice" value={autoCalculatedPrice} />
                         <input type="hidden" name="currency" value={modalCurrency} />
                     </>
                 )
@@ -125,7 +99,6 @@ export default function AddAssetModal({
                     defaultValue={defaultData?.amount}
                     invalidInput={isInputInvalid}
                     setInvalidInput={setIsInputInvalid}
-                    onChange={(event) => setProvidedAmount(Number(event.target.value))}
                 />
                 <ModalCheckbox
                     themeState={themeState}
@@ -140,7 +113,7 @@ export default function AddAssetModal({
                         labelText={translations[language].modals.addAsset.price}
                         inputType="number"
                         name="averagePrice"
-                        defaultValue={defaultData?.averagePrice || (isAutomaticCalculationEnabled ? assetsPrices : undefined)}
+                        defaultValue={defaultData?.averagePrice ? (defaultData.averagePrice * currentExchangeRate).toFixed(2) : (isAutomaticCalculationEnabled ? autoCalculatedPrice : undefined)}
                         disabled={disableField || isAutomaticCalculationEnabled}
                         invalidInput={isInputInvalid}
                         setInvalidInput={setIsInputInvalid}

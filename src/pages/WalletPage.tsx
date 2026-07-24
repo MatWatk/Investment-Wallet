@@ -17,7 +17,7 @@ import type { EditDataStatus, WalletAssetEditRequest, WalletTab } from "../types
 import useTabSwitch from "../hooks/useTabSwitch";
 
 import type { WalletAsset } from "../types/WalletTypes";
-import { summaryTransformation, findAssetPrice, countTotalValue, checkAuth, getCurrentUser, prepareDataForStatistics } from "../utils/utils";
+import { summaryTransformation, findAssetPrice, countTotalValue, checkAuth, getCurrentUser, prepareDataForStatistics, calculateTotalEarnOrLoss } from "../utils/utils";
 import { convertDataForRequest, createWalletAssetEditRequest } from "../utils/requests";
 import loadAssetPrices from "../services/api/loadAssetPrices";
 import { redirect, useLoaderData, useNavigation, useSubmit } from "react-router-dom";
@@ -143,6 +143,7 @@ export default function WalletPage() {
     }
 
     const assetInvestmentValues = prepareDataForStatistics(assetsFirestore, coingeckoData, activeTab);
+    const totalEarnOrLoss = calculateTotalEarnOrLoss(assetInvestmentValues);
 
     return (
         <>
@@ -150,7 +151,8 @@ export default function WalletPage() {
                 <PageHeader title={translations[language].walletPage.walletHeader} />
 
                 <div className="flex flex-col items-center rounded-lg border border-violet-500 p-2 min-w-50">
-                    <p>Your wallet status: +81%</p>
+                    <p>Your wallet status in percentage: {totalEarnOrLoss.totalPercentage}%</p>
+                    <p>Your wallet status: {totalEarnOrLoss.totalEarnOrLoss}$</p>
                 </div>
 
                 <div className="ml-auto flex w-full flex-wrap justify-end gap-3 sm:w-auto sm:flex-nowrap sm:gap-5">

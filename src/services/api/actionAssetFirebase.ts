@@ -1,10 +1,15 @@
 import type { WalletAssetEditRequest } from "../../types/WalletTypes";
 import { db } from "../firebase/config";
 import { collection, addDoc } from "firebase/firestore";
+import loadCurrencyExchRate from "./loadCurrencyExchRate";
 
 export default async function actionAssetFirebase(data: WalletAssetEditRequest) {
     const { assetId, editStatus, defaultData, ...payload } = data;
     const ref = collection(db, "wallet-edit-history");
+
+    const normalizedPrice = payload.currency === "USD"
+        ? payload.averagePrice
+        : await normalizePriceToUsd(payload.averagePrice, payload.currency);
 
     if (payload.amount <= 0) {
         throw new Response("Amount must be greater than 0", { status: 400 });
@@ -21,6 +26,7 @@ export default async function actionAssetFirebase(data: WalletAssetEditRequest) 
             if (defaultData.market === payload.market) {
                 const editPayload = {
                     ...payload,
+                    averagePrice: normalizedPrice,
                     amount: payload.amount - (defaultData.amount ?? 0),
                     editStatus,
                 };
@@ -33,6 +39,7 @@ export default async function actionAssetFirebase(data: WalletAssetEditRequest) 
 
             const editPayload = {
                 ...payload,
+                averagePrice: normalizedPrice,
                 amount: -payload.amount,
                 editStatus,
                 market: defaultData.market,
@@ -41,6 +48,7 @@ export default async function actionAssetFirebase(data: WalletAssetEditRequest) 
 
             const newMarketPayload = {
                 ...payload,
+                averagePrice: normalizedPrice,
                 amount: payload.amount,
                 editStatus,
                 market: payload.market,
@@ -52,14 +60,14 @@ export default async function actionAssetFirebase(data: WalletAssetEditRequest) 
         if (editStatus === "delete") {
             const deletePayload = {
                 ...payload,
+                averagePrice: normalizedPrice,
                 amount: -payload.amount,
-                averangePrice: -payload.averagePrice,
             };
             await addDoc(ref, deletePayload);
             return;
         }
 
-        await addDoc(ref, { ...payload, editStatus });
+        await addDoc(ref, { ...payload, averagePrice: normalizedPrice, editStatus });
 
     }
     catch (error) {
@@ -69,4 +77,14 @@ export default async function actionAssetFirebase(data: WalletAssetEditRequest) 
         console.error(error);
         throw new Response("Failed to perform action on asset", { status: 500 });
     }
+}
+
+async function normalizePriceToUsd(price: number, currency: string) {
+    if (currency === "USD") {
+        return price;
+    }
+
+    const exchangeRateData = await loadCurrencyExchRate("USD");
+    const rate = exchangeRateData?.rates?.[currency];
+    return typeof rate === "number" ? price / rate : price;
 }

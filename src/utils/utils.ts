@@ -65,26 +65,29 @@ export const checkAuth = (loggedUser: string | undefined | null) => {
 }
 
 export const calculateAvaragePrice = (data: WalletAsset[], platform: string) => {
-    if (platform === "Summary") {
-        const averangePricesObject = data.reduce<Record<string, number>>((acc, asset) => {
-            const totalPrice = data.filter(a => a.name === asset.name).reduce((acc, a) => acc + (a.amount * a.averagePrice), 0);
-            const totalAmount = data.filter(a => a.name === asset.name).reduce((acc, a) => acc + a.amount, 0);
-            acc[asset.name] = totalAmount > 0 ? totalPrice / totalAmount : 0;
-            return acc;
-        }, {});
-        return averangePricesObject;
-    }
-    else {
-        const dataForPlatform = data.filter(asset => asset.market === platform);
-        const averangePricesObject = dataForPlatform.reduce<Record<string, number>>((acc, asset) => {
-            const totalPrice = dataForPlatform.filter(a => a.name === asset.name).reduce((acc, a) => acc + (a.amount * a.averagePrice), 0);
-            const totalAmount = dataForPlatform.filter(a => a.name === asset.name).reduce((acc, a) => acc + a.amount, 0);
-            acc[asset.name] = totalAmount > 0 ? totalPrice / totalAmount : 0;
-            return acc;
-        }, {});
+    const filteredData = platform === "Summary"
+        ? data
+        : data.filter(asset => asset.market === platform);
 
-        return averangePricesObject
-    }
+    const averagePricesObject = filteredData.reduce<Record<string, { totalAmount: number; totalPrice: number }>>((acc, asset) => {
+        const existing = acc[asset.name] ?? { totalAmount: 0, totalPrice: 0 };
+        const nextAmount = existing.totalAmount + asset.amount;
+        const nextPrice = existing.totalPrice + (asset.amount * asset.averagePrice);
+
+        acc[asset.name] = {
+            totalAmount: nextAmount,
+            totalPrice: nextPrice,
+        };
+
+        return acc;
+    }, {});
+
+    return Object.entries(averagePricesObject).reduce<Record<string, number>>((acc, [assetName, values]) => {
+        if (values.totalAmount > 0) {
+            acc[assetName] = values.totalPrice / values.totalAmount;
+        }
+        return acc;
+    }, {});
 };
 
 export const displayEarnOrLoss = (averangePriceObject: Record<string, number>, priceObject: CoinMarketData[]): EarnOrLossObject => {
@@ -93,7 +96,9 @@ export const displayEarnOrLoss = (averangePriceObject: Record<string, number>, p
     assetNames.forEach(assetName => {
         const calculatedAveragePrice = averangePriceObject[assetName] || 0;
         const currentPrice = findAssetPrice(assets, priceObject, assetName) || 0;
-        const earnOrLoss = ((currentPrice - calculatedAveragePrice) / calculatedAveragePrice) * 100;
+        const earnOrLoss = calculatedAveragePrice > 0
+            ? ((currentPrice - calculatedAveragePrice) / calculatedAveragePrice) * 100
+            : 0;
         earnOrLossObject[assetName] = {
             earnOrLossPercentage: earnOrLoss > 0 ? `+${earnOrLoss.toFixed(2)}%` : `${earnOrLoss.toFixed(2)}%`,
             averangePrice: calculatedAveragePrice,
@@ -123,7 +128,15 @@ export const prepareDataForStatistics = (dbAssetsFirestore: WalletAsset[], coing
 
 export const calculateTotalEarnOrLoss = (walletData: AssetsInvestmentValues) => {
     const totalEarnOrLoss = Object.values(walletData).reduce((acc, { earnedMoneyInUSD }) => acc + earnedMoneyInUSD, 0);
-    return totalEarnOrLoss;
+    const totalPercentage = Object.values(walletData).reduce((acc, { earnedMoneyInUSD, averangePrice, amount }) => {
+        const totalInvested = averangePrice * amount;
+        const percentage = totalInvested > 0 ? (earnedMoneyInUSD / totalInvested) * 100 : 0;
+        return acc + percentage;
+    }, 0);
+    return {
+        totalEarnOrLoss: totalEarnOrLoss.toFixed(2),
+        totalPercentage: totalPercentage.toFixed(2)
+    };
 }
 
 
