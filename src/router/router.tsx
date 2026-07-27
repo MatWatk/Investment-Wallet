@@ -8,6 +8,8 @@ import { action as signupAction } from "../pages/SignupPage/action";
 
 import { loader as walletPageLoader } from "../pages/WalletPage/loader";
 import { loader as assetPricePageLoader } from "../pages/AssetPricePage/loader";
+import { loader as loginPageLoader } from "../pages/LoginPage/loader";
+import { loader as signupPageLoader } from "../pages/SignupPage/loader";
 
 import RouterError from "./RouteError";
 
@@ -45,6 +47,7 @@ export const router = createBrowserRouter([
         path: '/login',
         element: <LoginPage />,
         action: loginAction,
+        loader: loginPageLoader,
         errorElement: <RouterError type="loginPage" />
     },
     {
@@ -53,7 +56,8 @@ export const router = createBrowserRouter([
             const module = await import('../pages/SignupPage/SignupPage');
             return {
                 Component: module.default,
-                action: signupAction
+                action: signupAction,
+                loader: signupPageLoader
             };
         },
         errorElement: <RouterError type="signupPage" />
