@@ -4,6 +4,7 @@ import SearchInput from "../components/AssetTable/SearchInput";
 import PageHeader from "../components/PageHeader";
 import PageContentWrapper from "../components/PageContentWrapper";
 import TabsBar from "../components/Tabs_components/TabsBar";
+import SummaryEarnOrLossField from "../components/Wallet_components/SummaryEarnOrLossField";
 
 import { assets } from "../constants/assets";
 
@@ -46,7 +47,7 @@ export default function WalletPage() {
     const currency = useCurrency();
     const language = useLanguage();
     const themeState = useTheme();
-    const { currentExchangeRate } = useExchangeRate("USD", currency);
+    const { currentExchangeRate } = useExchangeRate(currency);
     useRevalidatePage(currency);
 
     const navigation = useNavigation();
@@ -142,19 +143,17 @@ export default function WalletPage() {
         setAssetFormData(reqData);
     }
 
-    const assetInvestmentValues = prepareDataForStatistics(assetsFirestore, coingeckoData, activeTab);
-    const totalEarnOrLoss = calculateTotalEarnOrLoss(assetInvestmentValues);
+    const assetInvestmentValues = useMemo(() => prepareDataForStatistics(assetsFirestore, coingeckoData, activeTab),
+        [assetsFirestore, coingeckoData, activeTab]);
+
+    const totalEarnOrLoss = useMemo(() =>
+        calculateTotalEarnOrLoss(assetsFirestore, coingeckoData),
+        [assetsFirestore, coingeckoData]);
 
     return (
         <>
             <div className="mb-6 flex flex-wrap items-start gap-4 shrink-0">
                 <PageHeader title={translations[language].walletPage.walletHeader} />
-
-                <div className="flex flex-col items-center rounded-lg border border-violet-500 p-2 min-w-50">
-                    <p>Your wallet status in percentage: {totalEarnOrLoss.totalPercentage}%</p>
-                    <p>Your wallet status: {totalEarnOrLoss.totalEarnOrLoss}$</p>
-                </div>
-
                 <div className="ml-auto flex w-full flex-wrap justify-end gap-3 sm:w-auto sm:flex-nowrap sm:gap-5">
                     <AssetButton
                         onClick={handleAddAssetClick}>
@@ -166,6 +165,17 @@ export default function WalletPage() {
                     </AssetButton>
                 </div>
             </div>
+            {/* <div className="flex flex-col items-start rounded-lg border border-violet-500 p-2 min-w-50 w-80">
+                <p>Your wallet status in percentage:
+                    <span className={`font-bold ${Number(totalEarnOrLoss.totalPercentage) > 0 ? 'text-green-500' : 'text-red-500'}`}>{` ${totalEarnOrLoss.totalPercentage}%`}</span>
+                </p>
+                <p>Your wallet status:
+                    <span className={`font-bold ${Number(totalEarnOrLoss.totalEarnOrLoss) > 0 ? 'text-green-500' : 'text-red-500'}`}> {totalEarnOrLoss.totalEarnOrLoss}$</span>
+                </p>
+            </div> */}
+            <SummaryEarnOrLossField 
+            totalPercentage={Number(totalEarnOrLoss.totalPercentage)}
+            totalEarnOrLoss={Number(totalEarnOrLoss.totalEarnOrLoss)} />
             <PageContentWrapper>
                 {navigation.state !== "idle" && <LoadingModal />}
                 {showAssetModal &&

@@ -45,7 +45,7 @@ export default function AddAssetModal({
     const [selectedAsset, setSelectedAsset] = useState<string>(defaultData?.name || 'Bitcoin');
     const [modalCurrency, setModalCurrency] = useState<string>(defaultData?.currency || currency);
 
-    const { currentExchangeRate, exchangeRateError } = useExchangeRate("USD", modalCurrency);
+    const { currentExchangeRate, exchangeRateError } = useExchangeRate(modalCurrency);
 
     const currentDate = new Date().toISOString().split("T")[0];
     const currentEditStatus = editStatus ?? "add";

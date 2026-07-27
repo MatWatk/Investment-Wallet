@@ -66,6 +66,8 @@ export type translationsType = {
             addPlatform: string;
             editButton: string;
             summaryTab: string;
+            walletStatusInPercentage: string;
+            walletStatus: string;
         },
         modals: {
             addAsset: {

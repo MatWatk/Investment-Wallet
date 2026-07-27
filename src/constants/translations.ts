@@ -64,6 +64,8 @@ export const translations: translationsType = {
             addPlatform: "Add Platform",
             editButton: "Edit",
             summaryTab: "Summary",
+            walletStatusInPercentage: "Your percentage return",
+            walletStatus: "Your return"
         },
         modals: {
             addAsset: {
@@ -181,6 +183,8 @@ export const translations: translationsType = {
             addPlatform: "Dodaj platformę",
             editButton: "Edytuj",
             summaryTab: "Podsumowanie",
+            walletStatusInPercentage: "Twój procentowy zwrot",
+            walletStatus: "Twój zwrot"
         },
         modals: {
             addAsset: {
