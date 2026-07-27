@@ -1,17 +1,16 @@
-import { Form, redirect, useActionData, useNavigation } from 'react-router-dom'
-import Card from '../components/Card'
+import { Form, useActionData, useNavigation } from 'react-router-dom'
+import Card from '../../components/Card'
 
-import InputField from '../components/Auth_components/InputField';
-import SubmitButton from '../components/Auth_components/SubmitButton';
-import AuthSwitch from '../components/Auth_components/AuthSwitch';
-import AuthHeader from '../components/Auth_components/AuthHeader';
-import InputFieldsWrapper from '../components/Auth_components/InputFieldsWrapper';
+import InputField from '../../components/Auth_components/InputField';
+import SubmitButton from '../../components/Auth_components/SubmitButton';
+import AuthSwitch from '../../components/Auth_components/AuthSwitch';
+import AuthHeader from '../../components/Auth_components/AuthHeader';
+import InputFieldsWrapper from '../../components/Auth_components/InputFieldsWrapper';
 
-import { useLanguage } from "../hooks/useLanguage";
-import { translations } from "../constants/translations";
-import login from '../services/api/authLogin';
+import { useLanguage } from "../../hooks/useLanguage";
+import { translations } from "../../constants/translations";
 import { useEffect, useState } from 'react';
-import { auth } from '../services/firebase/config';
+import { auth } from '../../services/firebase/config';
 
 export default function LoginPage() {
     const language = useLanguage();
@@ -58,27 +57,4 @@ export default function LoginPage() {
             </Form>
         </Card>
     )
-}
-
-export async function action({ request }: { request: Request }) {
-    const formData = await request.formData();
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
-    try {
-        await login(email, password);
-        return redirect('/');
-    } catch (error) {
-        if (error instanceof Error) {
-            if (error.message.includes('auth/invalid-credential')) {
-                return { errorKey: 'invalidCredentials' };
-            }
-            else if (error.message.includes('auth/network-request-failed')) {
-                return { errorKey: 'network' };
-            }
-            else {
-                return { errorKey: 'generic' };
-            }
-        }
-        throw error;
-    }
 }

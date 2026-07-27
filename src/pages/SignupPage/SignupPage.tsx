@@ -1,16 +1,15 @@
-import { Form, redirect, useActionData, useNavigation } from 'react-router-dom'
-import Card from '../components/Card'
+import { Form, useActionData, useNavigation } from 'react-router-dom'
+import Card from '../../components/Card'
 
-import AuthHeader from '../components/Auth_components/AuthHeader';
-import InputFieldsWrapper from '../components/Auth_components/InputFieldsWrapper';
-import InputField from '../components/Auth_components/InputField';
-import SubmitButton from '../components/Auth_components/SubmitButton';
-import AuthSwitch from '../components/Auth_components/AuthSwitch';
+import AuthHeader from '../../components/Auth_components/AuthHeader';
+import InputFieldsWrapper from '../../components/Auth_components/InputFieldsWrapper';
+import InputField from '../../components/Auth_components/InputField';
+import SubmitButton from '../../components/Auth_components/SubmitButton';
+import AuthSwitch from '../../components/Auth_components/AuthSwitch';
 
-import { useLanguage } from "../hooks/useLanguage";
-import { translations } from "../constants/translations";
+import { useLanguage } from "../../hooks/useLanguage";
+import { translations } from "../../constants/translations";
 import { useEffect, useState } from 'react';
-import authSingup from '../services/api/authSingup';
 
 export default function SignupPage() {
     const language = useLanguage();
@@ -77,34 +76,4 @@ export default function SignupPage() {
             </Form>
         </Card>
     )
-}
-
-export async function action({ request }: { request: Request }) {
-    const formData = await request.formData();
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
-    try {
-        await authSingup(email, password);
-        return redirect('/login');
-    }
-    catch (error) {
-        if (error instanceof Error) {
-            if (error.message.includes('auth/email-already-in-use')) {
-                return { errorKey: 'emailInUse' };
-            }
-            else if (error.message.includes('auth/invalid-email')) {
-                return { errorKey: 'invalidEmail' };
-            }
-            else if (error.message.includes('auth/weak-password')) {
-                return { errorKey: 'weakPassword' };
-            }
-            else if (error.message.includes('auth/network-request-failed')) {
-                return { errorKey: 'network' };
-            }
-            else {
-            return { errorKey: 'generic' };
-            }
-        }
-        throw error;
-    }
 }

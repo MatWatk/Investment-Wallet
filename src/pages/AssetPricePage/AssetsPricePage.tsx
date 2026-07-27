@@ -1,30 +1,26 @@
-import AssetTableHeader from "../components/AssetTable/AssetTableHeader";
-import AssetTablePosition from "../components/AssetTable/AssetTablePosition";
-import SearchInput from "../components/AssetTable/SearchInput";
-import PageHeader from "../components/PageHeader";
-
-import loadAssetPrices from "../services/api/loadAssetPrices";
+import AssetTableHeader from "../../components/AssetTable/AssetTableHeader";
+import AssetTablePosition from "../../components/AssetTable/AssetTablePosition";
+import SearchInput from "../../components/AssetTable/SearchInput";
+import PageHeader from "../../components/PageHeader";
 
 import { useLoaderData } from "react-router-dom";
-import useRevalidatePage from "../hooks/useRevalidatePage";
+import useRevalidatePage from "../../hooks/useRevalidatePage";
 
-import { assets } from "../constants/assets";
+import { assets } from "../../constants/assets";
 // import { priceListTabs } from "../constants/tabs";
 
-import useSortData from "../hooks/useSortData";
-import useFilter from "../hooks/useFilter";
+import useSortData from "../../hooks/useSortData";
+import useFilter from "../../hooks/useFilter";
 
-import type { CoinMarketData } from "../types/AssetTableTypes";
+import type { CoinMarketData } from "../../types/AssetTableTypes";
 // import type { AssetPriceTab, AssetTypes } from "../types/AssetTableTypes";
-import PageContentWrapper from "../components/PageContentWrapper";
+import PageContentWrapper from "../../components/PageContentWrapper";
 // import TabsBar from "../components/TabsBar";
 // import useTabSwitch from "../hooks/useTabSwitch";
 
-import { store } from "../store/index";
-import { useCurrency } from "../hooks/useCurrency";
-import { useLanguage } from "../hooks/useLanguage";
-import { translations } from "../constants/translations";
-import { checkAuth, getCurrentUser } from "../utils/utils";
+import { useCurrency } from "../../hooks/useCurrency";
+import { useLanguage } from "../../hooks/useLanguage";
+import { translations } from "../../constants/translations";
 
 
 export default function AssetPricePage() {
@@ -80,12 +76,4 @@ export default function AssetPricePage() {
         </>
 
     )
-}
-
-export async function loader() {
-    const loggedUser = await getCurrentUser();
-    checkAuth(loggedUser);
-    const currency = store.getState().currency.currency;
-
-    return loadAssetPrices<{ coingeckoId: string }[]>({ assets, currency });
 }
