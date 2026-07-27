@@ -19,7 +19,7 @@ export default function useTabSwitch<T, D extends { market: string }>
         }
 
         return summaryTransformation ? summaryTransformation(visibleAssets.filter(asset => getTabValue(asset) === activeTab)) : visibleAssets.filter(asset => getTabValue(asset) === activeTab);
-    }, [activeTab, visibleAssets, summaryTransformation]);
+    }, [activeTab, visibleAssets, summaryTransformation, getTabValue]);
 
 
     return { activeTab, setActiveTab, handleTabSwitch, actualVisibleAssets };

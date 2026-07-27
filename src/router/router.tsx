@@ -1,8 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import LoginPage from "../pages/LoginPage/LoginPage";
 import Layout from "../components/DashboardLayout";
-import { useLanguage } from "../hooks/useLanguage";
-import { translations } from "../constants/translations";
 
 import {action as walletPageAction} from "../pages/WalletPage/action";
 import { action as loginAction } from "../pages/LoginPage/action";
@@ -11,10 +9,7 @@ import { action as signupAction } from "../pages/SignupPage/action";
 import { loader as walletPageLoader } from "../pages/WalletPage/loader";
 import { loader as assetPricePageLoader } from "../pages/AssetPricePage/loader";
 
-function RouterError({ type }: { type: keyof typeof translations.english.routerErrors }) {
-    const language = useLanguage();
-    return <div>{translations[language].routerErrors[type]}</div>;
-}
+import RouterError from "./RouteError";
 
 export const router = createBrowserRouter([
     {

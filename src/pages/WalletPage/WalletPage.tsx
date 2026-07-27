@@ -25,7 +25,7 @@ import type { WalletLoaderData } from "../../types/WalletTypes";
 import { translations } from "../../constants/translations";
 import SummaryBar from "../../components/Wallet_components/SummaryBar";
 import AssetButton from "../../components/Wallet_components/AssetButton";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import AddAssetModal from "../../components/Modals/AddAssetModal";
 import AddPlatformModal from "../../components/Modals/AddPlatformModal";
 
@@ -53,17 +53,11 @@ export default function WalletPage() {
 
     useRevalidatePage(walletTabs.length);
 
-    const filterTabsForUser = useMemo(() => {
-        return walletTabs.filter(tab => tab.loggedUser === loggedUser);
-    }, [walletTabs, loggedUser]
-    );
+    const filterTabsForUser = walletTabs.filter(tab => tab.loggedUser === loggedUser);
 
     useRevalidatePage(assetsFirestore.length);
 
-    const filterDataForUser = useCallback(
-        (asset: WalletAsset) => asset.loggedUser === loggedUser,
-        [assetsFirestore, loggedUser]
-    );
+    const filterDataForUser = (asset: WalletAsset) => asset.loggedUser === loggedUser;
 
     const { sortedData, requestSort, sortConfig } = useSortData<WalletAsset, "name" | "amount" | "value">
         (assetsFirestore, {
@@ -138,8 +132,7 @@ export default function WalletPage() {
         setAssetFormData(reqData);
     }
 
-    const assetInvestmentValues = useMemo(() => prepareDataForStatistics(assetsFirestore, coingeckoData, activeTab),
-        [assetsFirestore, coingeckoData, activeTab]);
+    const assetInvestmentValues = prepareDataForStatistics(assetsFirestore, coingeckoData, activeTab);
 
     const totalEarnOrLoss = useMemo(() =>
         calculateTotalEarnOrLoss(assetsFirestore, coingeckoData),
@@ -160,17 +153,9 @@ export default function WalletPage() {
                     </AssetButton>
                 </div>
             </div>
-            {/* <div className="flex flex-col items-start rounded-lg border border-violet-500 p-2 min-w-50 w-80">
-                <p>Your wallet status in percentage:
-                    <span className={`font-bold ${Number(totalEarnOrLoss.totalPercentage) > 0 ? 'text-green-500' : 'text-red-500'}`}>{` ${totalEarnOrLoss.totalPercentage}%`}</span>
-                </p>
-                <p>Your wallet status:
-                    <span className={`font-bold ${Number(totalEarnOrLoss.totalEarnOrLoss) > 0 ? 'text-green-500' : 'text-red-500'}`}> {totalEarnOrLoss.totalEarnOrLoss}$</span>
-                </p>
-            </div> */}
-            <SummaryEarnOrLossField 
-            totalPercentage={Number(totalEarnOrLoss.totalPercentage)}
-            totalEarnOrLoss={Number(totalEarnOrLoss.totalEarnOrLoss)} />
+            <SummaryEarnOrLossField
+                totalPercentage={Number(totalEarnOrLoss.totalPercentage)}
+                totalEarnOrLoss={Number(totalEarnOrLoss.totalEarnOrLoss)} />
             <PageContentWrapper>
                 {navigation.state !== "idle" && <LoadingModal />}
                 {showAssetModal &&

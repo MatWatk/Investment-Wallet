@@ -15,12 +15,16 @@ import { auth } from '../../services/firebase/config';
 export default function LoginPage() {
     const language = useLanguage();
     const navigation = useNavigation();
-    const [hideError, setHideError] = useState(false);
+    const [isDirty, setIsDirty] = useState(false);
+
     const actionData = useActionData() as { errorKey?: "invalidCredentials" | "network" | "generic" } | undefined;
 
     useEffect(() => {
-        setHideError(false);
-    }, [actionData])
+        if(navigation.state === 'submitting') {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setIsDirty(false);
+        }
+    }, [navigation.state])
 
     const isSubmitting = navigation.state === 'submitting';
     const idleState = navigation.state === 'idle';
@@ -40,10 +44,10 @@ export default function LoginPage() {
 
             <Form method="post" className="flex flex-col gap-4">
                 <InputFieldsWrapper>
-                    <InputField onChange={() => setHideError(true)} id="email" type="email" placeholder={translations[language].login.emailPlaceholder} />
-                    <InputField onChange={() => setHideError(true)} id="password" type="password" placeholder={translations[language].login.passwordPlaceholder} />
+                    <InputField onChange={() => setIsDirty(true)} id="email" type="email" placeholder={translations[language].login.emailPlaceholder} />
+                    <InputField onChange={() => setIsDirty(true)} id="password" type="password" placeholder={translations[language].login.passwordPlaceholder} />
                 </InputFieldsWrapper>
-                {actionData?.errorKey && !hideError && idleState && (
+                {actionData?.errorKey && !isDirty && idleState && (
                     <div className="flex justify-center text-red-500">{loginErrorMessage}</div>
                 )}
 

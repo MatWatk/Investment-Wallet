@@ -11,7 +11,7 @@ export default function useLogout() {
         try {
             await logout();
             navigate('/login');
-        } catch (error) {
+        } catch {
             setLogoutError('Logout failed.');
         }
     };

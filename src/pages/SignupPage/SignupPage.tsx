@@ -20,15 +20,16 @@ export default function SignupPage() {
 
     const [hideError, setHideError] = useState(false);
 
-        useEffect(() => {
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setHideError(false);
     }, [actionData])
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setHideError(true);
-        if (id === "password") {
+        if (e.target.id === "password") {
             setProvidedValue(e.target.value);
-        } else if (id === "confirm-password") {
+        } else if (e.target.id === "confirm-password") {
             setConfirmedValue(e.target.value);
         }
     }
@@ -58,16 +59,16 @@ export default function SignupPage() {
             <Form method="post" className="flex w-full flex-col items-center gap-4">
 
                 <InputFieldsWrapper>
-                    <InputField id="email" type="email" label={translations[language].signup.emailPlaceholder} />
-                    <InputField onChange={(e) => handleInputChange(e, "password")} id="password" type="password" label={translations[language].signup.passwordPlaceholder} />
-                    <InputField onChange={(e) => handleInputChange(e, "confirm-password")} id="confirm-password" type="password" label={translations[language].signup.confirmPasswordPlaceholder} />
-                    {(valuesDoesntMatch || backendErrorVisible) && 
-                    <div className="flex min-h-10 w-full max-w-sm items-center justify-center px-1">
-                        <div className="w-3/4 text-center">
-                            {valuesDoesntMatch && <p className="wrap-break-word text-sm leading-5 text-red-500">{translations[language].signup.valuesDoNotMatch}</p>}
-                            {backendErrorVisible && <p className="wrap-break-word text-sm leading-5 text-red-500">{signupErrorMessage}</p>}
-                        </div>
-                    </div>}
+                    <InputField onChange={() => setHideError(true)} id="email" type="email" label={translations[language].signup.emailPlaceholder} />
+                    <InputField onChange={(e) => handleInputChange(e)} id="password" type="password" label={translations[language].signup.passwordPlaceholder} />
+                    <InputField onChange={(e) => handleInputChange(e)} id="confirm-password" type="password" label={translations[language].signup.confirmPasswordPlaceholder} />
+                    {(valuesDoesntMatch || backendErrorVisible) &&
+                        <div className="flex min-h-10 w-full max-w-sm items-center justify-center px-1">
+                            <div className="w-3/4 text-center">
+                                {valuesDoesntMatch && <p className="wrap-break-word text-sm leading-5 text-red-500">{translations[language].signup.valuesDoNotMatch}</p>}
+                                {backendErrorVisible && <p className="wrap-break-word text-sm leading-5 text-red-500">{signupErrorMessage}</p>}
+                            </div>
+                        </div>}
                 </InputFieldsWrapper>
 
                 <SubmitButton disabled={valuesDoesntMatch || isSubmitting} text={isSubmitting ? translations[language].signup.submittingText : translations[language].signup.submitButton} />
