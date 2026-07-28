@@ -23,9 +23,8 @@ export default function Layout() {
             if (!user) {
                 navigate("/login");
             }
-            return () => unsubscribe();
-        }
-        )
+        })
+        return () => unsubscribe();
     }, [navigate]);
 
     return (
