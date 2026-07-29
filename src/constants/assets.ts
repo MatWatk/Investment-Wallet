@@ -33,6 +33,12 @@ export const assets: Asset[] = [
         coingeckoId: 'kinesis-silver',
         image: silverBarIcon,
     },
+    {
+        name: 'USDC',
+        symbol: 'USDC',
+        coingeckoId: 'usd-coin',
+        image: 'https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042389',
+    }
 ];
 
 export type currencyType = "USD" | "PLN";
