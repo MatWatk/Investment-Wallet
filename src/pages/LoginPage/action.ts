@@ -6,8 +6,7 @@ export async function action({ request }: { request: Request }) {
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
     try {
-        const res = await login(email, password);
-        console.log(res)
+        await login(email, password);
         return redirect('/');
     } catch (error) {
         if (error instanceof Error) {

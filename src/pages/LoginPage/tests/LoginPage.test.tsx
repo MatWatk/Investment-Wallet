@@ -1,15 +1,23 @@
 import { render, screen } from '@testing-library/react';
+import { vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'react-redux';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import LoginPage from '../LoginPage';
+import login from "../../../services/api/authLogin";
 import { store } from '../../../store';
+import type { User } from 'firebase/auth';
+import { action as loginAction } from '../action';
+
+vi.mock('../../../services/api/authLogin', () => ({
+    default: vi.fn(),
+}));
 
 describe('LoginPage tests', () => {
     const renderLoginPage = (action?: () => Promise<{ errorKey: 'invalidCredentials' }>) => {
         const router = createMemoryRouter([
             {
-                path: '/',
+                path: '/login',
                 element: (
                     <Provider store={store}>
                         <LoginPage />
@@ -20,12 +28,17 @@ describe('LoginPage tests', () => {
             {
                 path: '/signup',
                 element: <div>Signup Page</div>,
+            },
+            {
+                path: '/',
+                element: <div>Wallet Page</div>,
             }
         ], {
-            initialEntries: ['/'],
+            initialEntries: ['/login'],
         });
 
         render(<RouterProvider router={router} />);
+
     };
 
     test('should render the login page correctly', () => {
@@ -54,7 +67,7 @@ describe('LoginPage tests', () => {
 
     test('email and password inputs should be required', () => {
         renderLoginPage();
-        
+
         const emailInput = screen.getByPlaceholderText(/email/i);
         const passwordInput = screen.getByPlaceholderText(/password/i);
 
@@ -83,5 +96,67 @@ describe('LoginPage tests', () => {
         await userEvent.click(registerButton);
 
         expect(await screen.findByText(/signup page/i)).toBeInTheDocument();
+    });
+
+    describe('positive login tests', () => {
+        const renderLoginPage = () => {
+            const router = createMemoryRouter([
+                {
+                    path: '/login',
+                    element: (
+                        <Provider store={store}>
+                            <LoginPage />
+                        </Provider>
+                    ),
+                    action: loginAction,
+                },
+                {
+                    path: '/',
+                    element: <div>Wallet Page</div>,
+                }
+            ], {
+                initialEntries: ['/login'],
+            });
+
+            render(<RouterProvider router={router} />);
+
+        };
+        test('should navigate to the wallet page when login is successful', async () => {
+            vi.mocked(login).mockResolvedValue({
+                uid: '123',
+                email: 'test@test.pl',
+            } as User);
+
+            renderLoginPage();
+
+            const emailInput = screen.getByPlaceholderText(/email/i);
+            const passwordInput = screen.getByPlaceholderText(/password/i);
+            const submitButton = screen.getByRole('button', { name: /login/i });
+
+            await userEvent.type(emailInput, 'test@test.pl');
+            await userEvent.type(passwordInput, '123456');
+            await userEvent.click(submitButton);
+
+            expect(await screen.findByText(/wallet page/i)).toBeInTheDocument();
+        });
+        test('button should be disabled with changed text on logging in status', async () => {
+            vi.mocked(login).mockResolvedValue({
+                uid: '123',
+                email: 'test@test.pl',
+            } as User);
+            renderLoginPage();
+
+            const emailInput = screen.getByPlaceholderText(/email/i);
+            const passwordInput = screen.getByPlaceholderText(/password/i);
+            const submitButton = screen.getByRole('button', { name: /login/i });
+
+            await userEvent.type(emailInput, 'test@test.pl');
+            await userEvent.type(passwordInput, '123456');
+            await userEvent.click(submitButton);
+
+            expect(await submitButton).toBeDisabled();
+            expect(await submitButton).toHaveTextContent(/logging in/i);
+
+        });
     });
 });
