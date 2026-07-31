@@ -1,8 +1,9 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'react-redux';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import type { ActionFunction } from 'react-router-dom';
 import LoginPage from '../LoginPage';
 import login from "../../../services/api/authLogin";
 import { store } from '../../../store';
@@ -14,14 +15,18 @@ vi.mock('../../../services/api/authLogin', () => ({
     default: vi.fn(),
 }));
 
-vi.mock('../../../services/firebase/config', () => ({
-    auth: {
-        currentUser: 'test@test.pl',
-    },
-}));
 
 describe('LoginPage tests', () => {
-    const renderLoginPage = (action?: () => Promise<{ errorKey: 'invalidCredentials' }>) => {
+    afterEach(() => {
+        vi.clearAllMocks();
+        vi.mocked(login).mockReset();
+        Object.defineProperties(auth, {
+            currentUser: {
+                value: null,
+            }
+        });
+    });
+    const renderLoginPage = (action?: ActionFunction) => {
         const router = createMemoryRouter([
             {
                 path: '/login',
@@ -83,10 +88,6 @@ describe('LoginPage tests', () => {
     });
 
     test('error should be displayed when invalid credentials are provided', async () => {
-        Object.defineProperty(auth, 'currentUser', {
-            value: null,
-            configurable: true,
-        });
         renderLoginPage(async () => ({ errorKey: 'invalidCredentials' }));
 
         const emailInput = screen.getByPlaceholderText(/email/i);
@@ -110,10 +111,6 @@ describe('LoginPage tests', () => {
     });
 
     test('error should disappear after changing input values', async () => {
-        Object.defineProperty(auth, 'currentUser', {
-            value: null,
-            configurable: true,
-        });
         renderLoginPage(async () => ({ errorKey: 'invalidCredentials' }));
 
         const emailInput = screen.getByPlaceholderText(/email/i);
@@ -139,35 +136,14 @@ describe('LoginPage tests', () => {
     })
 
     describe('positive login tests', () => {
-        const renderLoginPage = () => {
-            const router = createMemoryRouter([
-                {
-                    path: '/login',
-                    element: (
-                        <Provider store={store}>
-                            <LoginPage />
-                        </Provider>
-                    ),
-                    action: loginAction,
-                },
-                {
-                    path: '/',
-                    element: <div>Wallet Page</div>,
-                }
-            ], {
-                initialEntries: ['/login'],
-            });
 
-            render(<RouterProvider router={router} />);
-
-        };
         test('should navigate to the wallet page when login is successful', async () => {
             vi.mocked(login).mockResolvedValue({
                 uid: '123',
                 email: 'test@test.pl',
             } as User);
 
-            renderLoginPage();
+            renderLoginPage(loginAction)
 
             const emailInput = screen.getByPlaceholderText(/email/i);
             const passwordInput = screen.getByPlaceholderText(/password/i);
@@ -184,7 +160,7 @@ describe('LoginPage tests', () => {
                 uid: '123',
                 email: 'test@test.pl',
             } as User);
-            renderLoginPage();
+            renderLoginPage(loginAction)
 
             Object.defineProperty(auth, 'currentUser', {
                 value: null,
@@ -210,7 +186,7 @@ describe('LoginPage tests', () => {
                 configurable: true,
             });
 
-            renderLoginPage();
+            renderLoginPage(loginAction)
 
             expect(await screen.findByText(/logged successfully/i)).toBeInTheDocument();
         });
