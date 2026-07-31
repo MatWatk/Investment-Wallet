@@ -56,7 +56,6 @@ export default function AddAssetModal({
 
     const currentAssetPrice = findAssetPrice(assets, coingeckoData, selectedAsset);
     const autoCalculatedPrice = (currentAssetPrice * currentExchangeRate).toFixed(2);
-    console.log(currentExchangeRate)
 
     return (
         <ModalWrapper>

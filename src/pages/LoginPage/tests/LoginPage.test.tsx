@@ -8,9 +8,16 @@ import login from "../../../services/api/authLogin";
 import { store } from '../../../store';
 import type { User } from 'firebase/auth';
 import { action as loginAction } from '../action';
+import { auth } from "../../../services/firebase/config";
 
 vi.mock('../../../services/api/authLogin', () => ({
     default: vi.fn(),
+}));
+
+vi.mock('../../../services/firebase/config', () => ({
+    auth: {
+        currentUser: 'test@test.pl',
+    },
 }));
 
 describe('LoginPage tests', () => {
@@ -76,6 +83,10 @@ describe('LoginPage tests', () => {
     });
 
     test('error should be displayed when invalid credentials are provided', async () => {
+        Object.defineProperty(auth, 'currentUser', {
+            value: null,
+            configurable: true,
+        });
         renderLoginPage(async () => ({ errorKey: 'invalidCredentials' }));
 
         const emailInput = screen.getByPlaceholderText(/email/i);
@@ -97,6 +108,35 @@ describe('LoginPage tests', () => {
 
         expect(await screen.findByText(/signup page/i)).toBeInTheDocument();
     });
+
+    test('error should disappear after changing input values', async () => {
+        Object.defineProperty(auth, 'currentUser', {
+            value: null,
+            configurable: true,
+        });
+        renderLoginPage(async () => ({ errorKey: 'invalidCredentials' }));
+
+        const emailInput = screen.getByPlaceholderText(/email/i);
+        const passwordInput = screen.getByPlaceholderText(/password/i);
+        const submitButton = screen.getByRole('button', { name: /login/i });
+
+        await userEvent.type(emailInput, 'test@example.com');
+        await userEvent.type(passwordInput, 'invalidpassword');
+        await userEvent.click(submitButton);
+
+        expect(await screen.findByText(/incorrect password or email/i)).toBeInTheDocument();
+
+        await userEvent.type(passwordInput, 'aaa');
+
+        expect(screen.queryByText(/incorrect password or email/i)).not.toBeInTheDocument();
+        await userEvent.click(submitButton);
+        expect(await screen.findByText(/incorrect password or email/i)).toBeInTheDocument();
+
+        await userEvent.type(emailInput, 'aaa');
+
+        expect(screen.queryByText(/incorrect password or email/i)).not.toBeInTheDocument();
+
+    })
 
     describe('positive login tests', () => {
         const renderLoginPage = () => {
@@ -146,6 +186,11 @@ describe('LoginPage tests', () => {
             } as User);
             renderLoginPage();
 
+            Object.defineProperty(auth, 'currentUser', {
+                value: null,
+                configurable: true,
+            });
+
             const emailInput = screen.getByPlaceholderText(/email/i);
             const passwordInput = screen.getByPlaceholderText(/password/i);
             const submitButton = screen.getByRole('button', { name: /login/i });
@@ -157,6 +202,17 @@ describe('LoginPage tests', () => {
             expect(await submitButton).toBeDisabled();
             expect(await submitButton).toHaveTextContent(/logging in/i);
 
+        });
+
+        test('successful message should appear after providing correct login and password', async () => {
+            Object.defineProperty(auth, 'currentUser', {
+                value: { email: 'test@test.pl' },
+                configurable: true,
+            });
+
+            renderLoginPage();
+
+            expect(await screen.findByText(/logged successfully/i)).toBeInTheDocument();
         });
     });
 });
