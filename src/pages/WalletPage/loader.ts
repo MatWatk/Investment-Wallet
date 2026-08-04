@@ -10,8 +10,8 @@ export async function loader() {
     const currency = "USD";
     const [coingeckoData, assetsFirestore, walletTabs] = await Promise.all([
         loadAssetPrices<{ coingeckoId: string }[]>({ assets, currency }),
-        loadWalletAssets<WalletAsset[]>("wallet-edit-history", ["name", "amount", "market", "loggedUser", "averagePrice"], loggedUser || ""),
-        loadWalletAssets<WalletTab[]>("wallet-tabs", ["platformName", "loggedUser"], loggedUser || ""),
+        loadWalletAssets<WalletAsset>("wallet-edit-history", ["name", "amount", "market", "loggedUser", "averagePrice"], loggedUser || ""),
+        loadWalletAssets<WalletTab>("wallet-tabs", ["platformName", "loggedUser"], loggedUser || ""),
     ]);
 
     return { coingeckoData, assetsFirestore, walletTabs };
