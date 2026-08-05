@@ -10,6 +10,7 @@ import { store } from "../../../store";
 import { afterEach, describe, expect, test, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import Layout from "../../../components/DashboardLayout";
+import * as useSortDataModule from "../../../hooks/useSortData";
 
 vi.mock('../loader', () => ({
     loader: vi.fn(),
@@ -17,7 +18,7 @@ vi.mock('../loader', () => ({
 
 Object.defineProperty(auth, 'currentUser', {
     value: { email: 'user@example.com' },
-    writable: true,
+    configurable: true,
 });
 
 const mockData: CoinMarketData[] = [{
@@ -73,6 +74,12 @@ describe('AssetPricePage tests', () => {
 
     afterEach(() => {
         vi.clearAllMocks();
+        Object.defineProperty(auth, 'currentUser', {
+            value: {
+                email: 'user@example.com',
+                configurable: true,
+            }
+        });
     });
 
     test('should load Asset Price Page correctly with data', async () => {
@@ -136,5 +143,33 @@ describe('AssetPricePage tests', () => {
 
         const assetPriceHeader = await screen.findByText(/Asset Price List/i);
         expect(assetPriceHeader).toBeInTheDocument();
+    });
+
+    test('should redirect to login page when user is not authenticated', async () => {
+        Object.defineProperty(auth, 'currentUser', {
+            value: null,
+            configurable: true,
+        });
+        renderAssetPricePage();
+        const loginPage = await screen.findByText(/Login Page/i);
+        expect(loginPage).toBeInTheDocument();
+    });
+
+    test('should sort assets when clicking on sorting arrow buttons', async () => {
+        vi.mocked(loader).mockResolvedValue(mockData);
+        const requestSortMock = vi.fn();
+        vi.spyOn(useSortDataModule, 'default').mockReturnValue({
+            sortedData: mockData,
+            requestSort: requestSortMock,
+            sortConfig: { key: 'name', direction: 'ascending' },
+        });
+
+        renderAssetPricePage();
+
+        const nameSortButton = await screen.findAllByRole('button', { name: /Sorting arrows/i });
+
+        await userEvent.click(nameSortButton[0]);
+
+        expect(requestSortMock).toHaveBeenCalledWith('name');
     });
 });
