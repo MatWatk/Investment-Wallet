@@ -1,4 +1,6 @@
 import { createMemoryRouter, RouterProvider } from "react-router-dom"
+import { auth } from "../../../services/firebase/config";
+import RouterError from "../../../router/RouteError";
 import { loader } from "../loader";
 import { render, screen } from "@testing-library/react";
 import AssetsPricePage from "../AssetsPricePage";
@@ -7,10 +9,16 @@ import { Provider } from "react-redux";
 import { store } from "../../../store";
 import { afterEach, describe, expect, test, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
+import Layout from "../../../components/DashboardLayout";
 
 vi.mock('../loader', () => ({
     loader: vi.fn(),
 }));
+
+Object.defineProperty(auth, 'currentUser', {
+    value: { email: 'user@example.com' },
+    writable: true,
+});
 
 const mockData: CoinMarketData[] = [{
     id: "bitcoin",
@@ -35,16 +43,31 @@ describe('AssetPricePage tests', () => {
         const router = createMemoryRouter([
             {
                 path: '/asset-price',
-                loader: loader,
-                element: (
-                    <Provider store={store}>
-                        <AssetsPricePage />
-                    </Provider>
-                ),
+                element: <Provider store={store}>
+                    <Layout />
+                </Provider>,
+                children: [
+                    {
+                        index: true,
+                        loader: loader,
+                        element: (
+                            <Provider store={store}>
+                                <AssetsPricePage />
+                            </Provider>
+                        ),
+                        errorElement: <RouterError type="assetPriceData" />,
+                    }
+                ],
+            },
+            {
+                path: '/login',
+                element: <div>Login Page</div>
+            },
+        ],
+            {
+                initialEntries: ['/asset-price'],
             }
-        ], {
-            initialEntries: ['/asset-price'],
-        });
+        );
         render(<RouterProvider router={router} />);
     };
 
@@ -95,9 +118,7 @@ describe('AssetPricePage tests', () => {
         expect(ethereumRow).toBeInTheDocument();
 
         await userEvent.type(searchInput, 'bitcoin');
-        // await waitFor(() => {
         expect(screen.queryByText(/Ethereum/i)).not.toBeInTheDocument();
-        // });
 
         expect(screen.queryByText(/Bitcoin/i)).toBeInTheDocument();
     });
@@ -106,7 +127,7 @@ describe('AssetPricePage tests', () => {
         vi.mocked(loader).mockRejectedValue(new Error('Error loading asset price data'));
         renderAssetPricePage();
 
-        expect(await screen.findByText(/Error loading asset price data/i, { selector: 'h3' })).toBeInTheDocument();
+        expect(await screen.findByText(/Error loading asset price data/i)).toBeInTheDocument();
     });
 
     test('should render empty table when no assets are returned', async () => {
