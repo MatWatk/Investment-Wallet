@@ -5,8 +5,12 @@ import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import { loader } from "../loader";
 import { render, screen } from "@testing-library/react";
 import { vi } from "vitest";
+import Layout from "../../../components/DashboardLayout";
+import RouterError from "../../../router/RouteError";
+import * as useSortDataModule from "../../../hooks/useSortData";
 
 import { auth } from "../../../services/firebase/config";
+import userEvent from "@testing-library/user-event";
 
 vi.mock('../loader', () => ({
     loader: vi.fn(),
@@ -52,7 +56,7 @@ const mockAssetsFirestore = [
         loggedUser: "anotherUser@example.com",
         averagePrice: 100,
     },
-        {
+    {
         id: "4",
         name: "Bitcoin",
         amount: 1,
@@ -93,10 +97,23 @@ describe('WalletPage tests', () => {
         const router = createMemoryRouter([
             {
                 path: '/',
-                loader: loader,
-                element: (<Provider store={store}>
-                    <WalletPage />
-                </Provider>),
+                element: (
+                    <Provider store={store}>
+                        <Layout />
+                    </Provider>
+                ),
+                children: [
+                    {
+                        index: true,
+                        loader: loader,
+                        element: <WalletPage />,
+                        errorElement: <RouterError type="walletData" />,
+                    },
+                ],
+            },
+            {
+                path: '/login',
+                element: <div>Login Page</div>,
             },
         ], {
             initialEntries: ['/'],
@@ -147,6 +164,123 @@ describe('WalletPage tests', () => {
 
         expect(bitcoinName).toBeInTheDocument();
         expect(bitcoinAmount).toBeInTheDocument();
+
+    });
+
+    test('should display error message when loader throws error', async () => {
+        Object.defineProperty(auth, 'currentUser', {
+            value: { email: "user@example.com" },
+            configurable: true,
+        });
+        vi.mocked(loader).mockRejectedValue(new Error('Error loading wallet data'));
+        renderWalletPage();
+        const errorMessage = await screen.findByText(/Error loading wallet data/i);
+        expect(errorMessage).toBeInTheDocument();
+    });
+
+    test('should redirect to login page when user is not authenticated', async () => {
+        Object.defineProperty(auth, 'currentUser', {
+            value: null,
+            configurable: true,
+        });
+        renderWalletPage();
+        const loginPage = await screen.findByText(/Login Page/i);
+        expect(loginPage).toBeInTheDocument();
+    });
+
+    test('should filter values when using search bar', async () => {
+        Object.defineProperty(auth, 'currentUser', {
+            value: { email: "user@example.com" },
+            configurable: true,
+        });
+
+        vi.mocked(loader).mockResolvedValue({
+            coingeckoData: coingeckoDataMock,
+            assetsFirestore: mockAssetsFirestore,
+            walletTabs: walletTabsMock,
+        });
+
+        renderWalletPage();
+
+        const searchInput = await screen.findByRole('textbox', { name: /Search/i });
+        const bitcoinRow = screen.queryByText(/Bitcoin/i);
+        const ethereumRow = screen.queryByText(/Ethereum/i);
+
+        await userEvent.type(searchInput, 'bitcoin');
+        expect(ethereumRow).not.toBeInTheDocument();
+
+        expect(bitcoinRow).toBeInTheDocument();
+
+    });
+
+    test('should render empty table when no assets are returned', async () => {
+        Object.defineProperty(auth, 'currentUser', {
+            value: { email: "user@example.com" },
+            configurable: true,
+        });
+
+        vi.mocked(loader).mockResolvedValue({
+            coingeckoData: coingeckoDataMock,
+            assetsFirestore: [],
+            walletTabs: walletTabsMock,
+        });
+        renderWalletPage();
+        const walletHeader = await screen.findByText(/Your Wallet/i);
+        const summaryPlatform = await screen.findByText(/Summary/i);
+        const coinbasePlatform = await screen.findByText(/Coinbase/i);
+
+        expect(walletHeader).toBeInTheDocument();
+        expect(summaryPlatform).toBeInTheDocument();
+        expect(coinbasePlatform).toBeInTheDocument();
+    });
+
+    test('should filter assets based on clicked platform', async () => {
+        Object.defineProperty(auth, 'currentUser', {
+            value: { email: "user@example.com" },
+            configurable: true,
+        });
+        vi.mocked(loader).mockResolvedValue({
+            coingeckoData: coingeckoDataMock,
+            assetsFirestore: mockAssetsFirestore,
+            walletTabs: walletTabsMock,
+        });
+        renderWalletPage();
+
+        const coinbasePlatform = await screen.findByText(/Coinbase/i);
+        const coinbaseAsset = await screen.findByText(mockAssetsFirestore[0].name);
+
+        await userEvent.click(coinbasePlatform);
+
+        expect(coinbaseAsset).toBeInTheDocument();
+    });
+
+    test('should call requestSort feature when clicking on sort button', async () => {
+        const requestSortMock = vi.fn();
+        vi.spyOn(useSortDataModule, 'default').mockReturnValue({
+            sortedData: mockAssetsFirestore,
+            requestSort: requestSortMock,
+            sortConfig: { key: "name", direction: "ascending" },
+        });
+
+        Object.defineProperty(auth, 'currentUser', {
+            value: {
+                email: "user@example.com",
+                configurable: true,
+            },
+        });
+        vi.mocked(loader).mockResolvedValue({
+            coingeckoData: coingeckoDataMock,
+            assetsFirestore: mockAssetsFirestore,
+            walletTabs: walletTabsMock,
+        });
+
+        renderWalletPage();
+
+        const sortButtons = await screen.findAllByRole('button', { name: /Sorting arrows/i });
+        
+        await userEvent.click(sortButtons[0]);
+
+        expect(requestSortMock).toHaveBeenCalledWith("name");
 
     });
 });
