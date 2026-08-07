@@ -1,9 +1,7 @@
 import fetchData from "./fetchData";
 
 export default async function loadCurrencyExchRate(currency: string) {
-    // if(currency === "USD") {
-    //     return { rates: { USD: 1 } };
-    // }
+
     try {
         const url = `https://open.er-api.com/v6/latest/${currency}`;
         const data = await fetchData(url);

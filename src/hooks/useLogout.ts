@@ -1,6 +1,7 @@
 import { useState } from "react";
 import logout from "../services/api/authLogout";
 import { useNavigate } from "react-router-dom";
+import { auth } from "../services/firebase/config";
 
 export default function useLogout() {
     const [logoutError, setLogoutError] = useState<string | null>(null);
@@ -9,10 +10,13 @@ export default function useLogout() {
 
     const handleLogout = async () => {
         try {
+            if(!auth.currentUser) {
+                throw new Error('No user is currently logged in.');
+            }
             await logout();
             navigate('/login');
-        } catch {
-            setLogoutError('Logout failed.');
+        } catch(error) {
+            setLogoutError(error instanceof Error ? error.message : 'Logout failed.');
         }
     };
 
