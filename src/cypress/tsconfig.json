@@ -1,5 +1,10 @@
 {
-  "extends": "../../tsconfig.cypress.json",
-  "include": ["e2e/**/*.ts", "e2e/**/*.tsx"],
-  "exclude": []
+    "extends": "../../tsconfig.cypress.json",
+    "include": [
+        "e2e/**/*.ts",
+        "e2e/**/*.tsx",
+        "support/**/*.ts",
+        "support/**/*.d.ts"
+    ],
+    "exclude": []
 }
