@@ -3,13 +3,14 @@ export default function ModalButton({
     themeState,
     children,
     type = "button",
-    disabled = false }: {
+    disabled = false,
+    ...props }: {
         onClick?: () => void;
         themeState: boolean;
         children: React.ReactNode;
         type?: "button" | "submit" | "reset";
         disabled?: boolean
-    }) {
+    } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
     return (
         <div className="mt-2 flex flex-row gap-4 justify-evenly">
             <button
@@ -23,7 +24,9 @@ export default function ModalButton({
                     : themeState
                         ? "border-violet-900 text-violet-900 hover:bg-violet-100"
                         : "border-gray-200 text-gray-200 bg-gray-800 hover:bg-gray-600"
-                    }`}>
+                    }`}
+                {...props}
+            >
                 {children}
             </button>
 

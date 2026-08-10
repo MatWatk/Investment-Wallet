@@ -64,7 +64,7 @@ export default function AddPlatformModal({
     if (!isOpen) return null;
 
     return (
-        <ModalWrapper>
+        <ModalWrapper id="add-platform-modal">
             <h2 className={`text-start font-bold ${themeState ? "text-violet-900" : "text-yellow-500"}`}>{translations[language].modals.addPlatform.title}</h2>
             <div>
                 <Form method="post" onSubmit={onClose} className="mt-4 flex flex-col gap-4">
@@ -98,8 +98,8 @@ export default function AddPlatformModal({
                         </p>
                     )}
                     <div className="mt-2 flex flex-row gap-4 justify-evenly">
-                        <ModalButton onClick={onClose} themeState={themeState} disabled={isPlatformMutationPending}>{translations[language].modals.addPlatform.close}</ModalButton>
-                        <ModalButton type="submit" themeState={themeState} disabled={Object.values(isInputInvalid).some(Boolean) || isPlatformMutationPending}>{translations[language].modals.addPlatform.submit}</ModalButton>
+                        <ModalButton id="close-add-platform-modal" onClick={onClose} themeState={themeState} disabled={isPlatformMutationPending}>{translations[language].modals.addPlatform.close}</ModalButton>
+                        <ModalButton id="submit-add-platform-modal" type="submit" themeState={themeState} disabled={Object.values(isInputInvalid).some(Boolean) || isPlatformMutationPending}>{translations[language].modals.addPlatform.submit}</ModalButton>
                     </div>
                     {platformToDelete &&
                         <DeleteConfirmationModal handleConfirmDelete={handleConfirmDelete} objectToDelete={platformToDelete} closeModal={() => setPlatformToDelete(null)} allAssets={allAssets} />}
