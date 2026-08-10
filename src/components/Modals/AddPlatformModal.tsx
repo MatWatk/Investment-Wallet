@@ -87,7 +87,7 @@ export default function AddPlatformModal({
                             {walletTabs.map((tab) => (
                                 <li key={tab.id} className={`flex flex-row gap-4 items-center text-xl justify-start mt-2 ${themeState ? "text-violet-900" : "text-yellow-500"}`}>
                                     <p className="flex-1">{tab.platformName}</p>
-                                    <button type="button" onClick={() => handleDeletePlatform(tab)} disabled={isPlatformMutationPending}><img className="w-6 h-6" src={rubbishBin} alt={translations[language].modals.addPlatform.deleteAlt} /></button>
+                                    <button id={`delete-${tab.platformName.trim()}`} type="button" onClick={() => handleDeletePlatform(tab)} disabled={isPlatformMutationPending}><img className="w-6 h-6" src={rubbishBin} alt={translations[language].modals.addPlatform.deleteAlt} /></button>
                                 </li>
                             ))}
                         </ol>
