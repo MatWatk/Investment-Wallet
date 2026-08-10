@@ -79,8 +79,8 @@ export default function DeleteConfirmationModal({
                 {deleteModalContent()}
                 <div className="mt-4 flex flex-row gap-4 justify-evenly">
 
-                    <ModalButton id="cancel-delete-platform" type="button" onClick={closeModal} themeState={themeState}>{translations[language].modals.deleteConfirmation.cancel}</ModalButton>
-                    <ModalButton id="confirm-delete-platform" type="button" onClick={handleConfirmDelete} themeState={themeState} disabled={assetsBlockinPlatformDelete}>{translations[language].modals.deleteConfirmation.confirm}</ModalButton>
+                    <ModalButton id="cancel-delete" type="button" onClick={closeModal} themeState={themeState}>{translations[language].modals.deleteConfirmation.cancel}</ModalButton>
+                    <ModalButton id="confirm-delete" type="button" onClick={handleConfirmDelete} themeState={themeState} disabled={assetsBlockinPlatformDelete}>{translations[language].modals.deleteConfirmation.confirm}</ModalButton>
                 </div>
             </div>
         </ModalWrapper>

@@ -141,6 +141,7 @@ export default function AddAssetModal({
                         defaultValue={defaultData?.market}
                     />
                     <ModalButton
+                        id="add-platform-button-modal"
                         type="button"
                         onClick={openPlatformModal}
                         themeState={themeState}>
@@ -158,6 +159,7 @@ export default function AddAssetModal({
                 <div className="mt-2 mb-2 flex flex-row gap-4 justify-evenly">
                     <ModalButton type="button" onClick={onClose} themeState={themeState}>{translations[language].modals.addAsset.close}</ModalButton>
                     <ModalButton
+                        id='submit-add-asset-modal'
                         type="submit"
                         themeState={themeState}
                         disabled={Object.values(isInputInvalid).some(Boolean)}>

@@ -212,19 +212,19 @@ export default function WalletPage() {
                                     {activeTab !== "Summary" &&
                                         <div className="ml-4 flex shrink-0 items-center gap-2">
                                             <AssetButton
-                                                id={`edit-asset-button-${walletAsset.id}`}
+                                                id={`edit-asset-button-${walletAsset.name.trim()}`}
                                                 onClick={() => handleEdit(walletAsset.id)}
                                                 big={false}>
                                                 {translations[language].walletPage.editButton}
                                             </AssetButton>
                                             <RubbishBinButton
-                                                id={`delete-asset-button-${walletAsset.id}`}
+                                                id={`delete-asset-button-${walletAsset.name.trim()}`}
                                                 onClick={() => handleDelete(walletAsset.id)} />
                                         </div>}
                                 </div>
                             )}
                             <div className="ml-auto flex flex-row gap-2 shrink-0 items-center whitespace-nowrap">
-                                <p className="w-33 text-center flex items-center justify-center gap-2 shrink-0">
+                                <p id={`asset-amount-${walletAsset.name.trim()}`} className="w-33 text-center flex items-center justify-center gap-2 shrink-0">
                                     {Number(Number(walletAsset.amount).toFixed(2))}
                                 </p>
                                 <p className="w-25 text-center flex items-center justify-center gap-2 shrink-0">
