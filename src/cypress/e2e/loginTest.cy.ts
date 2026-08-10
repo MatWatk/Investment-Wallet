@@ -4,8 +4,8 @@ describe('Login tests', () => {
         cy.clearAllLocalStorage();
         cy.clearAllSessionStorage();
         cy.visit('/');
-
         cy.logout();
+
         cy.visit('/login');
     });
 
