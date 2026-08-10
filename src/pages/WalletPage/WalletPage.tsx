@@ -144,10 +144,12 @@ export default function WalletPage() {
                 <PageHeader title={translations[language].walletPage.walletHeader} />
                 <div className="ml-auto flex w-full flex-wrap justify-end gap-3 sm:w-auto sm:flex-nowrap sm:gap-5">
                     <AssetButton
+                        id={"add-asset-button"}
                         onClick={handleAddAssetClick}>
                         {translations[language].walletPage.addAssetButton}
                     </AssetButton>
                     <AssetButton
+                        id={"add-platform-button"}
                         onClick={() => setShowPlatformModal(true)}>
                         {translations[language].walletPage.addPlatform}
                     </AssetButton>
@@ -203,13 +205,21 @@ export default function WalletPage() {
                             {assets.find(a => a.name === walletAsset.name)?.image && (
                                 <div className="min-w-28 flex gap-3 whitespace-nowrap items-center">
                                     <AssetPositionName
+                                        id={`asset-position-name-${walletAsset.name.trim()}`}
                                         name={walletAsset.name}
                                         image={assets.find(a => a.name === walletAsset.name)?.image || ""}
                                         earnOrLossValue={assetInvestmentValues[walletAsset.name].earnOrLossPercentage} />
                                     {activeTab !== "Summary" &&
                                         <div className="ml-4 flex shrink-0 items-center gap-2">
-                                            <AssetButton onClick={() => handleEdit(walletAsset.id)} big={false}>{translations[language].walletPage.editButton}</AssetButton>
-                                            <RubbishBinButton onClick={() => handleDelete(walletAsset.id)} />
+                                            <AssetButton
+                                                id={`edit-asset-button-${walletAsset.id}`}
+                                                onClick={() => handleEdit(walletAsset.id)}
+                                                big={false}>
+                                                {translations[language].walletPage.editButton}
+                                            </AssetButton>
+                                            <RubbishBinButton
+                                                id={`delete-asset-button-${walletAsset.id}`}
+                                                onClick={() => handleDelete(walletAsset.id)} />
                                         </div>}
                                 </div>
                             )}
