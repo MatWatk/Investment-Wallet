@@ -9,7 +9,6 @@ import { translations } from "../../constants/translations";
 import { useLanguage } from "../../hooks/useLanguage";
 
 interface AssetTableHeaderProps<SortKey extends string = string> {
-    name: boolean;
     last24hChange?: boolean;
     last30dChange?: boolean;
     value?: boolean;
@@ -18,9 +17,10 @@ interface AssetTableHeaderProps<SortKey extends string = string> {
     handleSort?: (key: SortKey) => void;
     sortConfig?: SortConfig<SortKey> | null;
     sortableKeys?: SortKey[];
+    type?: 'asset' | 'deposit';
 }
 
-export default function AssetTableHeader<SortKey extends string = string>({ ...props }: AssetTableHeaderProps<SortKey>) {
+export default function AssetTableHeader<SortKey extends string = string>({ type = 'asset', ...props }: AssetTableHeaderProps<SortKey>) {
     const canSort = (key: SortKey) => !!props.handleSort && props.sortableKeys?.includes(key);
     const handleSortClick = (key: SortKey) => {
         if (!canSort(key)) return;
@@ -33,44 +33,69 @@ export default function AssetTableHeader<SortKey extends string = string>({ ...p
     return (
         <>
             <div className={themeState ? tablestyles.light.tableHeader : tablestyles.dark.tableHeader}>
-                {props.name &&
-                <div className="ml-2 w-27 flex items-center whitespace-nowrap shrink-0">
-                    <button onClick={() => handleSortClick("name" as SortKey)} disabled={!canSort("name" as SortKey)}>
-                        <SortingArrows />
-                    </button>
-                    <p>{translations[language].assetTable.assetName}</p>
-                </div>}
-                 <div className="ml-auto flex items-center">
-                {props.last24hChange && 
-                <div className="mr-5 w-35 flex flex-row items-center justify-center gap-1 shrink-0">
-                    <button onClick={() => handleSortClick("price_change_percentage_24h_in_currency" as SortKey)} disabled={!canSort("price_change_percentage_24h_in_currency" as SortKey)}>
-                        <SortingArrows />
-                    </button>
-                <p className="text-center  w-12">{translations[language].assetTable.last24hChange}</p>
-                </div>}
-                {props.last30dChange && 
-                <div className="mr-2 w-32 flex flex-row items-center justify-center gap-1 shrink-0">
-                    <button onClick={() => handleSortClick("price_change_percentage_30d_in_currency" as SortKey)} disabled={!canSort("price_change_percentage_30d_in_currency" as SortKey)}>
-                        <SortingArrows />
-                    </button>
-                    <p className="text-center w-12">{translations[language].assetTable.last30dChange}</p>
-                </div>}
-                {props.amount && 
-                <div className="w-25 flex flex-row items-center justify-center gap-1 shrink-0">
-                    <button onClick={() => handleSortClick("amount" as SortKey)} disabled={!canSort("amount" as SortKey)}>
-                        <SortingArrows />
-                    </button>
-                <p className="text-right whitespace-nowrap">{translations[language].assetTable.amount}</p>
-                </div>}
-                {props.value && 
-                <div className="ml-8 w-25 flex flex-row items-center justify-center gap-1 shrink-0">
-                    <button onClick={() => handleSortClick("value" as SortKey)} disabled={!canSort("value" as SortKey)}>
-                        <SortingArrows />
-                    </button>
-                <p className="text-right whitespace-nowrap">{translations[language].assetTable.value}</p>
-                </div>}
-                {props.currency && <p className="w-25 text-right shrink-0 whitespace-nowrap">{translations[language].assetTable.currency}</p>}
-            </div>
+                {type === 'asset' &&
+                    <div className="ml-2 w-27 flex items-center whitespace-nowrap shrink-0">
+                        <button onClick={() => handleSortClick("name" as SortKey)} disabled={!canSort("name" as SortKey)}>
+                            <SortingArrows />
+                        </button>
+                        <p>{translations[language].assetTable.assetName}</p>
+                    </div>}
+                {type === 'deposit' &&
+                    <div className="flex flex-row w-full shrink-0 justify-between pr-15">
+                        <div className="flex items-center whitespace-nowrap shrink-0">
+                            <button onClick={() => handleSortClick("name" as SortKey)} disabled={!canSort("name" as SortKey)}>
+                                <SortingArrows />
+                            </button>
+                            <p>{translations[language].assetTable.depositAmount}</p>
+                        </div>
+
+                        <div className="flex items-center whitespace-nowrap shrink-0">
+                            <button onClick={() => handleSortClick("name" as SortKey)} disabled={!canSort("name" as SortKey)}>
+                                <SortingArrows />
+                            </button>
+                            <p>{translations[language].assetTable.depositPlatform}</p>
+                        </div>
+
+                        <div className="flex items-center whitespace-nowrap shrink-0">
+                            <button onClick={() => handleSortClick("name" as SortKey)} disabled={!canSort("name" as SortKey)}>
+                                <SortingArrows />
+                            </button>
+                            <p>{translations[language].assetTable.depositDate}</p>
+                        </div>
+                    </div>}
+
+                <div className="ml-auto flex items-center">
+                    <div className="ml-auto flex items-center"></div>
+                    {props.last24hChange &&
+                        <div className="mr-5 w-35 flex flex-row items-center justify-center gap-1 shrink-0">
+                            <button onClick={() => handleSortClick("price_change_percentage_24h_in_currency" as SortKey)} disabled={!canSort("price_change_percentage_24h_in_currency" as SortKey)}>
+                                <SortingArrows />
+                            </button>
+                            <p className="text-center  w-12">{translations[language].assetTable.last24hChange}</p>
+                        </div>}
+                    {props.last30dChange &&
+                        <div className="mr-2 w-32 flex flex-row items-center justify-center gap-1 shrink-0">
+                            <button onClick={() => handleSortClick("price_change_percentage_30d_in_currency" as SortKey)} disabled={!canSort("price_change_percentage_30d_in_currency" as SortKey)}>
+                                <SortingArrows />
+                            </button>
+                            <p className="text-center w-12">{translations[language].assetTable.last30dChange}</p>
+                        </div>}
+                    {props.amount &&
+                        <div className="w-25 flex flex-row items-center justify-center gap-1 shrink-0">
+                            <button onClick={() => handleSortClick("amount" as SortKey)} disabled={!canSort("amount" as SortKey)}>
+                                <SortingArrows />
+                            </button>
+                            <p className="text-right whitespace-nowrap">{translations[language].assetTable.amount}</p>
+                        </div>}
+                    {props.value &&
+                        <div className="ml-8 w-25 flex flex-row items-center justify-center gap-1 shrink-0">
+                            <button onClick={() => handleSortClick("value" as SortKey)} disabled={!canSort("value" as SortKey)}>
+                                <SortingArrows />
+                            </button>
+                            <p className="text-right whitespace-nowrap">{translations[language].assetTable.value}</p>
+                        </div>}
+                    {props.currency && <p className="w-25 text-right shrink-0 whitespace-nowrap">{translations[language].assetTable.currency}</p>}
+                </div>
             </div>
         </>
     )

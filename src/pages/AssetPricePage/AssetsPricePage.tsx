@@ -52,7 +52,6 @@ export default function AssetPricePage() {
                     placeholder={translations[language].walletPage.searchbarPlaceholder} />
                 {/* <TabsBar<AssetPriceTab> tabs={priceListTabs} activeTab={activeTab} handleTabSwitch={handleTabSwitch} /> */}
                 <AssetTableHeader
-                    name
                     last24hChange
                     last30dChange
                     value

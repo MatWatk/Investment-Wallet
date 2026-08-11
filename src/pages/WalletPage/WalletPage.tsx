@@ -184,7 +184,6 @@ export default function WalletPage() {
                 />
                 <TabsBar<WalletTab> tabs={filterTabsForUser} activeTab={activeTab} handleTabSwitch={handleTabSwitch} />
                 <AssetTableHeader
-                    name
                     amount
                     value
                     currency

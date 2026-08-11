@@ -32,6 +32,10 @@ export const translations: translationsType = {
             networkError: "Network error. Please check your internet connection and try again.",
             genericError: "Failed to sign up. Please try again."
         },
+        depositPage: {
+            title: "Deposit Page",
+            addDepositButton: "Add Deposit",
+        },
         assetPricePage: {
             title: "Asset Price List"
         },
@@ -42,6 +46,9 @@ export const translations: translationsType = {
             amount: "Amount",
             value: "Value",
             currency: "Currency",
+            depositAmount: "Deposit Amount",
+            depositDate: "Date",
+            depositPlatform: "Platform",
         },
         navBar: {
             projectName: "Investment Wallet",
@@ -152,6 +159,10 @@ export const translations: translationsType = {
             networkError: "Błąd sieci. Sprawdź połączenie z internetem i spróbuj ponownie.",
             genericError: "Nie udało się zarejestrować. Spróbuj ponownie."
         },
+        depositPage: {
+            title: "Strona wpłat",
+            addDepositButton: "Dodaj wpłatę",
+        },
         assetPricePage: {
             title: "Lista cen aktywów"
         },
@@ -162,6 +173,9 @@ export const translations: translationsType = {
             amount: "Ilość",
             value: "Wartość",
             currency: "Waluta",
+            depositAmount: "Kwota wpłaty",
+            depositDate: "Data wpłaty",
+            depositPlatform: "Giełda",
         },
         navBar: {
             projectName: "Portfel Inwestycyjny",

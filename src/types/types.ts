@@ -34,6 +34,10 @@ export type translationsType = {
             networkError: string;
             genericError: string;
         },
+        depositPage: {
+            title: string;
+            addDepositButton: string;
+        },
         assetPricePage: {
             title: string;
         },
@@ -44,6 +48,9 @@ export type translationsType = {
             amount: string;
             value: string;
             currency: string;
+            depositAmount: string;
+            depositDate: string;
+            depositPlatform: string;
         },
         navBar: {
             projectName: string;
