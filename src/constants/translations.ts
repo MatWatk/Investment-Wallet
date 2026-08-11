@@ -52,7 +52,7 @@ export const translations: translationsType = {
         },
         sideBar: {
             logout: "Logout",
-            sideButtons: ["Your wallet", "Asset price list"]
+            sideButtons: ["Your wallet", "Asset price list", "Deposit page"]
         },
         walletPage: {
             walletHeader: "Your wallet",
@@ -118,6 +118,7 @@ export const translations: translationsType = {
             assetPriceData: "Error loading asset price data",
             loginPage: "Error loading login page",
             signupPage: "Error loading signup page",
+            depositPage: "Error loading deposit page",
         }
     },
     polish: {
@@ -237,6 +238,7 @@ export const translations: translationsType = {
             assetPriceData: "Błąd ładowania danych cen aktywów",
             loginPage: "Błąd ładowania strony logowania",
             signupPage: "Błąd ładowania strony rejestracji",
+            depositPage: "Błąd ładowania strony wpłat",
         }
     }
 }

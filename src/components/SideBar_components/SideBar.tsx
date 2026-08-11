@@ -9,6 +9,7 @@ import { useState } from "react";
 
 import WeightIcon from "../../assets/weightIcon.png";
 import WalletIcon from "../../assets/yourWalletIcon.png";
+import dollarIcon from "../../assets/dollarIcon.png";
 import FoldingButton from "./FoldingButton";
 
 export default function SideBar() {
@@ -38,8 +39,15 @@ export default function SideBar() {
                     isFolded={foldState}>
                     {foldState ? '' : (language === "english" ? translations.english.sideBar.sideButtons[1] : translations.polish.sideBar.sideButtons[1])}
                 </SideBarButton>
+                <SideBarButton
+                    link={'/deposit-page'}
+                    icon={dollarIcon}
+                    altText="Dollar Icon"
+                    isFolded={foldState}>
+                    {foldState ? '' : (language === "english" ? translations.english.sideBar.sideButtons[2] : translations.polish.sideBar.sideButtons[2])}
+                </SideBarButton>
             </SideButtonsWrapper>
-            <LogoutButton foldState={foldState}/>
+            <LogoutButton foldState={foldState} />
         </SideBarWrapper>
     )
 }

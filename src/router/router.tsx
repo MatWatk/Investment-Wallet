@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import LoginPage from "../pages/LoginPage/LoginPage";
 import Layout from "../components/DashboardLayout";
 
-import {action as walletPageAction} from "../pages/WalletPage/action";
+import { action as walletPageAction } from "../pages/WalletPage/action";
 import { action as loginAction } from "../pages/LoginPage/action";
 import { action as signupAction } from "../pages/SignupPage/action";
 
@@ -40,6 +40,16 @@ export const router = createBrowserRouter([
                     };
                 },
                 errorElement: <RouterError type="assetPriceData" />
+            },
+            {
+                path: 'deposit-page',
+                lazy: async () => {
+                    const module = await import('../pages/DepositPage/DepositPage');
+                    return {
+                        Component: module.default
+                    };
+                },
+                errorElement: <RouterError type="depositPage" />
             },
         ]
     },

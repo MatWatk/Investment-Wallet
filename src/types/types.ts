@@ -120,6 +120,7 @@ export type translationsType = {
             assetPriceData: string;
             loginPage: string;
             signupPage: string;
+            depositPage: string;
         }
     }
 };
