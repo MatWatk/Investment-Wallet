@@ -10,6 +10,7 @@ import { loader as walletPageLoader } from "../pages/WalletPage/loader";
 import { loader as assetPricePageLoader } from "../pages/AssetPricePage/loader";
 import { loader as loginPageLoader } from "../pages/LoginPage/loader";
 import { loader as signupPageLoader } from "../pages/SignupPage/loader";
+import { loader as depositLoader } from "../pages/DepositPage/loader";
 
 import RouterError from "./RouteError";
 
@@ -46,7 +47,8 @@ export const router = createBrowserRouter([
                 lazy: async () => {
                     const module = await import('../pages/DepositPage/DepositPage');
                     return {
-                        Component: module.default
+                        Component: module.default,
+                        loader: depositLoader
                     };
                 },
                 errorElement: <RouterError type="depositPage" />

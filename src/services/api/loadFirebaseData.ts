@@ -3,9 +3,10 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 
 type CollectionName =
     | "wallet-edit-history"
-    | "wallet-tabs";
+    | "wallet-tabs"
+    | "deposit";
 
-export default async function loadWalletAssets<T>(
+export default async function loadFirebaseData<T>(
     collectionName: CollectionName,
     fetchedFields: string[],
     loggedUserEmail: string,

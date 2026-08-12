@@ -69,3 +69,10 @@ export interface AssetsInvestmentValues {
         earnedMoneyInUSD: number;
     };
 }
+
+export interface DepositData {
+    amount: number;
+    date: string;
+    platform: string;
+    loggedUser: string;
+}
