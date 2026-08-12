@@ -7,10 +7,10 @@ export default function DepositPosition({ depositData, key, ...props }: { deposi
     const themeState = useTheme();
     return (
         <div key={key} className={themeState ? tableStyles.light.tableRow : tableStyles.dark.tableRow}>
-        <div className="flex flex-row w-full shrink-0 justify-between" {...props}>
-            <p className="font-medium whitespace-nowrap">{amount}</p>
-            <p className="font-medium whitespace-nowrap">{platform}</p>
-            <p className="font-medium whitespace-nowrap">{date}</p>
+        <div className="flex flex-row w-full shrink-0 gap-10 justify-start items-center" {...props}>
+            <p className="font-medium whitespace-nowrap min-w-30 flex justify-center">{amount}</p>
+            <p className="font-medium whitespace-nowrap min-w-30 flex justify-center">{platform}</p>
+            <p className="font-medium whitespace-nowrap min-w-30 flex justify-center">{date}</p>
         </div>
         </div>
     )

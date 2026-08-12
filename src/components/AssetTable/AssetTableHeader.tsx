@@ -41,22 +41,22 @@ export default function AssetTableHeader<SortKey extends string = string>({ type
                         <p>{translations[language].assetTable.assetName}</p>
                     </div>}
                 {type === 'deposit' &&
-                    <div className="flex flex-row w-full shrink-0 justify-between pr-15">
-                        <div className="flex items-center whitespace-nowrap shrink-0">
+                    <div className="flex flex-row shrink-0 gap-18 justify-start">
+                        <div className="flex items-center whitespace-nowrap shrink-0 justify-center">
                             <button onClick={() => handleSortClick("name" as SortKey)} disabled={!canSort("name" as SortKey)}>
                                 <SortingArrows />
                             </button>
                             <p>{translations[language].assetTable.depositAmount}</p>
                         </div>
 
-                        <div className="flex items-center whitespace-nowrap shrink-0">
+                        <div className="flex items-center whitespace-nowrap shrink-0 justify-center">
                             <button onClick={() => handleSortClick("name" as SortKey)} disabled={!canSort("name" as SortKey)}>
                                 <SortingArrows />
                             </button>
                             <p>{translations[language].assetTable.depositPlatform}</p>
                         </div>
 
-                        <div className="flex items-center whitespace-nowrap shrink-0">
+                        <div className="flex items-center whitespace-nowrap shrink-0 justify-center ml-8">
                             <button onClick={() => handleSortClick("name" as SortKey)} disabled={!canSort("name" as SortKey)}>
                                 <SortingArrows />
                             </button>
