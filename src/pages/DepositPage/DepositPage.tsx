@@ -1,13 +1,17 @@
 import AssetTableHeader from "../../components/AssetTable/AssetTableHeader";
+import type { DepositData } from "../../types/WalletTypes";
+import { useLoaderData } from "react-router-dom";
 import PageContentWrapper from "../../components/PageContentWrapper";
 import PageHeader from "../../components/PageHeader";
 import AssetButton from "../../components/Wallet_components/AssetButton";
 import { translations } from "../../constants/translations";
 import { useLanguage } from "../../hooks/useLanguage";
+import DepositPosition from "../../components/AssetTable/DepositPosition";
 // import useSortData from "../../hooks/useSortData";
 
 export default function DepositPage() {
     const language = useLanguage();
+    const depositData = useLoaderData<DepositData[]>();
 
     // const { sortedData, requestSort, sortConfig } = useSortData(data, {
     //     name: (coin) => assetByCoingeckoId[coin.id]?.name ?? "",
@@ -39,8 +43,11 @@ export default function DepositPage() {
                         "name",
                     ]}
                 />
-
-            </PageContentWrapper >
+                {depositData.map((deposit, index) => (
+                    <DepositPosition key={index} depositData={deposit} />
+                ))}
+            </PageContentWrapper>
         </>
     );
 }
+

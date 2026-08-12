@@ -6,6 +6,5 @@ export async function loader() {
     const loggedUser = await getCurrentUser();
 
     const depositData = await loadFirebaseData<DepositData>('deposit', ['amount', 'date', 'platform', 'loggedUser'], loggedUser || '');
-    console.log(depositData);
-    return { depositData };
+    return depositData ;
 }
