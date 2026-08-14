@@ -19,6 +19,12 @@ export default function DepositPage() {
     //     price_change_percentage_24h_in_currency: (coin) => coin.price_change_percentage_24h_in_currency,
     //     price_change_percentage_30d_in_currency: (coin) => coin.price_change_percentage_30d_in_currency,
     // });
+
+    const handleDeleteDeposit = (depositId: string) => {
+        // Implement the logic to delete the deposit with the given depositId
+        console.log(`Deleting deposit with ID: ${depositId}`);
+    }
+
     return (
         <>
             <div className="mb-6 flex flex-wrap items-start gap-4 shrink-0">
@@ -44,7 +50,12 @@ export default function DepositPage() {
                     ]}
                 />
                 {depositData.map((deposit, index) => (
-                    <DepositPosition key={index} depositData={deposit} />
+                    <div key={index} className="flex items-center justify-between">
+                        <DepositPosition
+                            key={deposit.id}
+                            depositData={deposit}
+                            handleDeleteDeposit={handleDeleteDeposit} />
+                    </div>
                 ))}
             </PageContentWrapper>
         </>

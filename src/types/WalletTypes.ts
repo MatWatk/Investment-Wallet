@@ -71,6 +71,7 @@ export interface AssetsInvestmentValues {
 }
 
 export interface DepositData {
+    id: string;
     amount: number;
     date: string;
     platform: string;
