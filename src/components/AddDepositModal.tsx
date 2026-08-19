@@ -10,16 +10,15 @@ import { translations } from "../constants/translations";
 import useInputField from "../hooks/useInputField";
 import { currencies } from "../constants/assets";
 import type { WalletTab } from "../types/WalletTypes";
+import ModalButton from "./Modals/ModalButton";
 
 export default function AddDepositModal({
-    currentEditStatus,
     defaultData,
     onClose,
     currency,
     disableField,
     platforms,
 }: {
-    currentEditStatus: "add" | "edit",
     defaultData?: { amount: number, currency: string, market: string, date: string },
     onClose?: () => void,
     currency?: string,
@@ -40,12 +39,13 @@ export default function AddDepositModal({
 
     return (
         <ModalWrapper>
-            <ModalHeader title={currentEditStatus === "edit" ? translations[language].modals.addAsset.titleEdit : translations[language].modals.addAsset.titleAdd} themeState={themeState} />
+            <ModalHeader title={defaultData ? translations[language].modals.addDeposit.titleEdit : translations[language].modals.addDeposit.titleAdd} themeState={themeState} />
             <Form method="post" onSubmit={onClose} className="mt-4 flex flex-col gap-4">
                 <ModalRowWrapper>
+                    <input type="hidden" name="editStatus" value={defaultData ? "edit" : "add"} />
                     <ModalInput
                         themeState={themeState}
-                        labelText={translations[language].modals.addAsset.amount}
+                        labelText={translations[language].modals.addDeposit.amount}
                         inputType="number"
                         name="amount"
                         defaultValue={defaultData?.amount}
@@ -54,7 +54,7 @@ export default function AddDepositModal({
                     />
                     <ModalSelect
                         themeState={themeState}
-                        labelText={translations[language].modals.addAsset.currency}
+                        labelText={translations[language].modals.addDeposit.currency}
                         name="currency"
                         options={currencies.map((currency) => ({ value: currency, label: currency }))}
                         defaultValue={defaultData?.currency || currency}
@@ -64,19 +64,28 @@ export default function AddDepositModal({
                 </ModalRowWrapper>
                 <ModalSelect
                     themeState={themeState}
-                    labelText={translations[language].modals.addAsset.platform}
+                    labelText={translations[language].modals.addDeposit.platform}
                     name="market"
                     options={platforms.map((platform) => ({ value: platform.platformName, label: platform.platformName }))}
                     defaultValue={defaultData?.market}
                 />
                 <ModalInput
                     themeState={themeState}
-                    labelText={translations[language].modals.addAsset.date}
+                    labelText={translations[language].modals.addDeposit.date}
                     inputType="date"
                     name="date"
                     defaultValue={defaultData?.date || currentDate}
                 />
-
+                <div className="mt-2 mb-2 flex flex-row gap-4 justify-evenly">
+                    <ModalButton type="button" onClick={onClose} themeState={themeState}>{translations[language].modals.addDeposit.close}</ModalButton>
+                    <ModalButton
+                        id='submit-add-asset-modal'
+                        type="submit"
+                        themeState={themeState}
+                        disabled={Object.values(isInputInvalid).some(Boolean)}>
+                        {defaultData ? translations[language].modals.addDeposit.editSubmit : translations[language].modals.addDeposit.addSubmit}
+                    </ModalButton>
+                </div>
             </Form>
         </ModalWrapper>
     )

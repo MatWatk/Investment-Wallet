@@ -101,6 +101,17 @@ export type translationsType = {
                 submit: string;
                 deleteAlt: string;
             },
+            addDeposit: {
+                titleAdd: string;
+                titleEdit: string;
+                amount: string;
+                currency: string;
+                platform: string;
+                date: string;
+                close: string;
+                addSubmit: string;
+                editSubmit: string;
+            },
             loadingModal: {
                 header: string;
                 message: string;

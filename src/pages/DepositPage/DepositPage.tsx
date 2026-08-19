@@ -1,5 +1,5 @@
 import AssetTableHeader from "../../components/AssetTable/AssetTableHeader";
-import type { DepositData } from "../../types/WalletTypes";
+import type { DepositData, WalletTab } from "../../types/WalletTypes";
 import { useLoaderData } from "react-router-dom";
 import PageContentWrapper from "../../components/PageContentWrapper";
 import PageHeader from "../../components/PageHeader";
@@ -7,11 +7,17 @@ import AssetButton from "../../components/Wallet_components/AssetButton";
 import { translations } from "../../constants/translations";
 import { useLanguage } from "../../hooks/useLanguage";
 import DepositPosition from "../../components/AssetTable/DepositPosition";
+import { useState } from "react";
 // import useSortData from "../../hooks/useSortData";
+import AddDepositModal from "../../components/AddDepositModal";
+import { useCurrency } from "../../hooks/useCurrency";
 
 export default function DepositPage() {
     const language = useLanguage();
-    const depositData = useLoaderData<DepositData[]>();
+    const { depositData, platforms } = useLoaderData<{ depositData: DepositData[], platforms: WalletTab[] }>();
+    const currency = useCurrency();
+
+    const [showAddDepositModal, setShowAddDepositModal] = useState(false);
 
     // const { sortedData, requestSort, sortConfig } = useSortData(data, {
     //     name: (coin) => assetByCoingeckoId[coin.id]?.name ?? "",
@@ -33,7 +39,7 @@ export default function DepositPage() {
                     <AssetButton
                         id={"add-platform-button"}
                         onClick={() => {
-                            // Handle the click event for adding a platform
+                            setShowAddDepositModal(true)
                         }}>
                         {translations[language].depositPage.addDepositButton}
                     </AssetButton>
@@ -57,6 +63,13 @@ export default function DepositPage() {
                             handleDeleteDeposit={handleDeleteDeposit} />
                     </div>
                 ))}
+                {showAddDepositModal && (
+                    <AddDepositModal
+                        currency={currency}
+                        onClose={() => setShowAddDepositModal(false)}
+                        platforms={platforms}
+                    />
+                )}
             </PageContentWrapper>
         </>
     );
