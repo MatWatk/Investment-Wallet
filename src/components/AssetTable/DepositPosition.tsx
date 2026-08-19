@@ -13,9 +13,9 @@ export default function DepositPosition({ depositData, handleDeleteDeposit, hand
     return (
         <div className={themeState ? tableStyles.light.tableRow : tableStyles.dark.tableRow}>
             <div className="flex flex-row w-full shrink-0 gap-10 justify-start items-center" {...props}>
-                <p className="font-medium whitespace-nowrap min-w-30 flex justify-center">{amount}</p>
-                <p className="font-medium whitespace-nowrap min-w-30 flex justify-center">{platform}</p>
-                <p className="font-medium whitespace-nowrap min-w-30 flex justify-center">{date}</p>
+                <p className={tableStyles.tablePosition}>{amount}</p>
+                <p className={tableStyles.tablePosition}>{platform}</p>
+                <p className={tableStyles.tablePosition}>{date}</p>
                 <div className="ml-4 flex shrink-0 items-center gap-2">
                     <AssetButton
                         id={`edit-asset-button-${depositData.id}`}
