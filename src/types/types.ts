@@ -37,6 +37,7 @@ export type translationsType = {
         depositPage: {
             title: string;
             addDepositButton: string;
+            editDepositButton: string;
         },
         assetPricePage: {
             title: string;

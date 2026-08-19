@@ -60,7 +60,11 @@ export default function DepositPage() {
                         <DepositPosition
                             key={deposit.id}
                             depositData={deposit}
-                            handleDeleteDeposit={handleDeleteDeposit} />
+                            handleDeleteDeposit={handleDeleteDeposit}
+                            handleEditDeposit={(depositId: string) => {
+                                // Implement the logic to edit the deposit with the given depositId
+                                console.log(`Editing deposit with ID: ${depositId}`);
+                            }} />
                     </div>
                 ))}
                 {showAddDepositModal && (

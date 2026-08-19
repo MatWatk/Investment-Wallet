@@ -35,6 +35,7 @@ export const translations: translationsType = {
         depositPage: {
             title: "Deposit Page",
             addDepositButton: "Add Deposit",
+            editDepositButton: "Edit Deposit",
         },
         assetPricePage: {
             title: "Asset Price List"
@@ -173,6 +174,7 @@ export const translations: translationsType = {
         depositPage: {
             title: "Strona wpłat",
             addDepositButton: "Dodaj wpłatę",
+            editDepositButton: "Edytuj wpłatę",
         },
         assetPricePage: {
             title: "Lista cen aktywów"
