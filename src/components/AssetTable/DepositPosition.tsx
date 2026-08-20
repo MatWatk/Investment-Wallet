@@ -2,7 +2,7 @@ import { translations } from "../../constants/translations";
 import { useTheme } from "../../hooks/useTheme";
 import { useLanguage } from "../../hooks/useLanguage";
 import tableStyles from "../../styles/tableStyles";
-import type { DepositData } from "../../types/WalletTypes";
+import type { DepositData } from "../../types/DepositTypes";
 import AssetButton from "../Wallet_components/AssetButton";
 import RubbishBinButton from "../Wallet_components/RubbishBinButton";
 

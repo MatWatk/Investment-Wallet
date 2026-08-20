@@ -1,3 +1,4 @@
+import type { WalletDepositRequest } from "../types/DepositTypes";
 import type { WalletAssetEditRequest, WalletPlatformEditRequest } from "../types/WalletTypes";
 
 export function parseWalletAssetRequest(formData: FormData): WalletAssetEditRequest {
@@ -81,6 +82,36 @@ export function parseWalletPlatformRequest(formData: FormData): WalletPlatformEd
         platformName,
         editStatus: editStatus as "edit" | "add" | "delete",
         actionRequestType,
+        loggedUser,
+    };
+}
+
+export function parseDepositRequest(formData: FormData): WalletDepositRequest {
+    const get = (key: string) => formData.get(key)?.toString();
+
+    const id = get("id");
+    const amount = Number(get("amount"));
+    const date = get("date") ?? "";
+    const platform = get("platform") ?? "";
+    const actionRequestType = get("actionRequestType") as "add" | "edit" | "delete";
+
+    const currencyRaw = get("currency");
+    if (currencyRaw !== "USD" && currencyRaw !== "PLN") {
+        throw new Response("Invalid currency", { status: 400 });
+    }
+
+    const loggedUser = get("loggedUser");
+    if (!loggedUser) {
+        throw new Response("Missing loggedUser", { status: 400 });
+    }
+
+    return {
+        id,
+        amount,
+        date,
+        platform,
+        actionRequestType,
+        currency: currencyRaw,
         loggedUser,
     };
 }

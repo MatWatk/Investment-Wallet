@@ -11,6 +11,7 @@ import useInputField from "../hooks/useInputField";
 import { currencies } from "../constants/assets";
 import type { WalletTab } from "../types/WalletTypes";
 import ModalButton from "./Modals/ModalButton";
+import { auth } from "../services/firebase/config";
 
 export default function AddDepositModal({
     defaultData,
@@ -43,6 +44,8 @@ export default function AddDepositModal({
             <Form method="post" onSubmit={onClose} className="mt-4 flex flex-col gap-4">
                 <ModalRowWrapper>
                     <input type="hidden" name="editStatus" value={defaultData ? "edit" : "add"} />
+                    <input type="hidden" name="actionRequestType" value={defaultData ? "edit" : "add"} />
+                    <input type="hidden" name="loggedUser" value={auth.currentUser?.email || ""} />
                     <ModalInput
                         themeState={themeState}
                         labelText={translations[language].modals.addDeposit.amount}
@@ -65,7 +68,7 @@ export default function AddDepositModal({
                 <ModalSelect
                     themeState={themeState}
                     labelText={translations[language].modals.addDeposit.platform}
-                    name="market"
+                    name="platform"
                     options={platforms.map((platform) => ({ value: platform.platformName, label: platform.platformName }))}
                     defaultValue={defaultData?.market}
                 />

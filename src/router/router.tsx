@@ -5,6 +5,7 @@ import Layout from "../components/DashboardLayout";
 import { action as walletPageAction } from "../pages/WalletPage/action";
 import { action as loginAction } from "../pages/LoginPage/action";
 import { action as signupAction } from "../pages/SignupPage/action";
+import { action as depositAction } from "../pages/DepositPage/action";
 
 import { loader as walletPageLoader } from "../pages/WalletPage/loader";
 import { loader as assetPricePageLoader } from "../pages/AssetPricePage/loader";
@@ -48,7 +49,8 @@ export const router = createBrowserRouter([
                     const module = await import('../pages/DepositPage/DepositPage');
                     return {
                         Component: module.default,
-                        loader: depositLoader
+                        loader: depositLoader,
+                        action: depositAction
                     };
                 },
                 errorElement: <RouterError type="depositPage" />

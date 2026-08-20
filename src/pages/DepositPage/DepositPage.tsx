@@ -1,5 +1,6 @@
 import AssetTableHeader from "../../components/AssetTable/AssetTableHeader";
-import type { DepositData, WalletTab } from "../../types/WalletTypes";
+import type { WalletTab } from "../../types/WalletTypes";
+import type { DepositData } from "../../types/DepositTypes";
 import { useLoaderData } from "react-router-dom";
 import PageContentWrapper from "../../components/PageContentWrapper";
 import PageHeader from "../../components/PageHeader";
