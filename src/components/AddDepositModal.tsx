@@ -20,7 +20,7 @@ export default function AddDepositModal({
     disableField,
     platforms,
 }: {
-    defaultData?: { amount: number, currency: string, market: string, date: string },
+    defaultData?: { amount: number, currency: string, platform: string, date: string },
     onClose?: () => void,
     currency?: string,
     disableField?: boolean,
@@ -70,7 +70,7 @@ export default function AddDepositModal({
                     labelText={translations[language].modals.addDeposit.platform}
                     name="platform"
                     options={platforms.map((platform) => ({ value: platform.platformName, label: platform.platformName }))}
-                    defaultValue={defaultData?.market}
+                    defaultValue={defaultData?.platform}
                 />
                 <ModalInput
                     themeState={themeState}

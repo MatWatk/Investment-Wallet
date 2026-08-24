@@ -19,6 +19,7 @@ export default function DepositPage() {
     const currency = useCurrency();
 
     const [showAddDepositModal, setShowAddDepositModal] = useState(false);
+    const [editingDepositId, setEditingDepositId] = useState<string | null>(null);
 
     // const { sortedData, requestSort, sortConfig } = useSortData(data, {
     //     name: (coin) => assetByCoingeckoId[coin.id]?.name ?? "",
@@ -26,11 +27,28 @@ export default function DepositPage() {
     //     price_change_percentage_24h_in_currency: (coin) => coin.price_change_percentage_24h_in_currency,
     //     price_change_percentage_30d_in_currency: (coin) => coin.price_change_percentage_30d_in_currency,
     // });
+    const editingDeposit = editingDepositId ? depositData.find((deposit) => deposit.id === editingDepositId) : undefined;
+
+    const depositModal = <AddDepositModal
+        defaultData={editingDeposit}
+        currency={currency}
+        onClose={() => {
+            setShowAddDepositModal(false);
+            setEditingDepositId(null);
+        }}
+        platforms={platforms}
+    />
 
     const handleDeleteDeposit = (depositId: string) => {
         // Implement the logic to delete the deposit with the given depositId
         console.log(`Deleting deposit with ID: ${depositId}`);
     }
+
+    const handleEditDeposit = (depositId: string) => {
+        setEditingDepositId(depositId);
+        setShowAddDepositModal(true)
+    }
+
 
     return (
         <>
@@ -40,6 +58,7 @@ export default function DepositPage() {
                     <AssetButton
                         id={"add-platform-button"}
                         onClick={() => {
+                            setEditingDepositId(null)
                             setShowAddDepositModal(true)
                         }}>
                         {translations[language].depositPage.addDepositButton}
@@ -62,19 +81,10 @@ export default function DepositPage() {
                             key={deposit.id}
                             depositData={deposit}
                             handleDeleteDeposit={handleDeleteDeposit}
-                            handleEditDeposit={(depositId: string) => {
-                                // Implement the logic to edit the deposit with the given depositId
-                                console.log(`Editing deposit with ID: ${depositId}`);
-                            }} />
+                            handleEditDeposit={handleEditDeposit} />
                     </div>
                 ))}
-                {showAddDepositModal && (
-                    <AddDepositModal
-                        currency={currency}
-                        onClose={() => setShowAddDepositModal(false)}
-                        platforms={platforms}
-                    />
-                )}
+                {showAddDepositModal && depositModal}
             </PageContentWrapper>
         </>
     );

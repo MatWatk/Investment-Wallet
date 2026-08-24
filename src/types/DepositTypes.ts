@@ -6,6 +6,7 @@ export interface DepositData {
     date: string;
     platform: string;
     loggedUser: string;
+    currency: "USD" | "PLN";
 }
 
 export interface WalletDepositRequest {
