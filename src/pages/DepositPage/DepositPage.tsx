@@ -1,7 +1,8 @@
 import AssetTableHeader from "../../components/AssetTable/AssetTableHeader";
-import type { WalletTab } from "../../types/WalletTypes";
+import { convertDataForRequest } from "../../utils/requests";
+import type { EditDataStatus, WalletTab } from "../../types/WalletTypes";
 import type { DepositData } from "../../types/DepositTypes";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useSubmit } from "react-router-dom";
 import PageContentWrapper from "../../components/PageContentWrapper";
 import PageHeader from "../../components/PageHeader";
 import AssetButton from "../../components/Wallet_components/AssetButton";
@@ -20,6 +21,8 @@ export default function DepositPage() {
 
     const [showAddDepositModal, setShowAddDepositModal] = useState(false);
     const [editingDepositId, setEditingDepositId] = useState<string | null>(null);
+
+    const submit = useSubmit();
 
     // const { sortedData, requestSort, sortConfig } = useSortData(data, {
     //     name: (coin) => assetByCoingeckoId[coin.id]?.name ?? "",
@@ -40,8 +43,21 @@ export default function DepositPage() {
     />
 
     const handleDeleteDeposit = (depositId: string) => {
-        // Implement the logic to delete the deposit with the given depositId
-        console.log(`Deleting deposit with ID: ${depositId}`);
+        const deletingDeposit = depositData.find((deposit) => deposit.id === depositId);
+        
+        if(!deletingDeposit) {
+            console.error(`Deposit with ID ${depositId} not found.`);
+            return;
+        }
+        const deleteRequest = {
+            ...deletingDeposit,
+            actionRequestType: "delete" as EditDataStatus,
+        };
+        const formData = convertDataForRequest(deleteRequest);
+        submit(formData, {
+            method: "post",
+            encType: "multipart/form-data",
+        });
     }
 
     const handleEditDeposit = (depositId: string) => {

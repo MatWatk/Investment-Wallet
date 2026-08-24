@@ -1,4 +1,5 @@
 import type { EditDataStatus, WalletAsset, WalletAssetEditRequest, WalletPlatformEditRequest, WalletTab, AssetsInvestmentValues } from "../types/WalletTypes";
+import type { WalletDepositRequest } from "../types/DepositTypes";
 
 export const createWalletAssetEditRequest =
     (
@@ -48,7 +49,7 @@ export const createPlatformEditRequest = (
     };
 }
 
-export const convertDataForRequest = (reqData: WalletPlatformEditRequest | WalletAssetEditRequest) => {
+export const convertDataForRequest = (reqData: WalletPlatformEditRequest | WalletAssetEditRequest | WalletDepositRequest) => {
     const formData = new FormData();
     Object.entries(reqData).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
