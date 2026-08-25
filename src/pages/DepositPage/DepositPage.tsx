@@ -13,6 +13,7 @@ import { useState } from "react";
 // import useSortData from "../../hooks/useSortData";
 import AddDepositModal from "../../components/AddDepositModal";
 import { useCurrency } from "../../hooks/useCurrency";
+import DeleteConfirmationModal from "../../components/Modals/DeleteConfirmationModal";
 
 export default function DepositPage() {
     const language = useLanguage();
@@ -21,6 +22,7 @@ export default function DepositPage() {
 
     const [showAddDepositModal, setShowAddDepositModal] = useState(false);
     const [editingDepositId, setEditingDepositId] = useState<string | null>(null);
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState<string | null>(null);
 
     const submit = useSubmit();
 
@@ -43,8 +45,12 @@ export default function DepositPage() {
     />
 
     const handleDeleteDeposit = (depositId: string) => {
+        setShowDeleteConfirmation(depositId);
+    }
+
+    const deleteDeposit = (depositId: string) => {
         const deletingDeposit = depositData.find((deposit) => deposit.id === depositId);
-        
+
         if(!deletingDeposit) {
             console.error(`Deposit with ID ${depositId} not found.`);
             return;
@@ -101,6 +107,14 @@ export default function DepositPage() {
                     </div>
                 ))}
                 {showAddDepositModal && depositModal}
+                {showDeleteConfirmation && <DeleteConfirmationModal
+                    objectToDelete={depositData.find((deposit) => deposit.id === showDeleteConfirmation)!}
+                    closeModal={() => setShowDeleteConfirmation(null)}
+                    handleConfirmDelete={() => {
+                        deleteDeposit(showDeleteConfirmation!);
+                        setShowDeleteConfirmation(null);
+                    }}
+                />}
             </PageContentWrapper>
         </>
     );

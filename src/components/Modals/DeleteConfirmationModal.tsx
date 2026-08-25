@@ -6,6 +6,7 @@ import { summaryTransformation } from "../../utils/utils";
 import { useState } from "react";
 import { useLanguage } from "../../hooks/useLanguage";
 import { translations } from "../../constants/translations";
+import type { DepositData } from "../../types/DepositTypes";
 
 export default function DeleteConfirmationModal({
     objectToDelete,
@@ -13,9 +14,9 @@ export default function DeleteConfirmationModal({
     allAssets,
     handleConfirmDelete,
 }: {
-    objectToDelete: WalletTab | WalletAsset,
+    objectToDelete: WalletTab | WalletAsset | DepositData,
     closeModal: () => void,
-    allAssets: WalletAsset[],
+    allAssets?: WalletAsset[],
     handleConfirmDelete: () => void,
 }) {
 
@@ -27,7 +28,7 @@ export default function DeleteConfirmationModal({
 
 
     const deleteModalContent = () => {
-        if ("platformName" in objectToDelete) {
+        if ("platformName" in objectToDelete && allAssets) {
             const connectedToPlatformHistory = allAssets.filter(asset => asset.market === objectToDelete.platformName)
             const connectedAssetsToPlaform = summaryTransformation(connectedToPlatformHistory);
 
@@ -56,11 +57,20 @@ export default function DeleteConfirmationModal({
             )
 
         }
-        else if ("amount" in objectToDelete) {
+        else if ("name" in objectToDelete) {
             return (
                 <div>
                     <p className={`mt-2 text-start text-l ${themeState ? "text-violet-900" : "text-yellow-500"}`}>
                         {translations[language].modals.deleteConfirmation.confirmAssetDeletePrefix} <strong>{objectToDelete.name}</strong> {translations[language].modals.deleteConfirmation.confirmAssetDeleteMiddle} <strong>{objectToDelete.amount}</strong>?
+                    </p>
+                </div>
+            )
+        }
+                else if ("platform" in objectToDelete) {
+            return (
+                <div>
+                    <p className={`mt-2 text-start text-l ${themeState ? "text-violet-900" : "text-yellow-500"}`}>
+                        {translations[language].modals.deleteConfirmation.confirmAssetDeletePrefix} <strong>{` deposit amount of ${objectToDelete.amount} to platform ${objectToDelete.platform}?`}</strong>
                     </p>
                 </div>
             )
