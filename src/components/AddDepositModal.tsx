@@ -20,7 +20,7 @@ export default function AddDepositModal({
     disableField,
     platforms,
 }: {
-    defaultData?: { amount: number, currency: string, platform: string, date: string },
+    defaultData?: { amount: number, currency: string, platform: string, date: string, id: string },
     onClose?: () => void,
     currency?: string,
     disableField?: boolean,
@@ -43,6 +43,7 @@ export default function AddDepositModal({
             <ModalHeader title={defaultData ? translations[language].modals.addDeposit.titleEdit : translations[language].modals.addDeposit.titleAdd} themeState={themeState} />
             <Form method="post" onSubmit={onClose} className="mt-4 flex flex-col gap-4">
                 <ModalRowWrapper>
+                    <input type="hidden" name="id" value={defaultData ? defaultData.id : ""} />
                     <input type="hidden" name="editStatus" value={defaultData ? "edit" : "add"} />
                     <input type="hidden" name="actionRequestType" value={defaultData ? "edit" : "add"} />
                     <input type="hidden" name="loggedUser" value={auth.currentUser?.email || ""} />

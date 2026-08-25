@@ -44,7 +44,7 @@ export default function DepositPage() {
         platforms={platforms}
     />
 
-    const handleDeleteDeposit = (depositId: string) => {
+    const openDeleteModal = (depositId: string) => {
         setShowDeleteConfirmation(depositId);
     }
 
@@ -66,9 +66,9 @@ export default function DepositPage() {
         });
     }
 
-    const handleEditDeposit = (depositId: string) => {
+    const openEditModal = (depositId: string) => {
         setEditingDepositId(depositId);
-        setShowAddDepositModal(true)
+        setShowAddDepositModal(true);
     }
 
 
@@ -102,8 +102,8 @@ export default function DepositPage() {
                         <DepositPosition
                             key={deposit.id}
                             depositData={deposit}
-                            handleDeleteDeposit={handleDeleteDeposit}
-                            handleEditDeposit={handleEditDeposit} />
+                            openDeleteModal={openDeleteModal}
+                            openEditModal={openEditModal} />
                     </div>
                 ))}
                 {showAddDepositModal && depositModal}
