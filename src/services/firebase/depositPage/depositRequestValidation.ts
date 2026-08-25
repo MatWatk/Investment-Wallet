@@ -3,7 +3,7 @@ import type { WalletDepositRequest } from "../../../types/DepositTypes";
 export default function depositRequestValidation(data: WalletDepositRequest) {
     const { id, actionRequestType, amount, ...payload } = data;
 
-    if (amount <= 0) {
+    if (amount <= 0 && (actionRequestType === "add" || actionRequestType === "edit")) {
         throw new Error("Amount must be greater than 0");
     }
     if ((actionRequestType === "edit" || actionRequestType === 'delete') && !id) {
