@@ -8,5 +8,5 @@ export async function action({ request }: { request: Request }) {
         throw new Response("Invalid actionRequestType", { status: 400 });
     }
     const depositRequest = parseDepositRequest(formData);
-    actionDepositFirebase(depositRequest);
+    await actionDepositFirebase(depositRequest);
 }
