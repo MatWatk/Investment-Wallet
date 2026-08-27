@@ -16,12 +16,26 @@ import AddDepositModal from "../../components/AddDepositModal";
 import { useCurrency } from "../../hooks/useCurrency";
 import DeleteConfirmationModal from "../../components/Modals/DeleteConfirmationModal";
 import ModalSelect from "../../components/Modals/ModalSelect";
+import useExchangeRate from "../../hooks/useExchangeRate";
 
 export default function DepositPage() {
     const language = useLanguage();
     const themeState = useTheme();
-    const { depositData, platforms } = useLoaderData<{ depositData: DepositData[], platforms: WalletTab[] }>();
     const currency = useCurrency();
+    
+    const { depositData, platforms } = useLoaderData<{ depositData: DepositData[], platforms: WalletTab[] }>();
+    const { currentExchangeRate } = useExchangeRate("PLN");
+    
+    const depositDataWithExchangeRate = useMemo(() => {
+        return depositData.map(deposit => {
+            const convertedAmount = deposit.currency === currency
+                ? deposit.amount
+                : deposit.currency === "USD"
+                    ? Math.round(deposit.amount * currentExchangeRate * 100) / 100
+                    : Math.round(deposit.amount / currentExchangeRate * 100) / 100;
+            return { ...deposit, amount: convertedAmount };
+        });
+    }, [depositData, currency, currentExchangeRate]);
 
     const [showAddDepositModal, setShowAddDepositModal] = useState(false);
     const [editingDepositId, setEditingDepositId] = useState<string | null>(null);
@@ -29,19 +43,17 @@ export default function DepositPage() {
 
     const submit = useSubmit();
 
-    const { sortedData, requestSort, sortConfig } = useSortData(depositData, {
-        amount: (deposit) => deposit.amount ?? "",
+    const { sortedData, requestSort, sortConfig } = useSortData(depositDataWithExchangeRate, {
+        amount: (deposit) => deposit.amount ?? 0,
         platform: (deposit) => deposit.platform ?? "",
         date: (deposit) => deposit.date ?? "",
     });
 
     const [selectedYear, setSelectedYear] = useState("");
-    const visibleData = useMemo(
-        () => selectedYear
+
+    const visibleData =  selectedYear
             ? sortedData.filter(deposit => deposit.date.split("-")[0] === selectedYear)
-            : sortedData,
-        [selectedYear, sortedData]
-    );
+            : sortedData
 
     const editingDeposit = editingDepositId ? depositData.find((deposit) => deposit.id === editingDepositId) : undefined;
 
@@ -82,6 +94,11 @@ export default function DepositPage() {
         setShowAddDepositModal(true);
     }
 
+    const filteringOptions = [
+        { value: "", label: "All years" },
+        ...Array.from(new Set(depositData.map(deposit => deposit.date.split("-")[0]))).map(year => ({ value: year, label: year }))
+    ];
+
 
     return (
         <>
@@ -103,12 +120,7 @@ export default function DepositPage() {
                     themeState={themeState}
                     labelText={'Filter by year'}
                     defaultValue={''}
-                    options={[
-                        { value: "", label: "All years" },
-                        ...Array.from(new Set(
-                            depositData.map(deposit => deposit.date.split("-")[0])
-                        )).map(year => ({ value: year, label: year })),
-                    ]}
+                    options={filteringOptions}
                     name={'filter-year'}
                     onChange={(event) => {
                         setSelectedYear(event.target.value);
