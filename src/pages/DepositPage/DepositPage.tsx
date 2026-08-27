@@ -10,7 +10,7 @@ import { translations } from "../../constants/translations";
 import { useLanguage } from "../../hooks/useLanguage";
 import DepositPosition from "../../components/AssetTable/DepositPosition";
 import { useState } from "react";
-// import useSortData from "../../hooks/useSortData";
+import useSortData from "../../hooks/useSortData";
 import AddDepositModal from "../../components/AddDepositModal";
 import { useCurrency } from "../../hooks/useCurrency";
 import DeleteConfirmationModal from "../../components/Modals/DeleteConfirmationModal";
@@ -26,12 +26,12 @@ export default function DepositPage() {
 
     const submit = useSubmit();
 
-    // const { sortedData, requestSort, sortConfig } = useSortData(data, {
-    //     name: (coin) => assetByCoingeckoId[coin.id]?.name ?? "",
-    //     current_price: (coin) => coin.current_price,
-    //     price_change_percentage_24h_in_currency: (coin) => coin.price_change_percentage_24h_in_currency,
-    //     price_change_percentage_30d_in_currency: (coin) => coin.price_change_percentage_30d_in_currency,
-    // });
+    const { sortedData, requestSort, sortConfig } = useSortData(depositData, {
+        amount: (deposit) => deposit.amount ?? "",
+        platform: (deposit) => deposit.platform ?? "",
+        date: (deposit) => deposit.date ?? "",
+    });
+
     const editingDeposit = editingDepositId ? depositData.find((deposit) => deposit.id === editingDepositId) : undefined;
 
     const depositModal = <AddDepositModal
@@ -90,14 +90,15 @@ export default function DepositPage() {
             <PageContentWrapper>
                 <AssetTableHeader
                     type='deposit'
-
-                    // handleSort={requestSort}
-                    // sortConfig={sortConfig}
+                    handleSort={requestSort}
+                    sortConfig={sortConfig}
                     sortableKeys={[
-                        "name",
+                        "amount",
+                        "platform",
+                        "date",
                     ]}
                 />
-                {depositData.map((deposit, index) => (
+                {sortedData.map((deposit, index) => (
                     <div key={index} className="flex items-center justify-between">
                         <DepositPosition
                             key={deposit.id}
