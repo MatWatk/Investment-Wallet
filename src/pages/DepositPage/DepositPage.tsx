@@ -1,4 +1,5 @@
 import AssetTableHeader from "../../components/AssetTable/AssetTableHeader";
+import { useTheme } from "../../hooks/useTheme";
 import { convertDataForRequest } from "../../utils/requests";
 import type { EditDataStatus, WalletTab } from "../../types/WalletTypes";
 import type { DepositData } from "../../types/DepositTypes";
@@ -9,14 +10,16 @@ import AssetButton from "../../components/Wallet_components/AssetButton";
 import { translations } from "../../constants/translations";
 import { useLanguage } from "../../hooks/useLanguage";
 import DepositPosition from "../../components/AssetTable/DepositPosition";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import useSortData from "../../hooks/useSortData";
 import AddDepositModal from "../../components/AddDepositModal";
 import { useCurrency } from "../../hooks/useCurrency";
 import DeleteConfirmationModal from "../../components/Modals/DeleteConfirmationModal";
+import ModalSelect from "../../components/Modals/ModalSelect";
 
 export default function DepositPage() {
     const language = useLanguage();
+    const themeState = useTheme();
     const { depositData, platforms } = useLoaderData<{ depositData: DepositData[], platforms: WalletTab[] }>();
     const currency = useCurrency();
 
@@ -31,6 +34,14 @@ export default function DepositPage() {
         platform: (deposit) => deposit.platform ?? "",
         date: (deposit) => deposit.date ?? "",
     });
+
+    const [selectedYear, setSelectedYear] = useState("");
+    const visibleData = useMemo(
+        () => selectedYear
+            ? sortedData.filter(deposit => deposit.date.split("-")[0] === selectedYear)
+            : sortedData,
+        [selectedYear, sortedData]
+    );
 
     const editingDeposit = editingDepositId ? depositData.find((deposit) => deposit.id === editingDepositId) : undefined;
 
@@ -51,7 +62,7 @@ export default function DepositPage() {
     const deleteDeposit = (depositId: string) => {
         const deletingDeposit = depositData.find((deposit) => deposit.id === depositId);
 
-        if(!deletingDeposit) {
+        if (!deletingDeposit) {
             console.error(`Deposit with ID ${depositId} not found.`);
             return;
         }
@@ -87,6 +98,23 @@ export default function DepositPage() {
                     </AssetButton>
                 </div>
             </div>
+            <div className="w-50">
+                <ModalSelect
+                    themeState={themeState}
+                    labelText={'Filter by year'}
+                    defaultValue={''}
+                    options={[
+                        { value: "", label: "All years" },
+                        ...Array.from(new Set(
+                            depositData.map(deposit => deposit.date.split("-")[0])
+                        )).map(year => ({ value: year, label: year })),
+                    ]}
+                    name={'filter-year'}
+                    onChange={(event) => {
+                        setSelectedYear(event.target.value);
+                    }}
+                />
+            </div>
             <PageContentWrapper>
                 <AssetTableHeader
                     type='deposit'
@@ -98,7 +126,7 @@ export default function DepositPage() {
                         "date",
                     ]}
                 />
-                {sortedData.map((deposit, index) => (
+                {visibleData.map((deposit, index) => (
                     <div key={index} className="flex items-center justify-between">
                         <DepositPosition
                             key={deposit.id}

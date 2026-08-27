@@ -49,7 +49,7 @@ export default function AssetTableHeader<SortKey extends string = string>({ type
                             <p>{translations[language].assetTable.depositAmount}</p>
                         </div>
 
-                        <div className="flex items-center whitespace-nowrap shrink-0 justify-center w-30">
+                        <div className="flex items-center whitespace-nowrap shrink-0 justify-center w-28">
                             <button onClick={() => handleSortClick("platform" as SortKey)} disabled={!canSort("platform" as SortKey)}>
                                 <SortingArrows />
                             </button>
