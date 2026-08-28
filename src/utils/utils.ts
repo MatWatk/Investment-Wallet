@@ -128,12 +128,13 @@ export const prepareDataForStatistics = (dbAssetsFirestore: WalletAsset[], coing
 
 export const calculateTotalEarnOrLoss = (dbAssetsFirestore: WalletAsset[], coingeckoData: CoinMarketData[]) => {
     const walletData = prepareDataForStatistics(dbAssetsFirestore, coingeckoData, 'Summary');
+    console.log("walletData", walletData);
     const totalEarnOrLoss = Object.values(walletData).reduce((acc, { earnedMoneyInUSD }) => acc + earnedMoneyInUSD, 0);
-    const totalPercentage = Object.values(walletData).reduce((acc, { earnedMoneyInUSD, averangePrice, amount }) => {
+    const totalInvested = Object.values(walletData).reduce((acc, { averangePrice, amount }) => {
         const totalInvested = averangePrice * amount;
-        const percentage = totalInvested > 0 ? (earnedMoneyInUSD / totalInvested) * 100 : 0;
-        return acc + percentage;
-    }, 0);
+        return acc + totalInvested;
+    }, 0)
+    const totalPercentage = totalInvested > 0 ? (totalEarnOrLoss / totalInvested) * 100 : 0;
     return {
         totalEarnOrLoss: totalEarnOrLoss.toFixed(2),
         totalPercentage: totalPercentage.toFixed(2)
