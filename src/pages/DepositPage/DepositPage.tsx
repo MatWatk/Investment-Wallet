@@ -101,8 +101,8 @@ export default function DepositPage() {
     ];
 
     const totalValue = useMemo(() => {
-        return depositDataWithExchangeRate.reduce((total, deposit) => total + (deposit.amount ?? 0), 0);
-    }, [depositDataWithExchangeRate]);
+        return visibleData.reduce((total, deposit) => total + (deposit.amount ?? 0), 0);
+    }, [visibleData]);
 
     return (
         <>
