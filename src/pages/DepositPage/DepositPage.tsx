@@ -17,15 +17,16 @@ import { useCurrency } from "../../hooks/useCurrency";
 import DeleteConfirmationModal from "../../components/Modals/DeleteConfirmationModal";
 import ModalSelect from "../../components/Modals/ModalSelect";
 import useExchangeRate from "../../hooks/useExchangeRate";
+import SummaryBar from "../../components/Wallet_components/SummaryBar";
 
 export default function DepositPage() {
     const language = useLanguage();
     const themeState = useTheme();
     const currency = useCurrency();
-    
+
     const { depositData, platforms } = useLoaderData<{ depositData: DepositData[], platforms: WalletTab[] }>();
     const { currentExchangeRate } = useExchangeRate("PLN");
-    
+
     const depositDataWithExchangeRate = useMemo(() => {
         return depositData.map(deposit => {
             const convertedAmount = deposit.currency === currency
@@ -51,9 +52,9 @@ export default function DepositPage() {
 
     const [selectedYear, setSelectedYear] = useState("");
 
-    const visibleData =  selectedYear
-            ? sortedData.filter(deposit => deposit.date.split("-")[0] === selectedYear)
-            : sortedData
+    const visibleData = selectedYear
+        ? sortedData.filter(deposit => deposit.date.split("-")[0] === selectedYear)
+        : sortedData
 
     const editingDeposit = editingDepositId ? depositData.find((deposit) => deposit.id === editingDepositId) : undefined;
 
@@ -99,6 +100,9 @@ export default function DepositPage() {
         ...Array.from(new Set(depositData.map(deposit => deposit.date.split("-")[0]))).map(year => ({ value: year, label: year }))
     ];
 
+    const totalValue = useMemo(() => {
+        return depositDataWithExchangeRate.reduce((total, deposit) => total + (deposit.amount ?? 0), 0);
+    }, [depositDataWithExchangeRate]);
 
     return (
         <>
@@ -156,6 +160,7 @@ export default function DepositPage() {
                         setShowDeleteConfirmation(null);
                     }}
                 />}
+                <SummaryBar totalValue={totalValue} textAlign="left" />
             </PageContentWrapper>
         </>
     );
