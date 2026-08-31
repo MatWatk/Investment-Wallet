@@ -1,4 +1,5 @@
 import AssetTableHeader from "../../components/AssetTable/AssetTableHeader";
+import { useNavigation } from "react-router-dom";
 import { useTheme } from "../../hooks/useTheme";
 import { convertDataForRequest } from "../../utils/requests";
 import type { EditDataStatus, WalletTab } from "../../types/WalletTypes";
@@ -18,11 +19,14 @@ import DeleteConfirmationModal from "../../components/Modals/DeleteConfirmationM
 import ModalSelect from "../../components/Modals/ModalSelect";
 import useExchangeRate from "../../hooks/useExchangeRate";
 import SummaryBar from "../../components/Wallet_components/SummaryBar";
+import LoadingModal from "../../components/Modals/LoadingModal";
 
 export default function DepositPage() {
     const language = useLanguage();
     const themeState = useTheme();
     const currency = useCurrency();
+
+    const navigation = useNavigation();
 
     const { depositData, platforms } = useLoaderData<{ depositData: DepositData[], platforms: WalletTab[] }>();
     const { currentExchangeRate } = useExchangeRate("PLN");
@@ -161,6 +165,7 @@ export default function DepositPage() {
                     }}
                 />}
                 <SummaryBar totalValue={totalValue} textAlign="left" />
+                {navigation.state !== "idle" && <LoadingModal /> }
             </PageContentWrapper>
         </>
     );
