@@ -142,8 +142,8 @@ export default function DepositPage() {
                         "date",
                     ]}
                 />
-                {visibleData.map((deposit, index) => (
-                    <div key={index} className="flex items-center justify-between">
+                {visibleData.map((deposit) => (
+                    <div key={deposit.id} className="flex items-center justify-between">
                         <DepositPosition
                             key={deposit.id}
                             depositData={deposit}

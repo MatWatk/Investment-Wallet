@@ -74,7 +74,7 @@ describe('Wallet tests', () => {
 
     });
 
-    it.only('should not add asset when fields are not filled', () => {
+    it('should not add asset when fields are not filled', () => {
         cy.login();
         cy.contains('Investment Wallet').should('be.visible');
 
