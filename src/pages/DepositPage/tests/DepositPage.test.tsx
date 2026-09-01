@@ -110,14 +110,13 @@ describe('Deposit Page tests', () => {
         const addDepositButton = await screen.findByRole('button', { name: 'Add Deposit' })
         const userDeposits = mockedData.filter(deposit => deposit.loggedUser === 'user@example.com')
 
-        userDeposits.forEach(deposit => async () => {
+        for (const deposit of userDeposits) {
             const platform = await screen.findByText(deposit.platform)
             const amount = await screen.findByText(deposit.amount.toString())
 
             expect(platform).toBeInTheDocument()
             expect(amount).toBeInTheDocument()
-
-        })
+        }
 
         const depositPlatformForAnotherUser = screen.queryByText('Platform C')
         const depositAmountForAnotherUser = screen.queryByText('1500')
