@@ -20,6 +20,7 @@ import ModalSelect from "../../components/Modals/ModalSelect";
 import useExchangeRate from "../../hooks/useExchangeRate";
 import SummaryBar from "../../components/Wallet_components/SummaryBar";
 import LoadingModal from "../../components/Modals/LoadingModal";
+import { auth } from "../../services/firebase/config";
 
 export default function DepositPage() {
     const language = useLanguage();
@@ -31,8 +32,13 @@ export default function DepositPage() {
     const { depositData, platforms } = useLoaderData<{ depositData: DepositData[], platforms: WalletTab[] }>();
     const { currentExchangeRate } = useExchangeRate("PLN");
 
+    const filteredForUserDeposit = useMemo(() => {
+        const currentUserEmail = auth.currentUser?.email;
+        return depositData.filter(deposit => deposit.loggedUser === currentUserEmail);
+    }, [depositData]);
+
     const depositDataWithExchangeRate = useMemo(() => {
-        return depositData.map(deposit => {
+        return filteredForUserDeposit.map(deposit => {
             const convertedAmount = deposit.currency === currency
                 ? deposit.amount
                 : deposit.currency === "USD"
@@ -40,7 +46,7 @@ export default function DepositPage() {
                     : Math.round(deposit.amount / currentExchangeRate * 100) / 100;
             return { ...deposit, amount: convertedAmount };
         });
-    }, [depositData, currency, currentExchangeRate]);
+    }, [filteredForUserDeposit, currency, currentExchangeRate]);
 
     const [showAddDepositModal, setShowAddDepositModal] = useState(false);
     const [editingDepositId, setEditingDepositId] = useState<string | null>(null);
