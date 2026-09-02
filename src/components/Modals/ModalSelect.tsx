@@ -18,8 +18,9 @@ export default function ModalSelect({
 }) {
     return (
         <div className="flex flex-col gap-1 w-full">
-            <label className={`text-sm ${themeState ? "text-violet-900" : "text-yellow-500"}`}>{labelText}</label>
+            <label htmlFor={name} className={`text-sm ${themeState ? "text-violet-900" : "text-yellow-500"}`}>{labelText}</label>
             <select
+                id={name}
                 name={name}
                 defaultValue={defaultValue}
                 disabled={disabled}

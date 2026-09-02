@@ -8,6 +8,7 @@ import { action } from "../action"
 import { loader } from "../loader"
 import { auth } from "../../../services/firebase/config";
 import type { DepositData } from "../../../types/DepositTypes"
+import userEvent from "@testing-library/user-event"
 
 vi.mock('../action', () => ({
     action: vi.fn(),
@@ -48,7 +49,7 @@ const mockedData: DepositData[] = [
     {
         amount: 2000,
         currency: "PLN",
-        date: "2023-02-01",
+        date: "2024-02-01",
         id: "2",
         loggedUser: "user@example.com",
         platform: "Platform B",
@@ -56,7 +57,7 @@ const mockedData: DepositData[] = [
     {
         amount: 1500,
         currency: "USD",
-        date: "2023-03-01",
+        date: "2025-03-01",
         id: "3",
         loggedUser: "anotherUser@example.com",
         platform: "Platform A",
@@ -132,5 +133,33 @@ describe('Deposit Page tests', () => {
         expect(editButton).toHaveLength(userDeposits.length)
         expect(deleteButton).toHaveLength(userDeposits.length)
 
+    })
+    it('should filter year correctly', async () => {
+        Object.defineProperty(auth, 'currentUser', {
+            value: { email: 'user@example.com' },
+            configurable: true,
+        })
+
+        vi.mocked(loader).mockResolvedValue({
+            depositData: mockedData,
+            platforms: mockedPlatforms,
+        })
+        renderDepositPage()
+        const yearFilter = await screen.findByRole('combobox', { name: 'Filter by year' })
+        const user = userEvent.setup()
+        await user.selectOptions(yearFilter, '2023')
+
+        const userDepositsFor2023 = mockedData.filter(deposit => deposit.loggedUser === 'user@example.com' && deposit.date.split('-')[0] === '2023')
+
+        for (const deposit of userDepositsFor2023) {
+            const platform = await screen.findByText(deposit.platform)
+            const amount = await screen.findByText(deposit.amount.toString())
+
+            expect(platform).toBeInTheDocument()
+            expect(amount).toBeInTheDocument()
+        }
+
+        expect(screen.queryByText('Platform B')).not.toBeInTheDocument()
+        expect(screen.queryByText('2000')).not.toBeInTheDocument()
     })
 })
