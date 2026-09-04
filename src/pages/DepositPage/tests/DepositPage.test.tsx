@@ -124,8 +124,8 @@ describe('Deposit Page tests', () => {
         const depositPlatformForAnotherUser = screen.queryByText('Platform C')
         const depositAmountForAnotherUser = screen.queryByText('1500')
 
-        const editButton = screen.getAllByRole('button', { name: 'Edit Deposit' })
-        const deleteButton = screen.getAllByRole('img', { name: 'Rubbish Bin' })
+        const editButton = await screen.getAllByRole('button', { name: 'Edit Deposit' })
+        const deleteButton = await screen.getAllByRole('img', { name: 'Rubbish Bin' })
 
 
         expect(title).toBeInTheDocument()
@@ -275,7 +275,7 @@ describe('Deposit Page tests', () => {
         expect(closeButton).not.toBeInTheDocument()
     })
 
-        it('error should appear on providing invalid data', async () => {
+    it('error should appear on providing invalid data', async () => {
         Object.defineProperty(auth, 'currentUser', {
             value: { email: 'user@example.com' },
             configurable: true,
@@ -308,5 +308,129 @@ describe('Deposit Page tests', () => {
         await user.type(amountInput, '-1000')
         const errorMessage = await screen.findByText(/Amount must be greater than 0/i)
         expect(errorMessage).toBeInTheDocument()
+    })
+
+    it('should call action feature on clicking delete button', async () => {
+        Object.defineProperty(auth, 'currentUser', {
+            value: { email: 'user@example.com' },
+            configurable: true,
+        })
+        vi.mocked(loader).mockResolvedValue({
+            depositData: mockedData,
+            platforms: mockedPlatforms,
+        })
+
+        renderDepositPage()
+
+        const deleteButtons = await screen.findAllByRole('button', { name: 'Rubbish Bin' })
+        const deleteButton = deleteButtons[0]
+
+        await user.click(deleteButton)
+
+        const confirmDeleteModal = await screen.findByText(/Confirm Deletion/i)
+        const confirmButton = await screen.findByRole('button', { name: 'Confirm' })
+
+        expect(confirmDeleteModal).toBeInTheDocument()
+        expect(confirmButton).toBeInTheDocument()
+        await user.click(confirmButton)
+
+        await waitFor(() => { expect(action).toHaveBeenCalled() })
+    })
+
+    it('should call action feature on clicking edit button', async () => {
+        Object.defineProperty(auth, 'currentUser', {
+            value: { email: 'user@example.com' },
+            configurable: true,
+        })
+        vi.mocked(loader).mockResolvedValue({
+            depositData: mockedData,
+            platforms: mockedPlatforms,
+        })
+
+        renderDepositPage()
+
+        const editButtons = await screen.findAllByRole('button', { name: 'Edit Deposit' })
+        const editButton = editButtons[0]
+
+        await user.click(editButton)
+
+        const amountInput = await screen.findByRole('spinbutton', { name: 'Amount' })
+        const platformInput = await screen.findByRole('combobox', { name: 'Platform' })
+        const currencyInput = await screen.findByRole('combobox', { name: 'Currency' })
+        const dateInput = await screen.findByLabelText('Date')
+        const modalEditButtons = await screen.findAllByRole('button', { name: 'Edit Deposit' })
+        const modalEditButton = modalEditButtons.find(button => button.getAttribute('type') === 'submit')
+        const closeButton = await screen.findByRole('button', { name: 'Close' })
+
+        expect(amountInput).toBeInTheDocument()
+        expect(platformInput).toBeInTheDocument()
+        expect(currencyInput).toBeInTheDocument()
+        expect(dateInput).toBeInTheDocument()
+        expect(modalEditButton).toBeInTheDocument()
+        expect(modalEditButton).toHaveAttribute('type', 'submit')
+        expect(closeButton).toBeInTheDocument()
+
+        await user.clear(amountInput)
+        await user.type(amountInput, '999')
+        await user.click(modalEditButton!)
+
+        await waitFor(() => expect(action).toHaveBeenCalledWith(
+            expect.objectContaining({ request: expect.any(Request) }),
+        ))
+
+        const [{ request }] = vi.mocked(action).mock.calls[0]
+        const formData = await request.formData()
+
+        expect(Object.fromEntries(formData)).toMatchObject({
+            id: '1',
+            amount: '999',
+            currency: 'USD',
+            date: '2023-01-01',
+            platform: 'Platform A',
+            actionRequestType: 'edit',
+            loggedUser: 'user@example.com',
+        })
+    })
+    it('should close edit modal when clicking the close button', async () => {
+        Object.defineProperty(auth, 'currentUser', {
+            value: { email: 'user@example.com' },
+            configurable: true,
+        })
+        vi.mocked(loader).mockResolvedValue({
+            depositData: mockedData,
+            platforms: mockedPlatforms,
+        })
+
+        renderDepositPage()
+
+        const editButtons = await screen.findAllByRole('button', { name: 'Edit Deposit' })
+        const editButton = editButtons[0]
+
+        await user.click(editButton)
+
+        const amountInput = await screen.findByRole('spinbutton', { name: 'Amount' })
+        const platformInput = await screen.findByRole('combobox', { name: 'Platform' })
+        const currencyInput = await screen.findByRole('combobox', { name: 'Currency' })
+        const dateInput = await screen.findByLabelText('Date')
+        const modalEditButtons = await screen.findAllByRole('button', { name: 'Edit Deposit' })
+        const modalEditButton = modalEditButtons.find(button => button.getAttribute('type') === 'submit')
+        const closeButton = await screen.findByRole('button', { name: 'Close' })
+
+        expect(amountInput).toBeInTheDocument()
+        expect(platformInput).toBeInTheDocument()
+        expect(currencyInput).toBeInTheDocument()
+        expect(dateInput).toBeInTheDocument()
+        expect(modalEditButton).toBeInTheDocument()
+        expect(modalEditButton).toHaveAttribute('type', 'submit')
+        expect(closeButton).toBeInTheDocument()
+
+        await user.click(closeButton)
+
+        expect(amountInput).not.toBeInTheDocument()
+        expect(platformInput).not.toBeInTheDocument()
+        expect(currencyInput).not.toBeInTheDocument()
+        expect(dateInput).not.toBeInTheDocument()
+        expect(modalEditButton).not.toBeInTheDocument()
+        expect(closeButton).not.toBeInTheDocument()
     })
 })
