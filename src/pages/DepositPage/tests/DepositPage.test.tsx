@@ -3,7 +3,7 @@ import { createMemoryRouter, RouterProvider } from "react-router-dom"
 import DepositPage from '../DepositPage'
 import { store } from "../../../store"
 import RouterError from "../../../router/RouteError"
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { action } from "../action"
 import { loader } from "../loader"
 import { auth } from "../../../services/firebase/config";
@@ -63,6 +63,8 @@ const mockedData: DepositData[] = [
         platform: "Platform A",
     }
 ]
+
+const user = userEvent.setup()
 
 describe('Deposit Page tests', () => {
     afterEach(() => {
@@ -146,7 +148,7 @@ describe('Deposit Page tests', () => {
         })
         renderDepositPage()
         const yearFilter = await screen.findByRole('combobox', { name: 'Filter by year' })
-        const user = userEvent.setup()
+
         await user.selectOptions(yearFilter, '2023')
 
         const userDepositsFor2023 = mockedData.filter(deposit => deposit.loggedUser === 'user@example.com' && deposit.date.split('-')[0] === '2023')
@@ -161,5 +163,150 @@ describe('Deposit Page tests', () => {
 
         expect(screen.queryByText('Platform B')).not.toBeInTheDocument()
         expect(screen.queryByText('2000')).not.toBeInTheDocument()
+    })
+
+    it('should open modal when the add deposit button is clicked and action is performed when data is entered', async () => {
+        Object.defineProperty(auth, 'currentUser', {
+            value: { email: 'user@example.com' },
+            configurable: true,
+        })
+        vi.mocked(loader).mockResolvedValue({
+            depositData: mockedData,
+            platforms: mockedPlatforms,
+        })
+
+        renderDepositPage()
+        const addDepositButton = await screen.findByRole('button', { name: 'Add Deposit' })
+        await user.click(addDepositButton)
+
+        const amountInput = await screen.findByRole('spinbutton', { name: 'Amount' })
+        const platformInput = await screen.findByRole('combobox', { name: 'Platform' })
+        const currencyInput = await screen.findByRole('combobox', { name: 'Currency' })
+        const dateInput = await screen.findByLabelText('Date')
+        const addButtons = await screen.findAllByRole('button', { name: 'Add Deposit' })
+        const addButton = addButtons.find(button => button.getAttribute('type') === 'submit')
+        const closeButton = await screen.findByRole('button', { name: 'Close' })
+
+        expect(amountInput).toBeInTheDocument()
+        expect(platformInput).toBeInTheDocument()
+        expect(currencyInput).toBeInTheDocument()
+        expect(dateInput).toBeInTheDocument()
+        expect(addButton).toBeInTheDocument()
+        expect(addButton).toHaveAttribute('type', 'submit')
+        expect(closeButton).toBeInTheDocument()
+
+        await user.type(amountInput, '1000')
+        await user.click(addButton!)
+        await waitFor(() => expect(action).toHaveBeenCalledTimes(1))
+    })
+
+    it('should not trigger action when add deposit is clicked without entering data', async () => {
+        Object.defineProperty(auth, 'currentUser', {
+            value: { email: 'user@example.com' },
+            configurable: true,
+        })
+        vi.mocked(loader).mockResolvedValue({
+            depositData: mockedData,
+            platforms: mockedPlatforms,
+        })
+
+        renderDepositPage()
+        const addDepositButton = await screen.findByRole('button', { name: 'Add Deposit' })
+        await user.click(addDepositButton)
+
+        const amountInput = await screen.findByRole('spinbutton', { name: 'Amount' })
+        const platformInput = await screen.findByRole('combobox', { name: 'Platform' })
+        const currencyInput = await screen.findByRole('combobox', { name: 'Currency' })
+        const dateInput = await screen.findByLabelText('Date')
+        const addButtons = await screen.findAllByRole('button', { name: 'Add Deposit' })
+        const addButton = addButtons.find(button => button.getAttribute('type') === 'submit')
+        const closeButton = await screen.findByRole('button', { name: 'Close' })
+
+        expect(amountInput).toBeInTheDocument()
+        expect(platformInput).toBeInTheDocument()
+        expect(currencyInput).toBeInTheDocument()
+        expect(dateInput).toBeInTheDocument()
+        expect(addButton).toBeInTheDocument()
+        expect(addButton).toHaveAttribute('type', 'submit')
+        expect(closeButton).toBeInTheDocument()
+
+        await user.click(addButton!)
+        await waitFor(() => expect(action).not.toHaveBeenCalled())
+    })
+
+    it('should close modal when the close button is clicked', async () => {
+        Object.defineProperty(auth, 'currentUser', {
+            value: { email: 'user@example.com' },
+            configurable: true,
+        })
+        vi.mocked(loader).mockResolvedValue({
+            depositData: mockedData,
+            platforms: mockedPlatforms,
+        })
+
+        renderDepositPage()
+        const addDepositButton = await screen.findByRole('button', { name: 'Add Deposit' })
+        await user.click(addDepositButton)
+
+        const amountInput = await screen.findByRole('spinbutton', { name: 'Amount' })
+        const platformInput = await screen.findByRole('combobox', { name: 'Platform' })
+        const currencyInput = await screen.findByRole('combobox', { name: 'Currency' })
+        const dateInput = await screen.findByLabelText('Date')
+        const addButtons = await screen.findAllByRole('button', { name: 'Add Deposit' })
+        const addButton = addButtons.find(button => button.getAttribute('type') === 'submit')
+        const closeButton = await screen.findByRole('button', { name: 'Close' })
+
+        expect(amountInput).toBeInTheDocument()
+        expect(platformInput).toBeInTheDocument()
+        expect(currencyInput).toBeInTheDocument()
+        expect(dateInput).toBeInTheDocument()
+        expect(addButton).toBeInTheDocument()
+        expect(addButton).toHaveAttribute('type', 'submit')
+        expect(closeButton).toBeInTheDocument()
+
+        await user.type(amountInput, '1000')
+        await user.click(closeButton)
+
+        expect(amountInput).not.toBeInTheDocument()
+        expect(platformInput).not.toBeInTheDocument()
+        expect(currencyInput).not.toBeInTheDocument()
+        expect(dateInput).not.toBeInTheDocument()
+        expect(addButton).not.toBeInTheDocument()
+        expect(closeButton).not.toBeInTheDocument()
+    })
+
+        it('error should appear on providing invalid data', async () => {
+        Object.defineProperty(auth, 'currentUser', {
+            value: { email: 'user@example.com' },
+            configurable: true,
+        })
+        vi.mocked(loader).mockResolvedValue({
+            depositData: mockedData,
+            platforms: mockedPlatforms,
+        })
+
+        renderDepositPage()
+        const addDepositButton = await screen.findByRole('button', { name: 'Add Deposit' })
+        await user.click(addDepositButton)
+
+        const amountInput = await screen.findByRole('spinbutton', { name: 'Amount' })
+        const platformInput = await screen.findByRole('combobox', { name: 'Platform' })
+        const currencyInput = await screen.findByRole('combobox', { name: 'Currency' })
+        const dateInput = await screen.findByLabelText('Date')
+        const addButtons = await screen.findAllByRole('button', { name: 'Add Deposit' })
+        const addButton = addButtons.find(button => button.getAttribute('type') === 'submit')
+        const closeButton = await screen.findByRole('button', { name: 'Close' })
+
+        expect(amountInput).toBeInTheDocument()
+        expect(platformInput).toBeInTheDocument()
+        expect(currencyInput).toBeInTheDocument()
+        expect(dateInput).toBeInTheDocument()
+        expect(addButton).toBeInTheDocument()
+        expect(addButton).toHaveAttribute('type', 'submit')
+        expect(closeButton).toBeInTheDocument()
+
+        await user.type(amountInput, '-1000')
+        const errorMessage = await screen.findByText(/Amount must be greater than 0/i)
+        expect(errorMessage).toBeInTheDocument()
     })
 })

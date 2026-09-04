@@ -58,10 +58,11 @@ export default function ModalInput({
 
     return (
         <div className="flex flex-col gap-1 min-w-68">
-            <label className={`text-sm ${themeState ? "text-violet-900" : "text-yellow-500"}`}>{labelText}</label>
+            <label htmlFor={name} className={`text-sm ${themeState ? "text-violet-900" : "text-yellow-500"}`}>{labelText}</label>
             <input
                 key={defaultValue}
                 required
+                id={name}
                 name={name}
                 type={inputType}
                 defaultValue={defaultValue}
