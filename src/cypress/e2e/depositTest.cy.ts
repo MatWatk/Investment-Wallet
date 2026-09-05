@@ -33,7 +33,7 @@ describe('Deposit page tests', () => {
         cy.get('[type="submit"]').should('not.be.disabled').click()
         cy.contains('Deposit added successfully').should('be.visible')
     })
-    it.only('should prefill the deposit form with existing data on clicking edit deposit button', () => {
+    it('should prefill the deposit form with existing data on clicking edit deposit button', () => {
         cy.login();
         cy.contains('Logged successfully. Please wait...').should('be.visible')
         cy.visit('/deposit-page');
