@@ -11,11 +11,11 @@ export default function DepositPosition({ depositData, openDeleteModal, openEdit
     const themeState = useTheme();
     const language = useLanguage();
     return (
-        <div className={themeState ? tableStyles.light.tableRow : tableStyles.dark.tableRow}>
+        <div id={`deposit-position-${depositData.id}`} className={themeState ? tableStyles.light.tableRow : tableStyles.dark.tableRow}>
             <div className="flex flex-row w-full shrink-0 gap-10 justify-start items-center" {...props}>
-                <p className={tableStyles.tablePosition}>{amount}</p>
-                <p className={tableStyles.tablePosition}>{platform}</p>
-                <p className={tableStyles.tablePosition}>{date}</p>
+                <p id={`deposit-amount-${depositData.id}`} className={tableStyles.tablePosition}>{amount}</p>
+                <p id={`deposit-platform-${depositData.id}`} className={tableStyles.tablePosition}>{platform}</p>
+                <p id={`deposit-date-${depositData.id}`} className={tableStyles.tablePosition}>{date}</p>
                 <div className="ml-4 flex shrink-0 items-center gap-2">
                     <AssetButton
                         id={`edit-asset-button-${depositData.id}`}
