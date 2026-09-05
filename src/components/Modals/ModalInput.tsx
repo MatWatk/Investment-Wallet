@@ -72,7 +72,7 @@ export default function ModalInput({
                 onChange={onChange}
                 className={`w-full rounded-md border ${themeState ? "border-gray-300 bg-white text-gray-900 focus:ring-violet-500" : "border-gray-600 bg-gray-800 text-gray-100 focus:ring-yellow-500"} px-3 py-2 focus:outline-none focus:ring-2 ${disabled ? "opacity-30 cursor-not-allowed" : ""} ${invalidInput?.[name] && !disabled ? "border-red-500" : ""}`}
             />
-            {invalidInput?.[name] && inputType === "number" && !disabled &&<span className="text-red-500 text-sm">{translations[language].modals.inputErrors.amountPositive}</span>}
+            {invalidInput?.[name] && inputType === "number" && !disabled &&<span id={'error-message'} className="text-red-500 text-sm">{translations[language].modals.inputErrors.amountPositive}</span>}
             {invalidInput?.[name] && name === "platformName" && <span className="text-red-500 text-sm">{translations[language].modals.inputErrors.platformExists}</span>}
         </div>
     )
