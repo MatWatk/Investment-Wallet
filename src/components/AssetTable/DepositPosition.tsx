@@ -23,7 +23,7 @@ export default function DepositPosition({ depositData, openDeleteModal, openEdit
                         big={false}>
                         {translations[language].depositPage.editDepositButton}
                     </AssetButton>
-                    <RubbishBinButton onClick={() => openDeleteModal(depositData.id)} />
+                    <RubbishBinButton id={`delete-asset-button-${depositData.id}`} onClick={() => openDeleteModal(depositData.id)} />
                 </div>
 
             </div>

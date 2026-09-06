@@ -50,4 +50,22 @@ describe('Deposit page tests', () => {
         cy.get('@depositPlatform').then((platform) => cy.get('#platform').should('have.value', platform))
         cy.get('@depositDate').then((date) => cy.get('#date').should('have.value', date))
     })
+    it('should display confirmation modal correctly before deleting a deposit', () => {
+        cy.login();
+        cy.contains('Logged successfully. Please wait...').should('be.visible')
+        cy.visit('/deposit-page');
+        cy.contains('Deposit Page').should('be.visible')
+        cy.get('[id^="deposit-position-"]').eq(0).within(() => {
+            cy.get('[id^="deposit-amount-"]').invoke('text').as('depositAmount')
+            cy.get('[id^="deposit-platform-"]').invoke('text').as('depositPlatform')
+            cy.get('[id^="delete-asset-button-"]').click()
+        })
+        cy.get('@depositAmount').then((amount) => {
+            cy.contains(`Are you sure you want to delete deposit amount of ${amount}`).should('be.visible')
+        })
+        cy.get('@depositPlatform').then((platform) => {
+            cy.contains(`platform ${platform}?`).should('be.visible')
+        })
+        cy.get('#cancel-delete').should('be.visible').click()
+    })
 });
