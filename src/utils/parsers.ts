@@ -71,7 +71,7 @@ export function parseWalletPlatformRequest(formData: FormData): WalletPlatformEd
     }
     const editStatus = get("editStatus");
     const actionRequestType = "platform";
-    
+
     const loggedUser = get("loggedUser");
     if (!loggedUser) {
         throw new Response("Missing loggedUser", { status: 400 });
@@ -91,6 +91,11 @@ export function parseDepositRequest(formData: FormData): WalletDepositRequest {
 
     const id = get("id");
     const amount = Number(get("amount"));
+    
+    if (!Number.isFinite(amount) || amount <= 0) {
+        throw new Response("Amount must be greater than 0", { status: 400 });
+    }
+
     const date = get("date") ?? "";
     const platform = get("platform") ?? "";
     const actionRequestType = get("actionRequestType") as "add" | "edit" | "delete";
