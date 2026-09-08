@@ -9,6 +9,7 @@ import { loader } from "../loader"
 import { auth } from "../../../services/firebase/config";
 import type { DepositData } from "../../../types/DepositTypes"
 import userEvent from "@testing-library/user-event"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 vi.mock('../action', () => ({
     action: vi.fn(),
@@ -66,7 +67,25 @@ const mockedData: DepositData[] = [
 
 const user = userEvent.setup()
 
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            retry: false,
+        },
+    }
+})
+
 describe('Deposit Page tests', () => {
+    beforeEach(() => {
+        queryClient.setQueryData(
+            ["userDeposits", "user@example.com"],
+            {
+                depositData: mockedData,
+                platforms: mockedPlatforms,
+            }
+        );
+    })
+
     afterEach(() => {
         vi.clearAllMocks();
         Object.defineProperty(auth, 'currentUser', {
@@ -80,15 +99,17 @@ describe('Deposit Page tests', () => {
             {
                 path: '/deposit-page',
                 element: (
-                    <Provider store={store}>
-                        <DepositPage />
-                    </Provider>),
+                    <QueryClientProvider client={queryClient}>
+                        <Provider store={store}>
+                            <DepositPage />
+                        </Provider>
+                    </QueryClientProvider>),
                 action,
                 loader,
                 errorElement: (
                     <Provider store={store}>
                         <RouterError type='depositPage' />
-                    </Provider>),
+                    </Provider >),
             }
         ],
             {
@@ -101,11 +122,6 @@ describe('Deposit Page tests', () => {
         Object.defineProperty(auth, 'currentUser', {
             value: { email: 'user@example.com' },
             configurable: true,
-        })
-
-        vi.mocked(loader).mockResolvedValue({
-            depositData: mockedData,
-            platforms: mockedPlatforms,
         })
 
         renderDepositPage()
@@ -142,10 +158,6 @@ describe('Deposit Page tests', () => {
             configurable: true,
         })
 
-        vi.mocked(loader).mockResolvedValue({
-            depositData: mockedData,
-            platforms: mockedPlatforms,
-        })
         renderDepositPage()
         const yearFilter = await screen.findByRole('combobox', { name: 'Filter by year' })
 
@@ -169,10 +181,6 @@ describe('Deposit Page tests', () => {
         Object.defineProperty(auth, 'currentUser', {
             value: { email: 'user@example.com' },
             configurable: true,
-        })
-        vi.mocked(loader).mockResolvedValue({
-            depositData: mockedData,
-            platforms: mockedPlatforms,
         })
 
         renderDepositPage()
@@ -205,11 +213,6 @@ describe('Deposit Page tests', () => {
             value: { email: 'user@example.com' },
             configurable: true,
         })
-        vi.mocked(loader).mockResolvedValue({
-            depositData: mockedData,
-            platforms: mockedPlatforms,
-        })
-
         renderDepositPage()
         const addDepositButton = await screen.findByRole('button', { name: 'Add Deposit' })
         await user.click(addDepositButton)
@@ -238,10 +241,6 @@ describe('Deposit Page tests', () => {
         Object.defineProperty(auth, 'currentUser', {
             value: { email: 'user@example.com' },
             configurable: true,
-        })
-        vi.mocked(loader).mockResolvedValue({
-            depositData: mockedData,
-            platforms: mockedPlatforms,
         })
 
         renderDepositPage()
@@ -280,10 +279,6 @@ describe('Deposit Page tests', () => {
             value: { email: 'user@example.com' },
             configurable: true,
         })
-        vi.mocked(loader).mockResolvedValue({
-            depositData: mockedData,
-            platforms: mockedPlatforms,
-        })
 
         renderDepositPage()
         const addDepositButton = await screen.findByRole('button', { name: 'Add Deposit' })
@@ -315,10 +310,6 @@ describe('Deposit Page tests', () => {
             value: { email: 'user@example.com' },
             configurable: true,
         })
-        vi.mocked(loader).mockResolvedValue({
-            depositData: mockedData,
-            platforms: mockedPlatforms,
-        })
 
         renderDepositPage()
 
@@ -341,10 +332,6 @@ describe('Deposit Page tests', () => {
         Object.defineProperty(auth, 'currentUser', {
             value: { email: 'user@example.com' },
             configurable: true,
-        })
-        vi.mocked(loader).mockResolvedValue({
-            depositData: mockedData,
-            platforms: mockedPlatforms,
         })
 
         renderDepositPage()
@@ -395,10 +382,6 @@ describe('Deposit Page tests', () => {
         Object.defineProperty(auth, 'currentUser', {
             value: { email: 'user@example.com' },
             configurable: true,
-        })
-        vi.mocked(loader).mockResolvedValue({
-            depositData: mockedData,
-            platforms: mockedPlatforms,
         })
 
         renderDepositPage()
