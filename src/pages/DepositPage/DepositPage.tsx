@@ -4,7 +4,7 @@ import { useTheme } from "../../hooks/useTheme";
 import { convertDataForRequest } from "../../utils/requests";
 import type { EditDataStatus, WalletTab } from "../../types/WalletTypes";
 import type { DepositData } from "../../types/DepositTypes";
-import { useLoaderData, useSubmit } from "react-router-dom";
+import { useSubmit } from "react-router-dom";
 import PageContentWrapper from "../../components/PageContentWrapper";
 import PageHeader from "../../components/PageHeader";
 import AssetButton from "../../components/Wallet_components/AssetButton";
@@ -21,15 +21,33 @@ import useExchangeRate from "../../hooks/useExchangeRate";
 import SummaryBar from "../../components/Wallet_components/SummaryBar";
 import LoadingModal from "../../components/Modals/LoadingModal";
 import { auth } from "../../services/firebase/config";
+import { useQuery } from "@tanstack/react-query";
+import loadFirebaseData from "../../services/api/loadFirebaseData";
 
 export default function DepositPage() {
+    const loggedUser = auth.currentUser?.email;
+    const {data, isError, error} = useQuery({
+        queryKey: ["userDeposits", loggedUser],
+        queryFn: async () => {
+            return {
+                depositData: await loadFirebaseData<DepositData>('deposit', ['amount', 'date', 'platform', 'loggedUser', 'currency'], loggedUser || ''),
+                platforms: await loadFirebaseData<WalletTab>("wallet-tabs", ["platformName", "loggedUser"], loggedUser || '',)
+            };
+        },
+        gcTime: 5 * 60 * 1000,
+        staleTime: 10000,
+        enabled: !!loggedUser,
+    });
+
     const language = useLanguage();
     const themeState = useTheme();
     const currency = useCurrency();
 
     const navigation = useNavigation();
 
-    const { depositData, platforms } = useLoaderData<{ depositData: DepositData[], platforms: WalletTab[] }>();
+    const depositData = data?.depositData ?? [];
+    const platforms = data?.platforms ?? [];
+
     const { currentExchangeRate } = useExchangeRate("PLN");
 
     const filteredForUserDeposit = useMemo(() => {
@@ -152,7 +170,7 @@ export default function DepositPage() {
                         "date",
                     ]}
                 />
-                {visibleData.map((deposit) => (
+                {!isError && visibleData.map((deposit) => (
                     <div key={deposit.id} className="flex items-center justify-between">
                         <DepositPosition
                             key={deposit.id}
@@ -161,6 +179,8 @@ export default function DepositPage() {
                             openEditModal={openEditModal} />
                     </div>
                 ))}
+                {isError && 
+                <div className="text-red-500">{error instanceof Error ? error.message : "An error occurred while fetching data."}</div>}
                 {showAddDepositModal && depositModal}
                 {showDeleteConfirmation && <DeleteConfirmationModal
                     objectToDelete={depositData.find((deposit) => deposit.id === showDeleteConfirmation)!}
