@@ -26,11 +26,12 @@ function compareValues(a: SortValue, b: SortValue): number {
 }
 
 export default function useSortData<Data, Key extends string>(
-    data: Data[],
+    data: Data[] | undefined,
     accessors: SortAccessors<Data, Key>,
     initialSortConfig: SortConfig<Key> | null = null,
     getSpecialData?: (item: Data) => boolean
 ) {
+    if(!data || data.length === 0){return { sortedData: [], requestSort: () => {}, sortConfig: null }; }
     const [sortConfig, setSortConfig] = useState<SortConfig<Key> | null>(initialSortConfig);
 
     const filteredData = useMemo(() =>

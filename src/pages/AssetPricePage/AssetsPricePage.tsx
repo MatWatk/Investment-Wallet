@@ -21,6 +21,8 @@ import PageContentWrapper from "../../components/PageContentWrapper";
 import { useCurrency } from "../../hooks/useCurrency";
 import { useLanguage } from "../../hooks/useLanguage";
 import { translations } from "../../constants/translations";
+import { useQuery } from "@tanstack/react-query";
+import loadAssetPrices from "../../services/api/loadAssetPrices";
 
 
 export default function AssetPricePage() {
@@ -29,8 +31,15 @@ export default function AssetPricePage() {
 
     useRevalidatePage(currency);
 
-    const data = useLoaderData<CoinMarketData[]>();
+    const {data, isError, isPending, error} = useQuery({
+        queryKey: ["assetPrices", {assets, currency}],
+        queryFn: async () => await loadAssetPrices<{ coingeckoId: string }[]>({ assets, currency }),
+        gcTime: 5 * 60 * 1000,
+        staleTime: 60000,
+    });
+
     const assetByCoingeckoId = Object.fromEntries(assets.map((asset) => [asset.coingeckoId, asset]));
+
 
     const { sortedData, requestSort, sortConfig } = useSortData(data, {
         name: (coin) => assetByCoingeckoId[coin.id]?.name ?? "",
@@ -39,9 +48,10 @@ export default function AssetPricePage() {
         price_change_percentage_30d_in_currency: (coin) => coin.price_change_percentage_30d_in_currency,
     });
 
+
     const { visibleAssets, handleSearch } = useFilter<CoinMarketData>({ sortedData });
     // const { activeTab, handleTabSwitch } = useTabSwitch<AssetTypes, CoinMarketData>("All", visibleAssets, asset => asset.someFilteringTabsData);
-
+    
     return (
         <>
             <PageHeader title={translations[language].assetPricePage.title} />
