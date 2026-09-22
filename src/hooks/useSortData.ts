@@ -32,8 +32,6 @@ export default function useSortData<Data, Key extends string>(
     getSpecialData?: (item: Data) => boolean
 ) {
     const [sortConfig, setSortConfig] = useState<SortConfig<Key> | null>(initialSortConfig);
-    
-    if(!data || data.length === 0){return { sortedData: [], requestSort: () => {}, sortConfig: null }; }
 
     const actualData = data ?? [];
 
