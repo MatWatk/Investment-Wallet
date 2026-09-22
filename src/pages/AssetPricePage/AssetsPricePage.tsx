@@ -3,7 +3,6 @@ import AssetTablePosition from "../../components/AssetTable/AssetTablePosition";
 import SearchInput from "../../components/AssetTable/SearchInput";
 import PageHeader from "../../components/PageHeader";
 
-import { useLoaderData } from "react-router-dom";
 import useRevalidatePage from "../../hooks/useRevalidatePage";
 
 import { assets } from "../../constants/assets";
@@ -75,12 +74,14 @@ export default function AssetPricePage() {
                         "price_change_percentage_30d_in_currency",
                     ]}
                 />
-                {visibleAssets.map((coin) => {
+                {!isPending && !isError && visibleAssets.map((coin) => {
                     const asset = assetByCoingeckoId[coin.id];
                     if (!asset) return null;
 
                     return <AssetTablePosition key={asset.name} asset={asset} dataFromCoingecko={visibleAssets} />;
                 })}
+                {isPending && <p>Loading...</p>}
+                {isError && <p>Error: {error?.message}</p>}
             </PageContentWrapper>
         </>
 

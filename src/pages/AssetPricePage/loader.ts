@@ -7,11 +7,10 @@ import { queryClient } from "../../App";
 export async function loader() {
     const loggedUser = await getCurrentUser();
     checkAuth(loggedUser);
-    const currency = store.getState().currency.currency;
+    // const currency = store.getState().currency.currency;
 
-    // return loadAssetPrices<{ coingeckoId: string }[]>({ assets, currency });
-    await queryClient.ensureQueryData({
-        queryKey: ["assetPrices", { assets, currency }],
-        queryFn: () => loadAssetPrices<{ coingeckoId: string }[]>({ assets, currency }),
-    });
+    // await queryClient.ensureQueryData({
+    //     queryKey: ["assetPrices", { assets, currency }],
+    //     queryFn: () => loadAssetPrices<{ coingeckoId: string }[]>({ assets, currency }),
+    // });
 }

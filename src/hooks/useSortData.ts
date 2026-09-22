@@ -31,12 +31,15 @@ export default function useSortData<Data, Key extends string>(
     initialSortConfig: SortConfig<Key> | null = null,
     getSpecialData?: (item: Data) => boolean
 ) {
-    if(!data || data.length === 0){return { sortedData: [], requestSort: () => {}, sortConfig: null }; }
     const [sortConfig, setSortConfig] = useState<SortConfig<Key> | null>(initialSortConfig);
+    
+    if(!data || data.length === 0){return { sortedData: [], requestSort: () => {}, sortConfig: null }; }
+
+    const actualData = data ?? [];
 
     const filteredData = useMemo(() =>
-        getSpecialData ? data.filter(getSpecialData) : data,
-        [data, getSpecialData]);
+        getSpecialData ? actualData.filter(getSpecialData) : actualData,
+        [actualData, getSpecialData]);
 
     const sortedData = useMemo(() => {
         if (!sortConfig) return filteredData;
