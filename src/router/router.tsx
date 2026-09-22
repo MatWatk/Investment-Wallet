@@ -41,7 +41,7 @@ export const router = createBrowserRouter([
                         loader: assetPricePageLoader
                     };
                 },
-                errorElement: <RouterError type="assetPriceData" />
+                // errorElement: <RouterError type="assetPriceData" />
             },
             {
                 path: 'deposit-page',

@@ -19,6 +19,6 @@ export default async function loadAssetPrices<AssetsType extends { coingeckoId: 
         return Array.isArray(data) ? data : [];
     } catch (error) {
         console.error(error)
-        throw new Response('Failed to load asset prices', { status: 500 });
+        throw new Error('Failed to load asset prices', { cause: error });
     }
 }
