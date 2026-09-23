@@ -80,8 +80,8 @@ export default function AssetPricePage() {
 
                     return <AssetTablePosition key={asset.name} asset={asset} dataFromCoingecko={visibleAssets} />;
                 })}
-                {isPending && <p>Loading...</p>}
-                {isError && <p>Error: {error?.message}</p>}
+                {isPending && <p className='flex items-center justify-center p-5'>Loading...</p>}
+                {isError && <p className='flex items-center justify-center p-5 text-red-500'>Error: {error?.message}</p>}
             </PageContentWrapper>
         </>
 
