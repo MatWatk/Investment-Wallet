@@ -1,4 +1,5 @@
 import { createMemoryRouter, RouterProvider } from "react-router-dom"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { auth } from "../../../services/firebase/config";
 import RouterError from "../../../router/RouteError";
 import { loader } from "../loader";
@@ -11,10 +12,10 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import Layout from "../../../components/DashboardLayout";
 import * as useSortDataModule from "../../../hooks/useSortData";
+import loadAssetPrices from "../../../services/api/loadAssetPrices";
+import { assets } from "../../../constants/assets";
 
-vi.mock('../loader', () => ({
-    loader: vi.fn(),
-}));
+vi.mock("../../../services/api/loadAssetPrices");
 
 Object.defineProperty(auth, 'currentUser', {
     value: { email: 'user@example.com' },
@@ -38,15 +39,30 @@ const mockData: CoinMarketData[] = [{
     someFilteringTabsData: "All",
 }]
 
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            retry: false,
+        },
+    }
+})
+
 
 describe('AssetPricePage tests', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+        queryClient.removeQueries({ queryKey: ["assetPrices", { assets, currency: "USD" }] });
+    });
     const renderAssetPricePage = () => {
         const router = createMemoryRouter([
             {
                 path: '/asset-price',
-                element: <Provider store={store}>
-                    <Layout />
-                </Provider>,
+                element:
+                    <QueryClientProvider client={queryClient}>
+                        <Provider store={store}>
+                            <Layout />
+                        </Provider>
+                    </QueryClientProvider>,
                 children: [
                     {
                         index: true,
@@ -83,7 +99,7 @@ describe('AssetPricePage tests', () => {
     });
 
     test('should load Asset Price Page correctly with data', async () => {
-        vi.mocked(loader).mockResolvedValue(mockData);
+        queryClient.setQueryData(["assetPrices", { assets, currency: "USD" }], mockData);
         renderAssetPricePage();
 
         const assetPriceHeader = await screen.findByText(/Asset Price List/i);
@@ -98,9 +114,6 @@ describe('AssetPricePage tests', () => {
         const ethereumPrice30dChange = screen.queryByText(/8.1%/i);
         const ethereumPrice = screen.queryByText(/3000/i);
 
-
-        expect(vi.mocked(loader)).toHaveBeenCalled();
-
         expect(assetPriceHeader).toBeInTheDocument();
         expect(bitcoinRow).toBeInTheDocument();
         expect(searchInput).toBeInTheDocument();
@@ -114,7 +127,7 @@ describe('AssetPricePage tests', () => {
     });
 
     test('should filter assets based on search input', async () => {
-        vi.mocked(loader).mockResolvedValue(mockData);
+        queryClient.setQueryData(["assetPrices", { assets, currency: "USD" }], mockData);
         renderAssetPricePage();
 
         const searchInput = await screen.findByRole('textbox', { name: /Search/i });
@@ -131,14 +144,14 @@ describe('AssetPricePage tests', () => {
     });
 
     test('should display error message when loader throws error', async () => {
-        vi.mocked(loader).mockRejectedValue(new Error('Error loading asset price data'));
+        vi.mocked(loadAssetPrices).mockRejectedValueOnce(new Error('Error loading asset price data'));
         renderAssetPricePage();
 
         expect(await screen.findByText(/Error loading asset price data/i)).toBeInTheDocument();
     });
 
     test('should render empty table when no assets are returned', async () => {
-        vi.mocked(loader).mockResolvedValue([]);
+        queryClient.setQueryData(["assetPrices", { assets, currency: "USD" }], []);
         renderAssetPricePage();
 
         const assetPriceHeader = await screen.findByText(/Asset Price List/i);
@@ -156,7 +169,7 @@ describe('AssetPricePage tests', () => {
     });
 
     test('should sort assets when clicking on sorting arrow buttons', async () => {
-        vi.mocked(loader).mockResolvedValue(mockData);
+        queryClient.setQueryData(["assetPrices", { assets, currency: "USD" }], mockData);
         const requestSortMock = vi.fn();
         vi.spyOn(useSortDataModule, 'default').mockReturnValue({
             sortedData: mockData,
