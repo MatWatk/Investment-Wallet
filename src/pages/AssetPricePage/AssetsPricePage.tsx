@@ -22,6 +22,7 @@ import { useLanguage } from "../../hooks/useLanguage";
 import { translations } from "../../constants/translations";
 import { useQuery } from "@tanstack/react-query";
 import loadAssetPrices from "../../services/api/loadAssetPrices";
+import AssetButton from "../../components/Wallet_components/AssetButton";
 
 
 export default function AssetPricePage() {
@@ -30,8 +31,8 @@ export default function AssetPricePage() {
 
     useRevalidatePage(currency);
 
-    const {data, isError, isPending, error} = useQuery({
-        queryKey: ["assetPrices", {assets, currency}],
+    const { data, isError, isPending, error } = useQuery({
+        queryKey: ["assetPrices", { assets, currency }],
         queryFn: async () => await loadAssetPrices<{ coingeckoId: string }[]>({ assets, currency }),
         gcTime: 5 * 60 * 1000,
         staleTime: 60000,
@@ -50,7 +51,7 @@ export default function AssetPricePage() {
 
     const { visibleAssets, handleSearch } = useFilter<CoinMarketData>({ sortedData });
     // const { activeTab, handleTabSwitch } = useTabSwitch<AssetTypes, CoinMarketData>("All", visibleAssets, asset => asset.someFilteringTabsData);
-    
+
     return (
         <>
             <PageHeader title={translations[language].assetPricePage.title} />
@@ -80,8 +81,19 @@ export default function AssetPricePage() {
 
                     return <AssetTablePosition key={asset.name} asset={asset} dataFromCoingecko={visibleAssets} />;
                 })}
-                {isPending && <p className='flex items-center justify-center p-5'>Loading...</p>}
-                {isError && <p className='flex items-center justify-center p-5 text-red-500'>Error: {error?.message}</p>}
+                {isPending &&
+                    <div id='asset-prices-loading' className='flex items-center justify-center p-5'>
+                        <p>Loading...</p>
+                    </div>}
+                {isError &&
+                    <div className='flex flex-col items-center justify-center p-5'>
+                        <div id='asset-prices-error' className='flex items-center justify-center p-5 text-red-500 flex-col'>
+                            <p>Error: {error?.message}</p>
+                            <p>Please try again later.</p>
+                        </div>
+                        <AssetButton id='asset-prices-refresh' onClick={() => window.location.reload()}>Refresh page</AssetButton>
+                    </div>
+                }
             </PageContentWrapper>
         </>
 
