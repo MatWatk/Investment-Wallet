@@ -13,6 +13,15 @@ export const formatPercent = (value: number | null | undefined) => {
     return `${value.toFixed(1)}%`;
 };
 
+export function getErrorStatus(error: unknown): number {
+    if (error instanceof Error && typeof error.cause === "object" && error.cause !== null && "status" in error.cause) {
+        const { status } = error.cause;
+        return typeof status === "number" ? status : 500;
+    }
+
+    return 500;
+}
+
 export const summaryTransformation = (assets: WalletAsset[]): WalletAsset[] => {
     const summary = Object.values(
         assets.reduce<Record<string, WalletAsset>>((acc, asset) => {

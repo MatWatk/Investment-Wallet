@@ -22,7 +22,8 @@ import { useLanguage } from "../../hooks/useLanguage";
 import { translations } from "../../constants/translations";
 import { useQuery } from "@tanstack/react-query";
 import loadAssetPrices from "../../services/api/loadAssetPrices";
-import AssetButton from "../../components/Wallet_components/AssetButton";
+import QueryError from "../../components/QueryError";
+import { getErrorStatus } from "../../utils/utils";
 
 
 export default function AssetPricePage() {
@@ -86,13 +87,10 @@ export default function AssetPricePage() {
                         <p>Loading...</p>
                     </div>}
                 {isError &&
-                    <div className='flex flex-col items-center justify-center p-5'>
-                        <div id='asset-prices-error' className='flex items-center justify-center p-5 text-red-500 flex-col'>
-                            <p>Error: {error?.message}</p>
-                            <p>Please try again later.</p>
-                        </div>
-                        <AssetButton id='asset-prices-refresh' onClick={() => window.location.reload()}>Refresh page</AssetButton>
-                    </div>
+                    <QueryError
+                        errorMessage={error.message ?? "Error occured while fetching data"}
+                        status={getErrorStatus(error)}
+                    />
                 }
             </PageContentWrapper>
         </>

@@ -7,7 +7,7 @@ import { queryClient } from "../../App";
 export async function loader() {
     const loggedUser = await getCurrentUser();
 
-    await queryClient.ensureQueryData({
+    await queryClient.prefetchQuery({
         queryKey: ["userDeposits", loggedUser],
         queryFn: async () => {
             return {

@@ -1,4 +1,5 @@
 import fetchData from "./fetchData";
+import { getErrorStatus } from "../../utils/utils";
 
 export default async function loadAssetPrices<AssetsType extends { coingeckoId: string }[]>({ assets, currency }: { assets: AssetsType, currency: string }) {
     const assetIds = assets.map(asset => asset.coingeckoId).join(',');
@@ -19,6 +20,6 @@ export default async function loadAssetPrices<AssetsType extends { coingeckoId: 
         return Array.isArray(data) ? data : [];
     } catch (error) {
         console.error(error)
-        throw new Error('Failed to load asset prices', { cause: error });
+        throw new Error('Failed to load asset prices', { cause: { status: getErrorStatus(error) } });
     }
 }

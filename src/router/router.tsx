@@ -53,7 +53,7 @@ export const router = createBrowserRouter([
                         action: depositAction
                     };
                 },
-                errorElement: <RouterError type="depositPage" />
+                // errorElement: <RouterError type="depositPage" />
             },
         ]
     },

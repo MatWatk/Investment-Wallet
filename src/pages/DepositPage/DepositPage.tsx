@@ -23,10 +23,13 @@ import LoadingModal from "../../components/Modals/LoadingModal";
 import { auth } from "../../services/firebase/config";
 import { useQuery } from "@tanstack/react-query";
 import loadFirebaseData from "../../services/api/loadFirebaseData";
+import QueryError from "../../components/QueryError";
+import { getErrorStatus } from "../../utils/utils";
 
 export default function DepositPage() {
     const loggedUser = auth.currentUser?.email;
-    const {data, isError, error} = useQuery({
+
+    const { data, isError, error, isLoading } = useQuery({
         queryKey: ["userDeposits", loggedUser],
         queryFn: async () => {
             return {
@@ -39,16 +42,16 @@ export default function DepositPage() {
         enabled: !!loggedUser,
     });
 
+    const navigation = useNavigation();
+
     const language = useLanguage();
     const themeState = useTheme();
     const currency = useCurrency();
 
-    const navigation = useNavigation();
-
     const depositData = data?.depositData ?? [];
     const platforms = data?.platforms ?? [];
 
-    const { currentExchangeRate } = useExchangeRate("PLN");
+    const { currentExchangeRate, isLoading: isExchangeRateLoading, exchangeRateError } = useExchangeRate("PLN");
 
     const filteredForUserDeposit = useMemo(() => {
         const currentUserEmail = auth.currentUser?.email;
@@ -170,17 +173,22 @@ export default function DepositPage() {
                         "date",
                     ]}
                 />
-                {!isError && visibleData.map((deposit) => (
-                    <div key={deposit.id} className="flex items-center justify-between">
-                        <DepositPosition
-                            key={deposit.id}
-                            depositData={deposit}
-                            openDeleteModal={openDeleteModal}
-                            openEditModal={openEditModal} />
-                    </div>
-                ))}
-                {isError && 
-                <div className="text-red-500">{error instanceof Error ? error.message : "An error occurred while fetching data."}</div>}
+                {!isError && !isLoading &&
+                    visibleData.map((deposit) => (
+                        <div key={deposit.id} className="flex items-center justify-between">
+                            <DepositPosition
+                                key={deposit.id}
+                                depositData={deposit}
+                                openDeleteModal={openDeleteModal}
+                                openEditModal={openEditModal} />
+                        </div>
+                    ))}
+                {isError &&
+                    <QueryError
+                        errorMessage={error.message ?? "An error occurred while fetching data."}
+                        status={getErrorStatus(error)}
+                    />
+                }
                 {showAddDepositModal && depositModal}
                 {showDeleteConfirmation && <DeleteConfirmationModal
                     objectToDelete={depositData.find((deposit) => deposit.id === showDeleteConfirmation)!}
@@ -190,8 +198,13 @@ export default function DepositPage() {
                         setShowDeleteConfirmation(null);
                     }}
                 />}
-                <SummaryBar totalValue={totalValue} textAlign="left" />
-                {navigation.state !== "idle" && <LoadingModal /> }
+                {!isLoading && !isError &&
+                    <SummaryBar totalValue={totalValue} textAlign="left" />}
+                {isLoading &&
+                    <div id='asset-prices-loading' className='flex items-center justify-center p-5'>
+                        <p>Loading...</p>
+                    </div>}
+                {navigation.state !== "idle" && <LoadingModal />}
             </PageContentWrapper>
         </>
     );

@@ -6,6 +6,22 @@ type CollectionName =
     | "wallet-tabs"
     | "deposit";
 
+function getFirebaseErrorStatus(error: unknown): number {
+    if (typeof error !== "object" || error === null || !("code" in error)) return 500;
+
+    switch (error.code) {
+        case "permission-denied":
+            return 403;
+        case "unauthenticated":
+            return 401;
+        case "unavailable":
+        case "deadline-exceeded":
+            return 503;
+        default:
+            return 500;
+    }
+}
+
 export default async function loadFirebaseData<T>(
     collectionName: CollectionName,
     fetchedFields: string[],
@@ -26,6 +42,8 @@ export default async function loadFirebaseData<T>(
     }
     catch (error) {
         console.error(error)
-        throw new Response('Failed to load data from collection', { status: 500 });
+        throw new Error('Failed to load data from collection', {
+            cause: { status: getFirebaseErrorStatus(error) },
+        });
     }
 }
