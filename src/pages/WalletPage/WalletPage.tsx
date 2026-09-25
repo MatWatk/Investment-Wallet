@@ -42,7 +42,7 @@ export default function WalletPage() {
     const currency = useCurrency();
     const language = useLanguage();
     const themeState = useTheme();
-    const { currentExchangeRate } = useExchangeRate(currency);
+    const { currentExchangeRate, exchangeRateError, isLoading: exchangeRateIsLoading } = useExchangeRate(currency);
     useRevalidatePage(currency);
 
     const navigation = useNavigation();

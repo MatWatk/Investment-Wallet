@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 
 export default function useExchangeRate(targetCurrency: string) {
 
-    const { data, error } = useQuery({
+    const { data, error, isLoading } = useQuery({
         queryKey: ['exchangeRate', targetCurrency],
         queryFn: async () => await loadCurrencyExchRate("USD"),
         staleTime: 30 * 60 * 1000,
@@ -12,5 +12,5 @@ export default function useExchangeRate(targetCurrency: string) {
     const currentExchangeRate = data?.rates[targetCurrency] ?? 1;
     const exchangeRateError = error ? "Unable to fetch currency exchange rate" : null;
 
-    return { currentExchangeRate, exchangeRateError };
+    return { currentExchangeRate, exchangeRateError, isLoading };
 }
