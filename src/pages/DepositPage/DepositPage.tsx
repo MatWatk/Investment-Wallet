@@ -135,6 +135,7 @@ export default function DepositPage() {
         return visibleData.reduce((total, deposit) => total + (deposit.amount ?? 0), 0);
     }, [visibleData]);
 
+
     return (
         <>
             <div className="mb-6 flex flex-wrap items-start gap-4 shrink-0">
@@ -189,6 +190,12 @@ export default function DepositPage() {
                         status={getErrorStatus(error)}
                     />
                 }
+                {exchangeRateError &&
+                    <QueryError
+                        errorMessage={exchangeRateError ?? "An error occurred while fetching exchange rates."}
+                        status={getErrorStatus(exchangeRateError)}
+                    />
+                }
                 {showAddDepositModal && depositModal}
                 {showDeleteConfirmation && <DeleteConfirmationModal
                     objectToDelete={depositData.find((deposit) => deposit.id === showDeleteConfirmation)!}
@@ -200,7 +207,7 @@ export default function DepositPage() {
                 />}
                 {!isLoading && !isError &&
                     <SummaryBar totalValue={totalValue} textAlign="left" />}
-                {isLoading &&
+                {isLoading || isExchangeRateLoading &&
                     <div id='asset-prices-loading' className='flex items-center justify-center p-5'>
                         <p>Loading...</p>
                     </div>}
