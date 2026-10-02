@@ -18,7 +18,7 @@ import type { EditDataStatus, WalletAssetEditRequest, WalletTab } from "../../ty
 import useTabSwitch from "../../hooks/useTabSwitch";
 
 import type { WalletAsset } from "../../types/WalletTypes";
-import { summaryTransformation, findAssetPrice, countTotalValue, prepareDataForStatistics, calculateTotalEarnOrLoss } from "../../utils/utils";
+import { summaryTransformation, findAssetPrice, countTotalValue, prepareDataForStatistics, calculateTotalEarnOrLoss, getErrorStatus } from "../../utils/utils";
 import { convertDataForRequest, createWalletAssetEditRequest } from "../../utils/requests";
 import { useLoaderData, useNavigation, useSubmit } from "react-router-dom";
 import type { WalletLoaderData } from "../../types/WalletTypes";
@@ -37,6 +37,7 @@ import RubbishBinButton from "../../components/Wallet_components/RubbishBinButto
 import DeleteConfirmationModal from "../../components/Modals/DeleteConfirmationModal";
 import { auth } from "../../services/firebase/config";
 import LoadingModal from "../../components/Modals/LoadingModal";
+import QueryError from "../../components/QueryError";
 
 export default function WalletPage() {
     const currency = useCurrency();
@@ -191,57 +192,69 @@ export default function WalletPage() {
                     sortConfig={sortConfig}
                     sortableKeys={["name", "amount", "value"]}
                 />
-                {actualVisibleAssets.map((walletAsset) => {
-                    const assetPrice = findAssetPrice(assets, coingeckoData, walletAsset);
-                    const countedPrice = assetPrice * walletAsset.amount * currentExchangeRate;
-                    if (walletAsset.amount === 0) {
-                        return null;
-                    }
-                    return (
-                        <div
-                            key={walletAsset.id}
-                            className={themeState ? tableStyles.light.tableRow : tableStyles.dark.tableRow}>
-                            {assets.find(a => a.name === walletAsset.name)?.image && (
-                                <div className="min-w-28 flex gap-3 whitespace-nowrap items-center">
-                                    <AssetPositionName
-                                        id={`asset-position-name-${walletAsset.name.trim()}`}
-                                        name={walletAsset.name}
-                                        image={assets.find(a => a.name === walletAsset.name)?.image || ""}
-                                        earnOrLossValue={assetInvestmentValues[walletAsset.name].earnOrLossPercentage} />
-                                    {activeTab !== "Summary" &&
-                                        <div className="ml-4 flex shrink-0 items-center gap-2">
-                                            <AssetButton
-                                                id={`edit-asset-button-${walletAsset.name.trim()}`}
-                                                onClick={() => handleEdit(walletAsset.id)}
-                                                big={false}>
-                                                {translations[language].walletPage.editButton}
-                                            </AssetButton>
-                                            <RubbishBinButton
-                                                id={`delete-asset-button-${walletAsset.name.trim()}`}
-                                                onClick={() => handleDelete(walletAsset.id)} />
-                                        </div>}
+                {!exchangeRateIsLoading && !exchangeRateError &&
+                    actualVisibleAssets.map((walletAsset) => {
+                        const assetPrice = findAssetPrice(assets, coingeckoData, walletAsset);
+                        const countedPrice = assetPrice * walletAsset.amount * currentExchangeRate;
+                        if (walletAsset.amount === 0) {
+                            return null;
+                        }
+                        return (
+                            <div
+                                key={walletAsset.id}
+                                className={themeState ? tableStyles.light.tableRow : tableStyles.dark.tableRow}>
+                                {assets.find(a => a.name === walletAsset.name)?.image && (
+                                    <div className="min-w-28 flex gap-3 whitespace-nowrap items-center">
+                                        <AssetPositionName
+                                            id={`asset-position-name-${walletAsset.name.trim()}`}
+                                            name={walletAsset.name}
+                                            image={assets.find(a => a.name === walletAsset.name)?.image || ""}
+                                            earnOrLossValue={assetInvestmentValues[walletAsset.name].earnOrLossPercentage} />
+                                        {activeTab !== "Summary" &&
+                                            <div className="ml-4 flex shrink-0 items-center gap-2">
+                                                <AssetButton
+                                                    id={`edit-asset-button-${walletAsset.name.trim()}`}
+                                                    onClick={() => handleEdit(walletAsset.id)}
+                                                    big={false}>
+                                                    {translations[language].walletPage.editButton}
+                                                </AssetButton>
+                                                <RubbishBinButton
+                                                    id={`delete-asset-button-${walletAsset.name.trim()}`}
+                                                    onClick={() => handleDelete(walletAsset.id)} />
+                                            </div>}
+                                    </div>
+                                )}
+                                <div className="ml-auto flex flex-row gap-2 shrink-0 items-center whitespace-nowrap">
+                                    <p id={`asset-amount-${walletAsset.name.trim()}`} className="w-33 text-center flex items-center justify-center gap-2 shrink-0">
+                                        {Number(Number(walletAsset.amount).toFixed(2))}
+                                    </p>
+                                    <p className="w-25 text-center flex items-center justify-center gap-2 shrink-0">
+                                        {Number(Number(countedPrice).toFixed(2))}
+                                    </p>
+                                    <p className="w-22 text-right shrink-0">{currency}</p>
                                 </div>
-                            )}
-                            <div className="ml-auto flex flex-row gap-2 shrink-0 items-center whitespace-nowrap">
-                                <p id={`asset-amount-${walletAsset.name.trim()}`} className="w-33 text-center flex items-center justify-center gap-2 shrink-0">
-                                    {Number(Number(walletAsset.amount).toFixed(2))}
-                                </p>
-                                <p className="w-25 text-center flex items-center justify-center gap-2 shrink-0">
-                                    {Number(Number(countedPrice).toFixed(2))}
-                                </p>
-                                <p className="w-22 text-right shrink-0">{currency}</p>
+                                {showDeleteConfirmModal === walletAsset.id &&
+                                    <DeleteConfirmationModal
+                                        objectToDelete={walletAsset}
+                                        closeModal={() => setShowDeleteConfirmModal(null)}
+                                        allAssets={actualVisibleAssets}
+                                        handleConfirmDelete={() => deleteAsset(walletAsset.id)}
+                                    />
+                                }
                             </div>
-                            {showDeleteConfirmModal === walletAsset.id &&
-                                <DeleteConfirmationModal
-                                    objectToDelete={walletAsset}
-                                    closeModal={() => setShowDeleteConfirmModal(null)}
-                                    allAssets={actualVisibleAssets}
-                                    handleConfirmDelete={() => deleteAsset(walletAsset.id)}
-                                />
-                            }
-                        </div>
-                    )
-                })}
+                        )
+                    })}
+                {exchangeRateIsLoading &&
+                    <div id='asset-prices-loading' className='flex items-center justify-center p-5'>
+                        <p>Loading...</p>
+                    </div>
+                }
+                {exchangeRateError &&
+                    <QueryError
+                        errorMessage={exchangeRateError ?? "An error occurred while fetching exchange rates."}
+                        status={getErrorStatus(exchangeRateError)}
+                    />
+                }
                 <SummaryBar totalValue={totalValue} />
             </PageContentWrapper>
         </>
