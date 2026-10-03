@@ -245,9 +245,10 @@ export default function WalletPage() {
                         )
                     })}
                 {exchangeRateIsLoading &&
-                    <div id='asset-prices-loading' className='flex items-center justify-center p-5'>
-                        <p>Loading...</p>
-                    </div>
+                    <LoadingModal id='asset-prices-loading'/>
+                    // <div id='asset-prices-loading' className='flex items-center justify-center p-5'>
+                    //     <p>Loading...</p>
+                    // </div>
                 }
                 {exchangeRateError &&
                     <QueryError

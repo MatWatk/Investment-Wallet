@@ -24,6 +24,7 @@ import { useQuery } from "@tanstack/react-query";
 import loadAssetPrices from "../../services/api/loadAssetPrices";
 import QueryError from "../../components/QueryError";
 import { getErrorStatus } from "../../utils/utils";
+import LoadingModal from "../../components/Modals/LoadingModal";
 
 
 export default function AssetPricePage() {
@@ -83,9 +84,11 @@ export default function AssetPricePage() {
                     return <AssetTablePosition key={asset.name} asset={asset} dataFromCoingecko={visibleAssets} />;
                 })}
                 {isPending &&
-                    <div id='asset-prices-loading' className='flex items-center justify-center p-5'>
-                        <p>Loading...</p>
-                    </div>}
+                    <LoadingModal id='asset-prices-loading'/>
+                    // <div id='asset-prices-loading' className='flex items-center justify-center p-5'>
+                    //     <p>Loading...</p>
+                    // </div>
+                }
                 {isError &&
                     <QueryError
                         errorMessage={error.message ?? "Error occured while fetching data"}
