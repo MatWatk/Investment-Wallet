@@ -5,6 +5,7 @@ import settingsIcon from '../../assets/settingsIcon.png'
 
 import { useTheme } from "../../hooks/useTheme";
 import useLogout from "../../hooks/useLogout";
+import { NavLink } from "react-router-dom";
 
 export default function ProfileButton() {
     const { isOpen: profileDropdownOpen, toggleDropdown: handleClickProfile, dropdownRef } = useDropdown();
@@ -20,11 +21,12 @@ export default function ProfileButton() {
             </button>
             {profileDropdownOpen && (
                 <div ref={dropdownRef} className={`absolute top-full right-0 mt-2 w-14 rounded-lg shadow-lg border py-2 z-50 ${themeState ? 'bg-white' : 'bg-gray-200'}`}>
-                    <button
+                    <NavLink
                         className="w-full flex items-center justify-center py-3"
+                        to="/settings"
                     >
                         <img src={settingsIcon} alt="Settings button" className="w-6 h-6 " />
-                    </button>
+                    </NavLink>
 
                     <button
                         className="w-full flex items-center justify-center py-3"

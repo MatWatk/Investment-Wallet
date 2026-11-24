@@ -55,6 +55,16 @@ export const router = createBrowserRouter([
                 },
                 // errorElement: <RouterError type="depositPage" />
             },
+            {
+                path: 'settings',
+                lazy: async () => {
+                    const module = await import('../pages/SettingsPage/SettingsPage');
+                    return {
+                        Component: module.default
+                    };
+                },
+                // errorElement: <RouterError type="settingsPage" />
+            }
         ]
     },
     {
