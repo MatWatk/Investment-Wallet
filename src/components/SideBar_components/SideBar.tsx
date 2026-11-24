@@ -31,7 +31,8 @@ export default function SideBar() {
                     icon={WalletIcon}
                     altText="Wallet Icon"
                     isFolded={foldState}>
-                    {foldState ? '' : (language === "english" ? translations.english.sideBar.sideButtons[0] : translations.polish.sideBar.sideButtons[0])}</SideBarButton>
+                    {foldState ? '' : (language === "english" ? translations.english.sideBar.sideButtons[0] : translations.polish.sideBar.sideButtons[0])}
+                </SideBarButton>
                 <SideBarButton
                     link={'/assets-price-list'}
                     icon={WeightIcon}

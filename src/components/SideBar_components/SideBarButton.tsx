@@ -5,10 +5,9 @@ export default function SideBarButton({ children, link, icon, altText, isFolded 
         <NavLink
             to={link}
             className={({ isActive }) =>
-                `group py-2 text-xl font-bold transition-colors flex w-full ${isFolded ? "justify-center" : "items-center px-3"} ${
-                    isActive
-                        ? "text-yellow-500"
-                        : "text-violet-200 hover:text-yellow-400"
+                `group py-2 text-xl font-bold transition-colors flex w-full ${isFolded ? "justify-center" : "items-center px-3"} ${isActive
+                    ? "text-yellow-500"
+                    : "text-violet-200 hover:text-yellow-400"
                 }`
             }
             end>
@@ -16,9 +15,8 @@ export default function SideBarButton({ children, link, icon, altText, isFolded 
                 <div className={`flex w-full ${isFolded ? "justify-center" : "items-center gap-2"}`}>
                     {icon && (
                         <span
-                            className={`rounded-md p-1 transition-colors ${
-                                isActive ? "bg-yellow-500" : "bg-gray-400 group-hover:bg-yellow-400"
-                            }`}>
+                            className={`rounded-md p-1 transition-colors ${isActive ? "bg-yellow-500" : "bg-gray-400 group-hover:bg-yellow-400"
+                                }`}>
                             <img
                                 src={icon}
                                 alt={altText || "Icon"}
