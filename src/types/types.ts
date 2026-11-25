@@ -77,6 +77,23 @@ export type translationsType = {
             walletStatusInPercentage: string;
             walletStatus: string;
         },
+        settingsPage: {
+            title: string;
+            currentPassword: string;
+            newPassword: string;
+            confirmPassword: string;
+            changePassword: string;
+            submitting: string;
+            success: string;
+            mismatch: string;
+            noUser: string;
+            noEmail: string;
+            invalidPassword: string;
+            recentLogin: string;
+            weakPassword: string;
+            network: string;
+            generic: string;
+        },
         modals: {
             addAsset: {
                 titleEdit: string;

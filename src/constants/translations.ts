@@ -75,6 +75,23 @@ export const translations: translationsType = {
             walletStatusInPercentage: "Your percentage return",
             walletStatus: "Your return"
         },
+        settingsPage: {
+            title: "Account Settings",
+            currentPassword: "Current password",
+            newPassword: "New password",
+            confirmPassword: "Confirm new password",
+            changePassword: "Change password",
+            submitting: "Changing password...",
+            success: "Password changed successfully.",
+            mismatch: "Passwords do not match.",
+            noUser: "You must be logged in to change your password.",
+            noEmail: "An email address is required to verify your password.",
+            invalidPassword: "The current password is incorrect. Please try again.",
+            recentLogin: "Verification expired. Please try changing your password again.",
+            weakPassword: "The password does not meet the password requirements. Please choose a stronger password.",
+            network: "Network error. Please check your internet connection and try again.",
+            generic: "Failed to change password. Please try again."
+        },
         modals: {
             addAsset: {
                 titleEdit: "Edit Asset",
@@ -213,6 +230,23 @@ export const translations: translationsType = {
             summaryTab: "Podsumowanie",
             walletStatusInPercentage: "Twój procentowy zwrot",
             walletStatus: "Twój zwrot"
+        },
+        settingsPage: {
+            title: "Ustawienia Konta",
+            currentPassword: "Obecne hasło",
+            newPassword: "Nowe hasło",
+            confirmPassword: "Potwierdź nowe hasło",
+            changePassword: "Zmień hasło",
+            submitting: "Zmienianie hasła...",
+            success: "Hasło zostało zmienione.",
+            mismatch: "Hasła nie są zgodne.",
+            noUser: "Musisz być zalogowany, aby zmienić hasło.",
+            noEmail: "Do weryfikacji hasła wymagany jest adres e-mail.",
+            invalidPassword: "Obecne hasło jest nieprawidłowe. Spróbuj ponownie.",
+            recentLogin: "Weryfikacja wygasła. Spróbuj ponownie zmienić hasło.",
+            weakPassword: "Hasło nie spełnia wymagań. Wybierz silniejsze hasło.",
+            network: "Błąd sieci. Sprawdź połączenie z internetem i spróbuj ponownie.",
+            generic: "Nie udało się zmienić hasła. Spróbuj ponownie."
         },
         modals: {
             addAsset: {
