@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useState, type SubmitEvent } from "react";
 import { FirebaseError } from "firebase/app";
 import { updatePassword, reauthenticateWithCredential, EmailAuthProvider } from "firebase/auth";
 import PageHeader from "../../components/PageHeader";
@@ -11,20 +11,24 @@ export default function SettingsPage() {
     const language = useLanguage();
     const themeState = useTheme();
     const text = translations[language].settingsPage;
+    
     const [currentPassword, setCurrentPassword] = useState("");
     const [password, setPassword] = useState("");
     const [confirmation, setConfirmation] = useState("");
     const [message, setMessage] = useState<"success" | "mismatch" | "noUser" | "noEmail" | "invalidPassword" | "recentLogin" | "weakPassword" | "network" | "generic" | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
+
         if (isSubmitting) return;
+
         if (password !== confirmation) {
             setMessage("mismatch");
             return;
         }
         const user = auth.currentUser;
+
         if (!user) {
             setMessage("noUser");
             return;
@@ -36,10 +40,12 @@ export default function SettingsPage() {
 
         setMessage(null);
         setIsSubmitting(true);
+
         try {
             const credential = EmailAuthProvider.credential(user.email, currentPassword);
             await reauthenticateWithCredential(user, credential);
             await updatePassword(user, password);
+
             setCurrentPassword("");
             setPassword("");
             setConfirmation("");
