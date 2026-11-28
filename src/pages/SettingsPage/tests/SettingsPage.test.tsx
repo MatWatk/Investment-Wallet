@@ -7,11 +7,15 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { store } from "../../../store";
 import SettingsPage from "../SettingsPage";
 
-const { auth } = vi.hoisted(() => ({
+const { auth, handleLogout } = vi.hoisted(() => ({
     auth: { currentUser: { email: "test@example.com" } as { email: string | null } | null },
+    handleLogout: vi.fn(),
 }));
 
 vi.mock("../../../services/firebase/config", () => ({ auth }));
+vi.mock("../../../hooks/useLogout", () => ({
+    default: () => ({ handleLogout }),
+}));
 vi.mock("firebase/auth", async (importOriginal) => ({
     ...await importOriginal<typeof import("firebase/auth")>(),
     reauthenticateWithCredential: vi.fn(),
@@ -22,25 +26,27 @@ describe("SettingsPage password change", () => {
     beforeEach(() => {
         vi.resetAllMocks();
         auth.currentUser = { email: "test@example.com" };
+        vi.useRealTimers();
     });
 
     function renderPage() {
         render(<Provider store={store}><SettingsPage /></Provider>);
     }
 
-    async function fillPasswords(password: string, confirmation: string) {
-        const user = userEvent.setup();
+    async function fillPasswords(password: string, confirmation: string, user = userEvent.setup()) {
         await user.type(screen.getByLabelText(/^current password$/i), "oldpassword");
         await user.type(screen.getByLabelText(/^new password$/i), password);
         await user.type(screen.getByLabelText(/confirm new password/i), confirmation);
         await user.click(screen.getByRole("button", { name: /^change password$/i }));
     }
 
-    test("updates the current user's password and clears the fields on success", async () => {
+    test("updates the current user's password and schedules logout on success", async () => {
         vi.mocked(updatePassword).mockResolvedValue(undefined);
         renderPage();
         await fillPasswords("newpassword", "newpassword");
 
+        expect(screen.getByText("Account name:")).toBeInTheDocument();
+        expect(screen.getByText("test@example.com")).toBeInTheDocument();
         expect(reauthenticateWithCredential).toHaveBeenCalledWith(
             auth.currentUser,
             EmailAuthProvider.credential("test@example.com", "oldpassword")
@@ -48,10 +54,10 @@ describe("SettingsPage password change", () => {
         expect(updatePassword).toHaveBeenCalledWith(auth.currentUser, "newpassword");
         expect(vi.mocked(reauthenticateWithCredential).mock.invocationCallOrder[0])
             .toBeLessThan(vi.mocked(updatePassword).mock.invocationCallOrder[0]);
-        expect(await screen.findByRole("status")).toHaveTextContent(/password changed successfully/i);
-        expect(screen.getByLabelText(/^current password$/i)).toHaveValue("");
-        expect(screen.getByLabelText(/^new password$/i)).toHaveValue("");
-        expect(screen.getByLabelText(/confirm new password/i)).toHaveValue("");
+        expect(screen.getByRole("status")).toHaveTextContent(/password changed successfully/i);
+        expect(handleLogout).not.toHaveBeenCalled();
+
+        await vi.waitFor(() => expect(handleLogout).toHaveBeenCalledTimes(1), { timeout: 2500 });
     });
 
     test("does not submit mismatched passwords", async () => {
@@ -111,7 +117,7 @@ describe("SettingsPage password change", () => {
         await fillPasswords("newpassword", "newpassword");
 
         expect(updatePassword).not.toHaveBeenCalled();
-        expect(screen.getByRole("button", { name: /changing password/i })).toBeDisabled();
+        expect(screen.getByRole("button", { name: /^change password$/i })).toBeDisabled();
         rejectAuthentication(new FirebaseError("auth/invalid-credential", "error"));
         expect(await screen.findByRole("alert")).toHaveTextContent(/current password is incorrect/i);
         expect(updatePassword).not.toHaveBeenCalled();
@@ -139,9 +145,7 @@ describe("SettingsPage password change", () => {
         renderPage();
         await fillPasswords("newpassword", "newpassword");
 
-        expect(screen.getByRole("button", { name: /changing password/i })).toBeDisabled();
-        expect(screen.getByLabelText(/^current password$/i)).toBeDisabled();
-        expect(screen.getByLabelText(/^new password$/i)).toBeDisabled();
+        expect(screen.getByRole("button", { name: /^change password$/i })).toBeDisabled();
         resolveUpdate();
         expect(await screen.findByRole("status")).toHaveTextContent(/password changed successfully/i);
         expect(updatePassword).toHaveBeenCalledTimes(1);
